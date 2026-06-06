@@ -92,6 +92,24 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.03);
   }
 
+  .nav-item-divider {
+    margin-top: 16px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 16px;
+  }
+
+  .nav-link-notion {
+    background: rgba(124, 58, 237, 0.08) !important;
+    border: 1px solid rgba(124, 58, 237, 0.15) !important;
+    color: #7c3aed !important;
+  }
+
+  .nav-link-notion:hover {
+    background: rgba(124, 58, 237, 0.15) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08) !important;
+  }
+
   /* Variantes activos con los colores originales del plan */
   .nav-link.active-tareas {
     background: #fff;
@@ -242,6 +260,11 @@
     .topbar {
       display: none;
     }
+    .nav-item-divider {
+      margin-top: 0;
+      border-top: none;
+      padding-top: 0;
+    }
   }
 </style>
 </head>
@@ -279,6 +302,12 @@
             <span class="nav-icon">🌿</span>
             <span>Estrategia de Ramas</span>
           </button>
+        </li>
+        <li class="nav-item nav-item-divider">
+          <a class="nav-link nav-link-notion" href="https://www.notion.so/3779ce4c5d758007b776e90f4b42ca34?v=3779ce4c5d7580f8aeb9000c8517d605&amp;source=copy_link" target="_blank">
+            <span class="nav-icon">🚀</span>
+            <span>Centro de Notion</span>
+          </a>
         </li>
       </ul>
     </nav>
