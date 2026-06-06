@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitectura 3 repos — Restaurante Java</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f4f0;color:#1a1a1a;padding:28px 16px;max-width:900px;margin:0 auto}
+h1{font-size:19px;font-weight:500;text-align:center;margin-bottom:4px}
+.sub{text-align:center;font-size:12px;color:#777;margin-bottom:28px}
+
+/* REPOS */
+.repos{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:600px){.repos{grid-template-columns:1fr}}
+.repo{border-radius:12px;border:1px solid rgba(0,0,0,.09);overflow:hidden}
+.repo-header{padding:14px 16px 10px}
+.repo-org{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-bottom:2px}
+.repo-name{font-size:15px;font-weight:600;font-family:monospace;margin-bottom:4px}
+.repo-desc{font-size:11px;opacity:.7;line-height:1.5}
+.repo-body{padding:10px 12px 14px;background:rgba(255,255,255,.5);display:flex;flex-direction:column;gap:6px}
+.chip{border-radius:7px;padding:6px 10px;font-size:11px;border:1px solid rgba(0,0,0,.08)}
+.chip-t{font-weight:500;margin-bottom:1px}
+.chip-s{opacity:.7;font-size:10px}
+
+/* colores */
+.r-back .repo-header{background:#faeeda}
+.r-back .chip{background:#fce9b6}
+.r-front .repo-header{background:#e1f5ee}
+.r-front .chip{background:#c2eadc}
+.r-pres .repo-header{background:#eeedfe}
+.r-pres .chip{background:#d8d5f9}
+
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;margin-bottom:6px}
+.b-back{background:#fac775;color:#633806}
+.b-front{background:#9fe1cb;color:#0f6e56}
+.b-pres{background:#cecbf6;color:#3c3489}
+
+/* FLECHA entre repos */
+.arrow-section{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:20px}
+.arrow-repo{flex:1;text-align:center}
+.arrow-mid{text-align:center;font-size:22px;color:#bbb;padding:0 4px;flex:0}
+
+/* SVG diagrama */
+.graph-wrap{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:20px 16px 24px;margin-bottom:20px;overflow-x:auto}
+svg{display:block;width:100%;min-width:580px}
+
+/* FLUJO */
+.section-title{font-size:13px;font-weight:600;color:#444;margin-bottom:10px;padding-left:2px}
+.pasos{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.paso{display:flex;gap:12px;background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:12px 14px;align-items:flex-start}
+.paso-num{font-size:16px;font-weight:600;min-width:24px;color:#bbb;line-height:1.2}
+.paso-body{}
+.paso-title{font-weight:500;font-size:13px;margin-bottom:3px}
+.paso-desc{font-size:12px;color:#555;line-height:1.65}
+code{font-family:monospace;font-size:11.5px;background:#f0efe9;padding:1px 5px;border-radius:4px;white-space:nowrap}
+
+/* RAMAS */
+.ramas-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:500px){.ramas-grid{grid-template-columns:1fr}}
+.rama-card{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:12px 14px}
+.rama-card h4{font-size:12px;font-weight:600;margin-bottom:8px}
+.rama-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:12px}
+.rama-item:last-child{margin-bottom:0}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.d-main{background:#1a1a1a}
+.d-dev{background:#3b3bff}
+.d-mod{background:#888780}
+.d-dao{background:#ba7517}
+.d-svc{background:#993c1d}
+.d-view{background:#0f6e56}
+.d-adm{background:#534ab7}
+.rama-name{font-family:monospace;font-size:11px;font-weight:600}
+.rama-who{color:#888;font-size:11px}
+
+/* README */
+.readme{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:16px 18px;margin-bottom:20px;font-size:12px}
+.readme h3{font-size:13px;font-weight:600;margin-bottom:10px}
+.readme pre{background:#f5f4f0;border-radius:8px;padding:12px 14px;font-size:11.5px;line-height:1.75;overflow-x:auto;white-space:pre-wrap}
+
+/* REGLAS */
+.reglas{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:16px 18px;margin-bottom:20px}
+.reglas h3{font-size:13px;font-weight:600;margin-bottom:10px}
+.regla{display:flex;gap:10px;font-size:12px;color:#444;line-height:1.6;margin-bottom:6px}
+.regla:last-child{margin-bottom:0}
+
+footer{text-align:center;font-size:11px;color:#aaa;margin-top:8px}
+</style>
+</head>
+<body>
+
+<h1>Arquitectura 3 repositorios — Restaurante Java</h1>
+<p class="sub">Organización GitHub · Swing como "front" · Java puro sin red · JAR combinado como entregable</p>
+
+<!-- ══ 3 REPOS ══ -->
+<div class="repos">
+
+  <div class="repo r-back">
+    <div class="repo-header">
+      <div class="repo-org">restaurante-org /</div>
+      <div class="repo-name">restaurante-backend</div>
+      <div class="badge b-back">Integrantes 1 y 2</div>
+      <div class="repo-desc">Modelo, DAO, Service, Controller y ConexionDB. No tiene main ni Swing. Se empaqueta como .jar de librería.</div>
+    </div>
+    <div class="repo-body">
+      <div class="chip"><div class="chip-t">model/</div><div class="chip-s">Producto, Pedido, Mesa…</div></div>
+      <div class="chip"><div class="chip-t">dao/</div><div class="chip-s">JDBC + MySQL</div></div>
+      <div class="chip"><div class="chip-t">service/</div><div class="chip-s">lógica de negocio</div></div>
+      <div class="chip"><div class="chip-t">controller/</div><div class="chip-s">orquesta service ↔ view</div></div>
+      <div class="chip"><div class="chip-t">util/ConexionDB</div><div class="chip-s">Singleton JDBC</div></div>
+      <div class="chip"><div class="chip-t">schema.sql + seed.sql</div><div class="chip-s">en src/main/resources</div></div>
+    </div>
+  </div>
+
+  <div class="repo r-front">
+    <div class="repo-header">
+      <div class="repo-org">restaurante-org /</div>
+      <div class="repo-name">restaurante-frontend</div>
+      <div class="badge b-front">Integrantes 3, 4 y 5</div>
+      <div class="repo-desc">Todas las vistas Swing. Importa el backend como dependencia Maven local. No tiene lógica de negocio ni SQL.</div>
+    </div>
+    <div class="repo-body">
+      <div class="chip"><div class="chip-t">view/VentanaMenu</div><div class="chip-s">JList categorías</div></div>
+      <div class="chip"><div class="chip-t">view/VentanaPedido</div><div class="chip-s">JTable + total</div></div>
+      <div class="chip"><div class="chip-t">view/VentanaMesas</div><div class="chip-s">grilla de mesas</div></div>
+      <div class="chip"><div class="chip-t">view/VentanaABM</div><div class="chip-s">CRUD productos</div></div>
+      <div class="chip"><div class="chip-t">view/VentanaReportes</div><div class="chip-s">ventas + exportar PDF</div></div>
+      <div class="chip"><div class="chip-t">view/VentanaLogin</div><div class="chip-s">acceso al sistema</div></div>
+    </div>
+  </div>
+
+  <div class="repo r-pres">
+    <div class="repo-header">
+      <div class="repo-org">restaurante-org /</div>
+      <div class="repo-name">restaurante-app</div>
+      <div class="badge b-pres">Todo el equipo</div>
+      <div class="repo-desc">Repo de presentación. Solo tiene pom.xml, README y el JAR ejecutable final. No contiene código propio.</div>
+    </div>
+    <div class="repo-body">
+      <div class="chip"><div class="chip-t">pom.xml (aggregator)</div><div class="chip-s">une backend + frontend</div></div>
+      <div class="chip"><div class="chip-t">README.md</div><div class="chip-s">links a los 3 repos + docs</div></div>
+      <div class="chip"><div class="chip-t">releases/</div><div class="chip-s">restaurante-v1.0.jar ejecutable</div></div>
+      <div class="chip"><div class="chip-t">docs/</div><div class="chip-s">informe PDF + capturas</div></div>
+      <div class="chip"><div class="chip-t">GitHub Release</div><div class="chip-s">JAR descargable para cátedra</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ DIAGRAMA FLUJO ENTRE REPOS ══ -->
+<div class="graph-wrap">
+<svg viewBox="0 0 720 220" role="img">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- MySQL -->
+<rect x="20" y="80" width="110" height="60" rx="10" fill="#e8f5e9" stroke="#4caf50" stroke-width="1.2"/>
+<text font-family="monospace" font-size="11" font-weight="600" fill="#2e7d32" x="75" y="106" text-anchor="middle">MySQL</text>
+<text font-family="sans-serif" font-size="9.5" fill="#555" x="75" y="122" text-anchor="middle">schema.sql</text>
+<text font-family="sans-serif" font-size="9.5" fill="#555" x="75" y="134" text-anchor="middle">seed.sql</text>
+
+<!-- BACKEND -->
+<rect x="170" y="40" width="160" height="140" rx="10" fill="#faeeda" stroke="#ba7517" stroke-width="1.5"/>
+<text font-family="monospace" font-size="11" font-weight="700" fill="#633806" x="250" y="64" text-anchor="middle">restaurante-backend</text>
+<text font-family="sans-serif" font-size="10" fill="#7a4800" x="250" y="84" text-anchor="middle">model/ · dao/</text>
+<text font-family="sans-serif" font-size="10" fill="#7a4800" x="250" y="100" text-anchor="middle">service/ · controller/</text>
+<text font-family="sans-serif" font-size="10" fill="#7a4800" x="250" y="116" text-anchor="middle">util/ConexionDB</text>
+<rect x="186" y="128" width="128" height="36" rx="6" fill="#fce9b6" stroke="#ba7517" stroke-width="1"/>
+<text font-family="monospace" font-size="9.5" font-weight="600" fill="#633806" x="250" y="144" text-anchor="middle">mvn install</text>
+<text font-family="sans-serif" font-size="9" fill="#7a4800" x="250" y="158" text-anchor="middle">→ backend-1.0.jar en .m2</text>
+
+<!-- FRONTEND -->
+<rect x="380" y="40" width="160" height="140" rx="10" fill="#e1f5ee" stroke="#0f6e56" stroke-width="1.5"/>
+<text font-family="monospace" font-size="11" font-weight="700" fill="#0a4a39" x="460" y="64" text-anchor="middle">restaurante-frontend</text>
+<text font-family="sans-serif" font-size="10" fill="#0f5c46" x="460" y="84" text-anchor="middle">view/ (Swing)</text>
+<text font-family="sans-serif" font-size="10" fill="#0f5c46" x="460" y="100" text-anchor="middle">VentanaMenu/Pedido</text>
+<text font-family="sans-serif" font-size="10" fill="#0f5c46" x="460" y="116" text-anchor="middle">ABM · Reportes · Login</text>
+<rect x="394" y="128" width="132" height="36" rx="6" fill="#c2eadc" stroke="#0f6e56" stroke-width="1"/>
+<text font-family="monospace" font-size="9.5" font-weight="600" fill="#0a4a39" x="460" y="144" text-anchor="middle">dependency en pom.xml</text>
+<text font-family="sans-serif" font-size="9" fill="#0f5c46" x="460" y="158" text-anchor="middle">usa backend como .jar</text>
+
+<!-- APP PRESENTACION -->
+<rect x="580" y="60" width="120" height="100" rx="10" fill="#eeedfe" stroke="#534ab7" stroke-width="1.5"/>
+<text font-family="monospace" font-size="10" font-weight="700" fill="#3c3489" x="640" y="84" text-anchor="middle">restaurante-app</text>
+<text font-family="sans-serif" font-size="9.5" fill="#534ab7" x="640" y="104" text-anchor="middle">pom aggregator</text>
+<text font-family="sans-serif" font-size="9.5" fill="#534ab7" x="640" y="120" text-anchor="middle">README + links</text>
+<text font-family="sans-serif" font-size="9.5" fill="#534ab7" x="640" y="136" text-anchor="middle">JAR ejecutable</text>
+<text font-family="sans-serif" font-size="9.5" fill="#534ab7" x="640" y="150" text-anchor="middle">informe PDF</text>
+
+<!-- Flechas -->
+<!-- MySQL → backend -->
+<line x1="130" y1="110" x2="168" y2="110" stroke="#4caf50" stroke-width="1.5" marker-end="url(#ar)"/>
+<text font-family="sans-serif" font-size="9" fill="#4caf50" x="149" y="104" text-anchor="middle">JDBC</text>
+
+<!-- backend → frontend -->
+<line x1="330" y1="110" x2="378" y2="110" stroke="#ba7517" stroke-width="1.5" marker-end="url(#ar)"/>
+<text font-family="sans-serif" font-size="9" fill="#ba7517" x="354" y="104" text-anchor="middle">.jar local</text>
+
+<!-- frontend → app -->
+<line x1="540" y1="110" x2="578" y2="110" stroke="#0f6e56" stroke-width="1.5" marker-end="url(#ar)"/>
+<text font-family="sans-serif" font-size="9" fill="#0f6e56" x="559" y="104" text-anchor="middle">shade jar</text>
+
+<!-- label integrantes -->
+<text font-family="sans-serif" font-size="9" fill="#ba7517" x="250" y="196" text-anchor="middle">Integrantes 1 y 2</text>
+<text font-family="sans-serif" font-size="9" fill="#0f6e56" x="460" y="196" text-anchor="middle">Integrantes 3, 4 y 5</text>
+<text font-family="sans-serif" font-size="9" fill="#534ab7" x="640" y="172" text-anchor="middle">Todo el equipo</text>
+
+</svg>
+</div>
+
+<!-- ══ RAMAS POR REPO ══ -->
+<p class="section-title">Ramas por repositorio</p>
+<div class="ramas-grid">
+
+  <div class="rama-card">
+    <h4>🟡 restaurante-backend</h4>
+    <div class="rama-item"><div class="dot d-main"></div><div><div class="rama-name">main</div><div class="rama-who">solo releases estables</div></div></div>
+    <div class="rama-item"><div class="dot d-dev"></div><div><div class="rama-name">develop</div><div class="rama-who">integración continua</div></div></div>
+    <div class="rama-item"><div class="dot d-mod"></div><div><div class="rama-name">layer/model</div><div class="rama-who">Integrante 1 — POJOs + DB</div></div></div>
+    <div class="rama-item"><div class="dot d-dao"></div><div><div class="rama-name">layer/dao</div><div class="rama-who">Integrante 2 — JDBC DAO</div></div></div>
+    <div class="rama-item"><div class="dot d-svc"></div><div><div class="rama-name">layer/service-controller</div><div class="rama-who">Integrante 3 — lógica</div></div></div>
+  </div>
+
+  <div class="rama-card">
+    <h4>🟢 restaurante-frontend</h4>
+    <div class="rama-item"><div class="dot d-main"></div><div><div class="rama-name">main</div><div class="rama-who">solo releases estables</div></div></div>
+    <div class="rama-item"><div class="dot d-dev"></div><div><div class="rama-name">develop</div><div class="rama-who">integración continua</div></div></div>
+    <div class="rama-item"><div class="dot d-view"></div><div><div class="rama-name">layer/view</div><div class="rama-who">Integrante 4 — vistas cliente</div></div></div>
+    <div class="rama-item"><div class="dot d-adm"></div><div><div class="rama-name">layer/admin-reports</div><div class="rama-who">Integrante 5 — ABM + reportes</div></div></div>
+  </div>
+
+</div>
+
+<!-- ══ FLUJO DE INTEGRACIÓN ══ -->
+<p class="section-title">Cómo se integran los repos sin red</p>
+<div class="pasos">
+
+  <div class="paso">
+    <div class="paso-num">1</div>
+    <div class="paso-body">
+      <div class="paso-title">Backend define su groupId y versión en pom.xml</div>
+      <div class="paso-desc">
+        En <code>restaurante-backend/pom.xml</code> se pone <code>&lt;groupId&gt;com.restaurante&lt;/groupId&gt;</code>, <code>&lt;artifactId&gt;restaurante-backend&lt;/artifactId&gt;</code>, <code>&lt;version&gt;1.0&lt;/version&gt;</code>. Cuando alguien hace <code>mvn install</code>, Maven deposita el <code>.jar</code> en el repositorio local <code>~/.m2</code> de cada máquina.
+      </div>
+    </div>
+  </div>
+
+  <div class="paso">
+    <div class="paso-num">2</div>
+    <div class="paso-body">
+      <div class="paso-title">Frontend lo importa como dependencia Maven</div>
+      <div class="paso-desc">
+        En <code>restaurante-frontend/pom.xml</code> se agrega la dependencia al backend. Maven la resuelve desde el <code>~/.m2</code> local — no hace falta red ni servidor. Cada integrante del front solo necesita haber corrido <code>mvn install</code> en el repo de backend una vez.
+        <br><br>
+        <code>&lt;dependency&gt;<br>&nbsp;&nbsp;&lt;groupId&gt;com.restaurante&lt;/groupId&gt;<br>&nbsp;&nbsp;&lt;artifactId&gt;restaurante-backend&lt;/artifactId&gt;<br>&nbsp;&nbsp;&lt;version&gt;1.0&lt;/version&gt;<br>&lt;/dependency&gt;</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="paso">
+    <div class="paso-num">3</div>
+    <div class="paso-body">
+      <div class="paso-title">restaurante-app empaqueta todo con maven-shade-plugin</div>
+      <div class="paso-desc">
+        El tercer repo tiene un <code>pom.xml</code> que declara como dependencia al frontend (que ya carga al backend transitivamente). El <code>maven-shade-plugin</code> genera un único <code>uber-jar</code> con todo adentro — clases de backend, frontend, MySQL connector y recursos. Con <code>mvn package</code> se produce el <code>restaurante-v1.0.jar</code> ejecutable que se sube como GitHub Release.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ README ══ -->
+<div class="readme">
+  <h3>Estructura del README.md en restaurante-app</h3>
+  <pre>
+# Sistema de Restaurante — Java
+
+Proyecto universitario · Arquitectura tri-capa · Swing + Maven + MySQL
+
+## Repositorios
+
+| Capa | Repositorio | Responsables |
+|------|-------------|--------------|
+| Backend (model, dao, service, controller) | [restaurante-backend](https://github.com/restaurante-org/restaurante-backend) | Integrantes 1, 2 y 3 |
+| Frontend (vistas Swing) | [restaurante-frontend](https://github.com/restaurante-org/restaurante-frontend) | Integrantes 4 y 5 |
+| Presentación + entregable | [restaurante-app](https://github.com/restaurante-org/restaurante-app) | Todo el equipo |
+
+## Descarga y ejecución
+
+```bash
+java -jar releases/restaurante-v1.0.jar
+```
+
+## Requisitos
+- Java 17+
+- MySQL 8 corriendo localmente
+- Ejecutar schema.sql y seed.sql antes del primer arranque
+
+## Documentación
+- [Informe PDF](docs/informe.pdf)
+- [Diagrama ER](docs/diagrama-er.png)
+- [Diagrama de arquitectura](docs/arquitectura.png)
+  </pre>
+</div>
+
+<!-- ══ REGLAS ══ -->
+<div class="reglas">
+  <h3>Reglas clave para que los 3 repos convivan</h3>
+  <div class="regla"><span>🔒</span><span>Nadie pushea directo a <code>main</code> en ningún repo. Todo entra por PR con al menos 1 aprobación.</span></div>
+  <div class="regla"><span>📦</span><span>Cada vez que backend mergea algo a su <code>main</code>, los integrantes del frontend corren <code>mvn install</code> en el repo de backend para actualizar su <code>~/.m2</code>.</span></div>
+  <div class="regla"><span>🏷️</span><span>Backend versiona con tags: <code>v1.0</code>, <code>v1.1</code>. El frontend actualiza el número de versión en su <code>pom.xml</code> de forma explícita y consciente, no automática.</span></div>
+  <div class="regla"><span>🤝</span><span>Integrante 3 tiene acceso a ambos repos porque trabaja en <code>layer/service-controller</code> del backend pero coordina con el frontend. Es el punto de contacto entre ambos equipos.</span></div>
+  <div class="regla"><span>🚀</span><span>El repo <code>restaurante-app</code> solo se toca para releases. Nunca tiene ramas de feature ni de capa — solo <code>main</code>.</span></div>
+</div>
+
+<footer>Java puro · sin red entre procesos · Maven local como puente entre repos · GitHub Releases como entregable</footer>
+</body>
+</html>

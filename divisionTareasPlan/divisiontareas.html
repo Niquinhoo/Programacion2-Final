@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>División de tareas — Sistema Restaurante Java</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f4f0; color: #1a1a1a; padding: 28px 20px; }
+  h1 { font-size: 20px; font-weight: 500; text-align: center; margin-bottom: 4px; }
+  .sub { text-align: center; font-size: 13px; color: #666; margin-bottom: 24px; }
+  .bloque { border-radius: 12px; margin-bottom: 14px; overflow: hidden; border: 1px solid rgba(0,0,0,0.08); }
+  .bloque-header { padding: 14px 18px 10px; }
+  .bloque-num { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; opacity: .75; margin-bottom: 2px; }
+  .bloque-titulo { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+  .bloque-paquete { font-size: 12px; opacity: .7; font-family: monospace; }
+  .bloque-body { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px 14px; background: rgba(255,255,255,.45); }
+  .chip { border-radius: 8px; padding: 7px 12px; font-size: 12px; border: 1px solid rgba(0,0,0,0.1); min-width: 110px; }
+  .chip-title { font-weight: 500; font-size: 12px; }
+  .chip-sub { font-size: 11px; opacity: .75; margin-top: 1px; }
+  .arrow-row { text-align: center; font-size: 12px; color: #888; margin: -6px 0 8px; }
+
+  /* colores por integrante */
+  .b1 .bloque-header { background: #f1efe8; } .b1 .chip { background: #e8e6df; }
+  .b2 .bloque-header { background: #faeeda; } .b2 .chip { background: #fce9b6; }
+  .b3 .bloque-header { background: #faece7; } .b3 .chip { background: #f9d6cc; }
+  .b4 .bloque-header { background: #e1f5ee; } .b4 .chip { background: #c2eadc; }
+  .b5 .bloque-header { background: #eeedfe; } .b5 .chip { background: #d8d5f9; }
+
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 99px; margin-bottom: 4px; }
+  .b1 .badge { background: #d3d1c7; color: #444; }
+  .b2 .badge { background: #fac775; color: #633806; }
+  .b3 .badge { background: #f5c4b3; color: #993c1d; }
+  .b4 .badge { background: #9fe1cb; color: #0f6e56; }
+  .b5 .badge { background: #cecbf6; color: #3c3489; }
+
+  .bloqueante { font-size: 11px; font-weight: 600; color: #c03; margin-left: 8px; }
+  footer { text-align: center; font-size: 12px; color: #999; margin-top: 16px; }
+</style>
+</head>
+<body>
+<h1>División de trabajo — Sistema Restaurante Java</h1>
+<p class="sub">5 integrantes · Por capa · Swing + Maven + MySQL</p>
+
+<!-- ① -->
+<div class="bloque b1">
+  <div class="bloque-header">
+    <div class="badge">① PRIMERO — bloqueante</div>
+    <div class="bloque-titulo">Integrante 1 — Modelo de datos y base de datos <span class="bloqueante">⚠ el resto depende de esto</span></div>
+    <div class="bloque-paquete">model/ · util/ · schema.sql · seed.sql</div>
+  </div>
+  <div class="bloque-body">
+    <div class="chip"><div class="chip-title">Producto.java</div><div class="chip-sub">id, nombre, precio, stock</div></div>
+    <div class="chip"><div class="chip-title">Pedido.java</div><div class="chip-sub">id, mesa, estado, fecha</div></div>
+    <div class="chip"><div class="chip-title">DetallePedido.java</div><div class="chip-sub">cantidad, subtotal</div></div>
+    <div class="chip"><div class="chip-title">Mesa.java</div><div class="chip-sub">número, estado (libre/ocupada)</div></div>
+    <div class="chip"><div class="chip-title">Categoria.java</div><div class="chip-sub">id, nombre</div></div>
+    <div class="chip"><div class="chip-title">ConexionDB.java</div><div class="chip-sub">Singleton JDBC</div></div>
+    <div class="chip"><div class="chip-title">schema.sql</div><div class="chip-sub">tablas + foreign keys</div></div>
+    <div class="chip"><div class="chip-title">seed.sql</div><div class="chip-sub">datos de prueba</div></div>
+  </div>
+</div>
+
+<div class="arrow-row">↓ una vez listos los modelos y la BD, todos pueden arrancar en paralelo</div>
+
+<!-- ② -->
+<div class="bloque b2">
+  <div class="bloque-header">
+    <div class="badge">② SEGUNDO — bloqueante</div>
+    <div class="bloque-titulo">Integrante 2 — Capa DAO (todo el SQL) <span class="bloqueante">⚠ service depende de esto</span></div>
+    <div class="bloque-paquete">dao/ · Cada DAO usa ConexionDB del Integrante 1</div>
+  </div>
+  <div class="bloque-body">
+    <div class="chip"><div class="chip-title">PedidoDAO.java</div><div class="chip-sub">insertar, actualizar, listar</div></div>
+    <div class="chip"><div class="chip-title">ProductoDAO.java</div><div class="chip-sub">CRUD + buscar por categoría</div></div>
+    <div class="chip"><div class="chip-title">MesaDAO.java</div><div class="chip-sub">cambiar estado, listar</div></div>
+    <div class="chip"><div class="chip-title">CategoriaDAO.java</div><div class="chip-sub">CRUD simple</div></div>
+    <div class="chip"><div class="chip-title">DetallePedidoDAO.java</div><div class="chip-sub">agregar, eliminar línea</div></div>
+    <div class="chip"><div class="chip-title">ReporteDAO.java</div><div class="chip-sub">consultas de ventas y totales</div></div>
+  </div>
+</div>
+
+<div class="arrow-row">↓ a partir de acá ③ ④ ⑤ arrancan en paralelo</div>
+
+<!-- ③ -->
+<div class="bloque b3">
+  <div class="bloque-header">
+    <div class="badge">③ EN PARALELO</div>
+    <div class="bloque-titulo">Integrante 3 — Service y Controller (lógica de negocio)</div>
+    <div class="bloque-paquete">service/ · controller/ · Conecta DAO con las vistas</div>
+  </div>
+  <div class="bloque-body">
+    <div class="chip"><div class="chip-title">PedidoService.java</div><div class="chip-sub">calcularTotal, cerrarPedido</div></div>
+    <div class="chip"><div class="chip-title">ProductoService.java</div><div class="chip-sub">validaciones ABM</div></div>
+    <div class="chip"><div class="chip-title">MesaService.java</div><div class="chip-sub">asignar, liberar mesa</div></div>
+    <div class="chip"><div class="chip-title">ReporteService.java</div><div class="chip-sub">armar datos para vista</div></div>
+    <div class="chip"><div class="chip-title">PedidoController.java</div><div class="chip-sub">ActionListeners pedido</div></div>
+    <div class="chip"><div class="chip-title">ProductoController.java</div><div class="chip-sub">ActionListeners productos</div></div>
+    <div class="chip"><div class="chip-title">MesaController.java</div><div class="chip-sub">ActionListeners mesas</div></div>
+  </div>
+</div>
+
+<!-- ④ -->
+<div class="bloque b4">
+  <div class="bloque-header">
+    <div class="badge">④ EN PARALELO</div>
+    <div class="bloque-titulo">Integrante 4 — Vistas Swing (pantallas del cliente/mozo)</div>
+    <div class="bloque-paquete">view/ · JFrame, JPanel, JTable, JDialog</div>
+  </div>
+  <div class="bloque-body">
+    <div class="chip"><div class="chip-title">VentanaLogin.java</div><div class="chip-sub">JTextField + JPasswordField</div></div>
+    <div class="chip"><div class="chip-title">VentanaMesas.java</div><div class="chip-sub">grilla de JButton por mesa</div></div>
+    <div class="chip"><div class="chip-title">VentanaMenu.java</div><div class="chip-sub">JList por categorías</div></div>
+    <div class="chip"><div class="chip-title">VentanaPedido.java</div><div class="chip-sub">JTable + total dinámico</div></div>
+    <div class="chip"><div class="chip-title">Main.java</div><div class="chip-sub">entry point, arranca la app</div></div>
+  </div>
+</div>
+
+<!-- ⑤ -->
+<div class="bloque b5">
+  <div class="bloque-header">
+    <div class="badge">⑤ EN PARALELO</div>
+    <div class="bloque-titulo">Integrante 5 — ABM, reportes, informe PDF y despliegue</div>
+    <div class="bloque-paquete">view/ (admin) · pom.xml · JAR ejecutable · Informe</div>
+  </div>
+  <div class="bloque-body">
+    <div class="chip"><div class="chip-title">VentanaABM.java</div><div class="chip-sub">crear/editar/borrar productos</div></div>
+    <div class="chip"><div class="chip-title">VentanaReportes.java</div><div class="chip-sub">ventas, totales, filtros</div></div>
+    <div class="chip"><div class="chip-title">Exportar PDF</div><div class="chip-sub">iText o Apache PDFBox</div></div>
+    <div class="chip"><div class="chip-title">pom.xml</div><div class="chip-sub">dependencias + shade plugin</div></div>
+    <div class="chip"><div class="chip-title">JAR ejecutable</div><div class="chip-sub">maven-shade-plugin</div></div>
+    <div class="chip"><div class="chip-title">Informe del proyecto</div><div class="chip-sub">PDF entregable cátedra</div></div>
+  </div>
+</div>
+
+<footer>① y ② son bloqueantes — arrancarlos en la primera semana desbloquea al resto del equipo</footer>
+</body>
+</html>

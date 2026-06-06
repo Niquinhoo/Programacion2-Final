@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arquitectura de ramas GitHub — Restaurante Java</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f4f0;color:#1a1a1a;padding:28px 16px;max-width:900px;margin:0 auto}
+h1{font-size:19px;font-weight:500;text-align:center;margin-bottom:4px}
+.sub{text-align:center;font-size:12px;color:#777;margin-bottom:28px}
+
+/* GRAPH */
+.graph-wrap{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:20px 16px 28px;margin-bottom:24px;overflow-x:auto}
+svg{display:block;width:100%;min-width:640px}
+
+/* TABLA */
+.tabla{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}
+.tabla th{text-align:left;padding:10px 12px;font-weight:500;font-size:12px;letter-spacing:.04em;border-bottom:2px solid #e0ddd5;color:#555}
+.tabla td{padding:9px 12px;border-bottom:1px solid #eeede7;vertical-align:top}
+.tabla tr:last-child td{border-bottom:none}
+.rama{font-family:monospace;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 6px;border-radius:99px;margin-right:3px;margin-bottom:2px}
+
+/* Colores ramas */
+.c-main   {background:#1a1a1a;color:#fff}
+.c-dev    {background:#3b3bff;color:#fff}
+.c-mod    {background:#888780;color:#fff}
+.c-dao    {background:#ba7517;color:#fff}
+.c-svc    {background:#993c1d;color:#fff}
+.c-view   {background:#0f6e56;color:#fff}
+.c-adm    {background:#534ab7;color:#fff}
+.c-feat   {background:#555;color:#fff}
+.c-hotfix {background:#a32d2d;color:#fff}
+
+/* tag variantes */
+.t-main  {background:#d3d1c7;color:#2c2c2a}
+.t-dev   {background:#c5c5ff;color:#1a1aaa}
+.t-mod   {background:#d3d1c7;color:#444}
+.t-dao   {background:#fac775;color:#633806}
+.t-svc   {background:#f5c4b3;color:#993c1d}
+.t-view  {background:#9fe1cb;color:#0f6e56}
+.t-adm   {background:#cecbf6;color:#3c3489}
+.t-feat  {background:#ddd;color:#444}
+
+/* flujo */
+.flujo{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.paso{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:12px 14px}
+.paso-num{font-size:18px;font-weight:500;min-width:28px;color:#aaa}
+.paso-body{}
+.paso-title{font-weight:500;font-size:14px;margin-bottom:3px}
+.paso-desc{font-size:12px;color:#666;line-height:1.6}
+code{font-family:monospace;font-size:12px;background:#f0efe9;padding:1px 5px;border-radius:4px}
+
+/* reglas */
+.reglas{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:16px 18px;margin-bottom:24px}
+.reglas h3{font-size:14px;font-weight:500;margin-bottom:10px}
+.regla{display:flex;gap:10px;font-size:12px;color:#444;line-height:1.6;margin-bottom:6px}
+.regla:last-child{margin-bottom:0}
+.regla-icon{font-size:14px;min-width:18px}
+
+footer{text-align:center;font-size:12px;color:#999;margin-top:8px}
+</style>
+</head>
+<body>
+
+<h1>Arquitectura de ramas GitHub — Restaurante Java</h1>
+<p class="sub">5 integrantes · Estrategia GitFlow adaptada · Capas heterogéneas e integración controlada</p>
+
+<!-- ══ GRAFO VISUAL ══ -->
+<div class="graph-wrap">
+<svg viewBox="0 0 820 420" role="img">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- ── Líneas de tiempo (fondo) ── -->
+<!-- main -->
+<line x1="40" y1="40" x2="780" y2="40" stroke="#1a1a1a" stroke-width="2.5" opacity=".15"/>
+<!-- develop -->
+<line x1="40" y1="90" x2="780" y2="90" stroke="#3b3bff" stroke-width="2" opacity=".15"/>
+<!-- layer/model -->
+<line x1="40" y1="150" x2="780" y2="150" stroke="#888780" stroke-width="1.5" opacity=".18"/>
+<!-- layer/dao -->
+<line x1="40" y1="210" x2="780" y2="210" stroke="#ba7517" stroke-width="1.5" opacity=".18"/>
+<!-- layer/service-controller -->
+<line x1="40" y1="270" x2="780" y2="270" stroke="#993c1d" stroke-width="1.5" opacity=".18"/>
+<!-- layer/view -->
+<line x1="40" y1="330" x2="780" y2="330" stroke="#0f6e56" stroke-width="1.5" opacity=".18"/>
+<!-- layer/admin-reports -->
+<line x1="40" y1="390" x2="780" y2="390" stroke="#534ab7" stroke-width="1.5" opacity=".18"/>
+
+<!-- ── Labels de ramas ── -->
+<text font-family="monospace" font-size="11" font-weight="600" fill="#1a1a1a" x="40" y="32">main</text>
+<text font-family="monospace" font-size="11" font-weight="600" fill="#3b3bff" x="40" y="82">develop</text>
+<text font-family="monospace" font-size="10" fill="#666" x="40" y="143">layer/model</text>
+<text font-family="monospace" font-size="10" fill="#888" x="40" y="203">layer/dao</text>
+<text font-family="monospace" font-size="10" fill="#888" x="40" y="263">layer/service-controller</text>
+<text font-family="monospace" font-size="10" fill="#888" x="40" y="323">layer/view</text>
+<text font-family="monospace" font-size="10" fill="#888" x="40" y="383">layer/admin-reports</text>
+
+<!-- ── COMMITS ── -->
+
+<!-- SEMANA 1: model + base -->
+<!-- main commit inicial -->
+<circle cx="200" cy="40" r="7" fill="#1a1a1a"/>
+<text font-family="monospace" font-size="9" fill="#555" x="200" y="20" text-anchor="middle">v0.1 init</text>
+
+<!-- develop branch from main -->
+<path d="M200 40 Q200 65 200 90" fill="none" stroke="#3b3bff" stroke-width="1.5" marker-end="url(#ar)" stroke-dasharray="4 2"/>
+<circle cx="200" cy="90" r="6" fill="#3b3bff"/>
+
+<!-- layer/model branch from develop -->
+<path d="M200 90 Q200 120 200 150" fill="none" stroke="#888780" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#ar)"/>
+<circle cx="200" cy="150" r="5.5" fill="#888780"/>
+<text font-family="monospace" font-size="9" fill="#666" x="200" y="168" text-anchor="middle">POJOs</text>
+
+<!-- model commits -->
+<circle cx="280" cy="150" r="5" fill="#888780"/>
+<text font-family="monospace" font-size="9" fill="#666" x="280" y="168" text-anchor="middle">ConexionDB</text>
+<circle cx="360" cy="150" r="5" fill="#888780"/>
+<text font-family="monospace" font-size="9" fill="#666" x="360" y="168" text-anchor="middle">schema.sql</text>
+
+<!-- merge model → develop (semana 1) -->
+<path d="M360 150 Q360 120 400 90" fill="none" stroke="#888780" stroke-width="1.5" marker-end="url(#ar)"/>
+<circle cx="400" cy="90" r="6" fill="#3b3bff" stroke="#888780" stroke-width="2"/>
+<text font-family="monospace" font-size="9" fill="#3b3bff" x="400" y="78" text-anchor="middle">merge model</text>
+
+<!-- ── SEMANA 2: dao desde develop actualizado ── -->
+<!-- layer/dao branch desde develop post-merge -->
+<path d="M400 90 Q400 150 400 210" fill="none" stroke="#ba7517" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#ar)"/>
+<circle cx="400" cy="210" r="5.5" fill="#ba7517"/>
+<text font-family="monospace" font-size="9" fill="#777" x="400" y="228" text-anchor="middle">PedidoDAO</text>
+
+<circle cx="480" cy="210" r="5" fill="#ba7517"/>
+<text font-family="monospace" font-size="9" fill="#777" x="480" y="228" text-anchor="middle">ProductoDAO</text>
+
+<circle cx="560" cy="210" r="5" fill="#ba7517"/>
+<text font-family="monospace" font-size="9" fill="#777" x="560" y="228" text-anchor="middle">ReporteDAO</text>
+
+<!-- merge dao → develop -->
+<path d="M560 210 Q580 150 600 90" fill="none" stroke="#ba7517" stroke-width="1.5" marker-end="url(#ar)"/>
+<circle cx="600" cy="90" r="6" fill="#3b3bff" stroke="#ba7517" stroke-width="2"/>
+<text font-family="monospace" font-size="9" fill="#3b3bff" x="600" y="78" text-anchor="middle">merge dao</text>
+
+<!-- ── SEMANA 3: service, view, admin EN PARALELO desde develop ── -->
+
+<!-- layer/service-controller -->
+<path d="M600 90 Q600 180 600 270" fill="none" stroke="#993c1d" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#ar)"/>
+<circle cx="600" cy="270" r="5.5" fill="#993c1d"/>
+<text font-family="monospace" font-size="9" fill="#777" x="600" y="288" text-anchor="middle">Services</text>
+<circle cx="680" cy="270" r="5" fill="#993c1d"/>
+<text font-family="monospace" font-size="9" fill="#777" x="680" y="288" text-anchor="middle">Controllers</text>
+
+<!-- layer/view -->
+<path d="M600 90 Q605 210 610 330" fill="none" stroke="#0f6e56" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#ar)"/>
+<circle cx="610" cy="330" r="5.5" fill="#0f6e56"/>
+<text font-family="monospace" font-size="9" fill="#777" x="610" y="348" text-anchor="middle">VentanaMenu</text>
+<circle cx="690" cy="330" r="5" fill="#0f6e56"/>
+<text font-family="monospace" font-size="9" fill="#777" x="690" y="348" text-anchor="middle">VentanaPedido</text>
+
+<!-- layer/admin-reports -->
+<path d="M600 90 Q610 240 620 390" fill="none" stroke="#534ab7" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#ar)"/>
+<circle cx="620" cy="390" r="5.5" fill="#534ab7"/>
+<text font-family="monospace" font-size="9" fill="#777" x="620" y="408" text-anchor="middle">VentanaABM</text>
+<circle cx="700" cy="390" r="5" fill="#534ab7"/>
+<text font-family="monospace" font-size="9" fill="#777" x="700" y="408" text-anchor="middle">Reportes+PDF</text>
+
+<!-- merges al develop final -->
+<path d="M680 270 Q700 180 730 90" fill="none" stroke="#993c1d" stroke-width="1.5" marker-end="url(#ar)"/>
+<path d="M690 330 Q705 210 730 90" fill="none" stroke="#0f6e56" stroke-width="1.5" marker-end="url(#ar)"/>
+<path d="M700 390 Q710 240 730 90" fill="none" stroke="#534ab7" stroke-width="1.5" marker-end="url(#ar)"/>
+
+<circle cx="730" cy="90" r="7" fill="#3b3bff" stroke="#1a1a1a" stroke-width="2"/>
+<text font-family="monospace" font-size="9" fill="#3b3bff" x="730" y="78" text-anchor="middle">release</text>
+
+<!-- merge develop → main (release) -->
+<path d="M730 90 Q730 65 730 40" fill="none" stroke="#1a1a1a" stroke-width="2" marker-end="url(#ar)"/>
+<circle cx="730" cy="40" r="8" fill="#1a1a1a"/>
+<text font-family="monospace" font-size="9" fill="#fff" x="730" y="43" text-anchor="middle" dominant-baseline="central">v1.0</text>
+
+</svg>
+</div>
+
+<!-- ══ TABLA DE RAMAS ══ -->
+<table class="tabla">
+  <thead>
+    <tr>
+      <th>Rama</th>
+      <th>Responsable</th>
+      <th>Cuándo existe</th>
+      <th>Propósito</th>
+      <th>Merge hacia</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="rama c-main">main</span></td>
+      <td><span class="tag t-main">Todo el equipo</span></td>
+      <td>Siempre</td>
+      <td>Solo código funcional y entregable. Nadie pushea directo acá.</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><span class="rama c-dev">develop</span></td>
+      <td><span class="tag t-main">Todo el equipo</span></td>
+      <td>Siempre</td>
+      <td>Integración continua. Todas las capas confluyen acá antes de ir a main.</td>
+      <td><span class="rama c-main">main</span></td>
+    </tr>
+    <tr>
+      <td><span class="rama c-mod">layer/model</span></td>
+      <td><span class="tag t-mod">Integrante 1</span></td>
+      <td>Semana 1</td>
+      <td>POJOs, ConexionDB Singleton, schema.sql, seed.sql, Validaciones.</td>
+      <td><span class="rama c-dev">develop</span></td>
+    </tr>
+    <tr>
+      <td><span class="rama c-dao">layer/dao</span></td>
+      <td><span class="tag t-dao">Integrante 2</span></td>
+      <td>Semana 2</td>
+      <td>Todos los DAO con JDBC. Depende de layer/model mergeado en develop.</td>
+      <td><span class="rama c-dev">develop</span></td>
+    </tr>
+    <tr>
+      <td><span class="rama c-svc">layer/service-controller</span></td>
+      <td><span class="tag t-svc">Integrante 3</span></td>
+      <td>Semana 3+</td>
+      <td>Services con lógica de negocio y Controllers con ActionListeners.</td>
+      <td><span class="rama c-dev">develop</span></td>
+    </tr>
+    <tr>
+      <td><span class="rama c-view">layer/view</span></td>
+      <td><span class="tag t-view">Integrante 4</span></td>
+      <td>Semana 3+</td>
+      <td>Vistas Swing del cliente/mozo: menú, pedido, mesas, login.</td>
+      <td><span class="rama c-dev">develop</span></td>
+    </tr>
+    <tr>
+      <td><span class="rama c-adm">layer/admin-reports</span></td>
+      <td><span class="tag t-adm">Integrante 5</span></td>
+      <td>Semana 3+</td>
+      <td>ABM de productos, reportes, exportación PDF, pom.xml y JAR.</td>
+      <td><span class="rama c-dev">develop</span></td>
+    </tr>
+    <tr>
+      <td><span class="rama c-hotfix">hotfix/nombre</span></td>
+      <td><span class="tag t-main">Quien lo detecta</span></td>
+      <td>Si surge un bug</td>
+      <td>Corrección urgente. Sale de main, vuelve a main y develop.</td>
+      <td><span class="rama c-main">main</span> + <span class="rama c-dev">develop</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ══ FLUJO DE TRABAJO ══ -->
+<div class="flujo">
+
+  <div class="paso">
+    <div class="paso-num">1</div>
+    <div class="paso-body">
+      <div class="paso-title">Crear el repo y las ramas base</div>
+      <div class="paso-desc">
+        Un integrante crea el repo en GitHub, hace el commit inicial con el <code>pom.xml</code> y el <code>.gitignore</code>, y crea <code>develop</code> desde <code>main</code>. Todos clonan y crean su rama de capa: <code>git checkout -b layer/model develop</code>.
+      </div>
+    </div>
+  </div>
+
+  <div class="paso">
+    <div class="paso-num">2</div>
+    <div class="paso-body">
+      <div class="paso-title">Integrante 1 termina layer/model y hace Pull Request a develop</div>
+      <div class="paso-desc">
+        Cuando los POJOs, <code>ConexionDB</code> y el <code>schema.sql</code> están listos, abre un PR de <code>layer/model</code> → <code>develop</code>. Al menos un integrante revisa y aprueba. Después del merge, todos hacen <code>git pull origin develop</code> para sincronizarse.
+      </div>
+    </div>
+  </div>
+
+  <div class="paso">
+    <div class="paso-num">3</div>
+    <div class="paso-body">
+      <div class="paso-title">Integrante 2 termina layer/dao y hace PR a develop</div>
+      <div class="paso-desc">
+        Mismo flujo. Antes de arrancar, el Integrante 2 hace <code>git rebase develop</code> en su rama para tener los modelos frescos. Al mergear, los integrantes 3, 4 y 5 también hacen pull de develop para tener los DAOs disponibles.
+      </div>
+    </div>
+  </div>
+
+  <div class="paso">
+    <div class="paso-num">4</div>
+    <div class="paso-body">
+      <div class="paso-title">Integrantes 3, 4 y 5 trabajan en paralelo</div>
+      <div class="paso-desc">
+        Cada uno trabaja en su rama independiente. Si necesitan actualizar con cambios de develop: <code>git rebase origin/develop</code>. Cuando terminan un bloque funcional (no necesariamente todo), abren un PR parcial a develop. Así se integra de a poco y se detectan conflictos temprano.
+      </div>
+    </div>
+  </div>
+
+  <div class="paso">
+    <div class="paso-num">5</div>
+    <div class="paso-body">
+      <div class="paso-title">Release: merge develop → main con tag de versión</div>
+      <div class="paso-desc">
+        Cuando la app funciona end-to-end en <code>develop</code>, se hace el merge final a <code>main</code> y se crea el tag: <code>git tag v1.0 -m "Entrega final"</code>. El JAR ejecutable se genera con <code>mvn package</code> y se sube como Release en GitHub.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ REGLAS DEL EQUIPO ══ -->
+<div class="reglas">
+  <h3>Reglas que hacen funcionar la arquitectura</h3>
+  <div class="regla"><span class="regla-icon">🚫</span><span>Nadie pushea directo a <code>main</code> ni a <code>develop</code>. Todo entra por Pull Request.</span></div>
+  <div class="regla"><span class="regla-icon">✅</span><span>Cada PR necesita al menos 1 aprobación de otro integrante antes de mergearse.</span></div>
+  <div class="regla"><span class="regla-icon">🔄</span><span>Sincronizar con develop frecuentemente: <code>git rebase origin/develop</code> en la rama propia evita conflictos grandes al final.</span></div>
+  <div class="regla"><span class="regla-icon">📝</span><span>Commits descriptivos en español o inglés, consistentes: <code>feat: agregar PedidoDAO con insert y listar</code>, <code>fix: calcularTotal con productos eliminados</code>.</span></div>
+  <div class="regla"><span class="regla-icon">⚠️</span><span>Si hay un bug crítico en main, se crea <code>hotfix/nombre</code> desde main, se corrige, y se mergea a <strong>main y a develop</strong> para que nadie trabaje sobre el bug.</span></div>
+  <div class="regla"><span class="regla-icon">🏷️</span><span>Al final de cada semana, etiquetar el estado de develop: <code>git tag semana-1</code>. Sirve para mostrar progreso en la presentación.</span></div>
+</div>
+
+<footer>Estrategia basada en GitFlow · cada rama de capa es independiente y mergea solo a develop · main siempre estable</footer>
+</body>
+</html>
