@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,6 +25,10 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.restaurant.backend.dao.ProductoDAOImpl;
+import com.restaurant.backend.model.Producto;
+import java.util.List;
+
 public class GUI {
     private static final Color BACKGROUND = new Color(245, 244, 240);
     private static final Color CARD = Color.WHITE;
@@ -32,6 +37,14 @@ public class GUI {
     private static final Color ACCENT = new Color(15, 110, 86);
 
     public static void main(String[] args) {
+        // borrar 
+        ProductoDAOImpl pDao = new ProductoDAOImpl();
+        List<Producto> lista = pDao.GetProductos();
+        
+        for (Producto p : lista) {
+            System.out.println(p.getNombre() +" $"+ p.getPrecio());
+        }
+
         SwingUtilities.invokeLater(GUI::crearVentana);
     }
 

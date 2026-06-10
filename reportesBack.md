@@ -13,29 +13,23 @@
 
 ---
 
-## 2026-06-10
+## 2026-06-10 - 14:30
 
-### Configuración
+### Refactoring
 
-- Se configuró Maven con la versión 9.1.0 de `mysql-connector-j` para conexión a BD.
-- Se agregó JUnit Jupiter 5.10.1 para pruebas unitarias.
-- Se configuró el compilador de Maven para Java 17.
+- Se refactorizó `DatabaseConnection.java` para implementar patrón Singleton con `ConexionDB`.
+- Se eliminó la carga estática de propiedades y se centralizó la conexión en la clase `ConexionDB`.
+- Se simplificó el método `getConnection()` para delegar al singleton.
 
-###  Acceso a datos (DAO)
+### Implementación
 
-- Se creó `DatabaseConnection.java` con carga automática de propiedades desde `db.properties`.
-- Se implementó método `getConnection()` para obtener conexiones a la base de datos.
-- Se agregó manejo de excepciones para errores de conexión.
-
-### Testing
-
-- Se implementó una prueba manual de conexión desde la capa GUI
-- Se implementó verificación de estado de conexión exitosa.
+- Se completó la implementación de `ProductoDAOImpl.java`.
+- Se agregó el método `GetProductos()` que consulta todos los productos de la base de datos.
+- Se mapean correctamente los resultados del ResultSet al modelo `Producto`.
 
 ### Archivos modificados
 
-- `Backend/pom.xml`
 - `Backend/src/main/java/com/restaurant/backend/dao/DatabaseConnection.java`
-- `GUI/src/main/java/com/restaurant/gui/GUI.java`
+- `Backend/src/main/java/com/restaurant/backend/dao/ProductoDAOImpl.java`
 
 ---
