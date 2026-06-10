@@ -39,7 +39,7 @@ public class GUI {
     public static void main(String[] args) {
         // borrar 
         ProductoDAOImpl pDao = new ProductoDAOImpl();
-        List<Producto> lista = pDao.GetProductos();
+        List<Producto> lista = pDao.getProductos();
         
         for (Producto p : lista) {
             System.out.println(p.getNombre() +" $"+ p.getPrecio());

@@ -31,7 +31,7 @@ public class ProductoDAOImpl implements ProductoDAO {
         p.setNombre(respuesta.getString("nombre"));
         p.setDescripcion(respuesta.getString("descripcion"));
         p.setPrecio(respuesta.getBigDecimal("precio"));
-        p.setCategoria(null);
+        p.setCategoria(null); 
 
         lista.add(p);
       }
