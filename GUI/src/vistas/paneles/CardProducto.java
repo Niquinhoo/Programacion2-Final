@@ -42,7 +42,7 @@ public class CardProducto extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Producto10 = new javax.swing.JPanel();
+        Producto = new javax.swing.JPanel();
         lblNombre = new javax.swing.JLabel();
         btnAnadir = new javax.swing.JButton();
         lblPrecio = new javax.swing.JLabel();
@@ -50,9 +50,9 @@ public class CardProducto extends javax.swing.JPanel {
         setBackground(new java.awt.Color(56, 40, 26));
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        Producto10.setBackground(new java.awt.Color(56, 40, 26));
-        Producto10.setForeground(new java.awt.Color(60, 63, 65));
-        Producto10.setPreferredSize(new java.awt.Dimension(117, 124));
+        Producto.setBackground(new java.awt.Color(56, 40, 26));
+        Producto.setForeground(new java.awt.Color(60, 63, 65));
+        Producto.setPreferredSize(new java.awt.Dimension(117, 124));
 
         lblNombre.setForeground(new java.awt.Color(255, 255, 255));
         lblNombre.setText("Producto1");
@@ -66,28 +66,28 @@ public class CardProducto extends javax.swing.JPanel {
         lblPrecio.setForeground(new java.awt.Color(255, 255, 255));
         lblPrecio.setText("$1000");
 
-        javax.swing.GroupLayout Producto10Layout = new javax.swing.GroupLayout(Producto10);
-        Producto10.setLayout(Producto10Layout);
-        Producto10Layout.setHorizontalGroup(
-            Producto10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Producto10Layout.createSequentialGroup()
+        javax.swing.GroupLayout ProductoLayout = new javax.swing.GroupLayout(Producto);
+        Producto.setLayout(ProductoLayout);
+        ProductoLayout.setHorizontalGroup(
+            ProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ProductoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblNombre)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Producto10Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductoLayout.createSequentialGroup()
                 .addContainerGap(27, Short.MAX_VALUE)
                 .addComponent(lblPrecio)
                 .addGap(18, 18, 18)
                 .addComponent(btnAnadir, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-        Producto10Layout.setVerticalGroup(
-            Producto10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Producto10Layout.createSequentialGroup()
+        ProductoLayout.setVerticalGroup(
+            ProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProductoLayout.createSequentialGroup()
                 .addContainerGap(73, Short.MAX_VALUE)
                 .addComponent(lblNombre)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(Producto10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(ProductoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAnadir, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblPrecio))
                 .addContainerGap())
@@ -97,11 +97,11 @@ public class CardProducto extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Producto10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Producto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Producto10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Producto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -116,7 +116,7 @@ public class CardProducto extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel Producto10;
+    private javax.swing.JPanel Producto;
     private javax.swing.JButton btnAnadir;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPrecio;

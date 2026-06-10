@@ -26,7 +26,7 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
     
     public void mostrarMesa(String nombreMesa) {
 
-    lblMesa.setText(nombreMesa);
+    EstadoVar.setText(nombreMesa);
 
     actualizarBotones(nombreMesa);
 }
@@ -82,10 +82,10 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
     jTable1.setForeground(Color.WHITE);
     jTable1.setBackground(new Color(36, 30, 26));
 
-    jScrollPane2.setBackground(
+    ScrollReservas.setBackground(
             new Color(36, 30, 26));
 
-    jScrollPane2.getViewport().setBackground(
+    ScrollReservas.getViewport().setBackground(
             new Color(36, 30, 26));
 }
     
@@ -102,41 +102,41 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        lblMesa = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        DetallesMesa = new javax.swing.JPanel();
+        InfoMesa = new javax.swing.JPanel();
+        InfoTxt = new javax.swing.JLabel();
+        EstadoTxt = new javax.swing.JLabel();
+        EstadoVar = new javax.swing.JLabel();
+        ScrollReservas = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jPanel18 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
+        AccionesMesa = new javax.swing.JPanel();
+        AccionesTxt = new javax.swing.JLabel();
         btnOcupar = new javax.swing.JButton();
         btnLiberar = new javax.swing.JButton();
         btnReservar = new javax.swing.JButton();
         btnCancelarReserva = new javax.swing.JButton();
 
-        jPanel1.setBackground(new java.awt.Color(53, 44, 38));
+        DetallesMesa.setBackground(new java.awt.Color(53, 44, 38));
 
-        jPanel2.setBackground(new java.awt.Color(53, 44, 38));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        InfoMesa.setBackground(new java.awt.Color(53, 44, 38));
+        InfoMesa.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Información");
+        InfoTxt.setBackground(new java.awt.Color(255, 255, 255));
+        InfoTxt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        InfoTxt.setForeground(new java.awt.Color(255, 255, 255));
+        InfoTxt.setText("Información");
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Estado:");
+        EstadoTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        EstadoTxt.setForeground(new java.awt.Color(255, 255, 255));
+        EstadoTxt.setText("Estado:");
 
-        lblMesa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblMesa.setForeground(new java.awt.Color(255, 255, 255));
-        lblMesa.setText("EstadoMesa");
+        EstadoVar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        EstadoVar.setForeground(new java.awt.Color(255, 255, 255));
+        EstadoVar.setText("EstadoMesa");
 
-        jScrollPane2.setBackground(new java.awt.Color(53, 44, 38));
-        jScrollPane2.setBorder(null);
-        jScrollPane2.setForeground(new java.awt.Color(53, 44, 38));
+        ScrollReservas.setBackground(new java.awt.Color(53, 44, 38));
+        ScrollReservas.setBorder(null);
+        ScrollReservas.setForeground(new java.awt.Color(53, 44, 38));
 
         jTable1.setBackground(new java.awt.Color(53, 44, 38));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -150,46 +150,46 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
                 "Cliente ", "Fecha", "Hora", "Seña", "Pers."
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        ScrollReservas.setViewportView(jTable1);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout InfoMesaLayout = new javax.swing.GroupLayout(InfoMesa);
+        InfoMesa.setLayout(InfoMesaLayout);
+        InfoMesaLayout.setHorizontalGroup(
+            InfoMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(InfoMesaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(InfoMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ScrollReservas)
+                    .addGroup(InfoMesaLayout.createSequentialGroup()
+                        .addGroup(InfoMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(InfoMesaLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addComponent(jLabel2)
+                                .addComponent(EstadoTxt)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblMesa))
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(EstadoVar))
+                            .addComponent(InfoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        InfoMesaLayout.setVerticalGroup(
+            InfoMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(InfoMesaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(InfoTxt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(lblMesa))
+                .addGroup(InfoMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(EstadoTxt)
+                    .addComponent(EstadoVar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addComponent(ScrollReservas, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jPanel18.setBackground(new java.awt.Color(53, 44, 38));
+        AccionesMesa.setBackground(new java.awt.Color(53, 44, 38));
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("Acciones");
+        AccionesTxt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        AccionesTxt.setForeground(new java.awt.Color(255, 255, 255));
+        AccionesTxt.setText("Acciones");
 
         btnOcupar.setBackground(new java.awt.Color(255, 0, 0));
         btnOcupar.setText("Ocupar");
@@ -203,28 +203,28 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
         btnCancelarReserva.setBackground(new java.awt.Color(255, 0, 0));
         btnCancelarReserva.setText("Cancelar Reserva");
 
-        javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
-        jPanel18.setLayout(jPanel18Layout);
-        jPanel18Layout.setHorizontalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel18Layout.createSequentialGroup()
+        javax.swing.GroupLayout AccionesMesaLayout = new javax.swing.GroupLayout(AccionesMesa);
+        AccionesMesa.setLayout(AccionesMesaLayout);
+        AccionesMesaLayout.setHorizontalGroup(
+            AccionesMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AccionesMesaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addGroup(jPanel18Layout.createSequentialGroup()
+                .addGroup(AccionesMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(AccionesTxt)
+                    .addGroup(AccionesMesaLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(AccionesMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnOcupar)
                             .addComponent(btnLiberar)
                             .addComponent(btnReservar)
                             .addComponent(btnCancelarReserva))))
                 .addContainerGap(210, Short.MAX_VALUE))
         );
-        jPanel18Layout.setVerticalGroup(
-            jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel18Layout.createSequentialGroup()
+        AccionesMesaLayout.setVerticalGroup(
+            AccionesMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AccionesMesaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel6)
+                .addComponent(AccionesTxt)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLiberar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -236,24 +236,24 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
                 .addGap(22, 22, 22))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout DetallesMesaLayout = new javax.swing.GroupLayout(DetallesMesa);
+        DetallesMesa.setLayout(DetallesMesaLayout);
+        DetallesMesaLayout.setHorizontalGroup(
+            DetallesMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DetallesMesaLayout.createSequentialGroup()
                 .addGap(9, 9, 9)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(InfoMesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(AccionesMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        DetallesMesaLayout.setVerticalGroup(
+            DetallesMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DetallesMesaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(DetallesMesaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(AccionesMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(InfoMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -261,28 +261,28 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(DetallesMesa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(DetallesMesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel AccionesMesa;
+    private javax.swing.JLabel AccionesTxt;
+    private javax.swing.JPanel DetallesMesa;
+    private javax.swing.JLabel EstadoTxt;
+    private javax.swing.JLabel EstadoVar;
+    private javax.swing.JPanel InfoMesa;
+    private javax.swing.JLabel InfoTxt;
+    private javax.swing.JScrollPane ScrollReservas;
     private javax.swing.JButton btnCancelarReserva;
     private javax.swing.JButton btnLiberar;
     private javax.swing.JButton btnOcupar;
     private javax.swing.JButton btnReservar;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JLabel lblMesa;
     // End of variables declaration//GEN-END:variables
 }

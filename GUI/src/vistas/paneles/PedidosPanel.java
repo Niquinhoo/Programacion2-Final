@@ -32,21 +32,21 @@ public class PedidosPanel extends javax.swing.JPanel {
     headerRenderer.setForeground(Color.WHITE);
     headerRenderer.setOpaque(true);
 
-    for (int i = 0; i < jTable1.getColumnModel().getColumnCount(); i++) {
-        jTable1.getColumnModel()
+    for (int i = 0; i < TablaPedidos.getColumnModel().getColumnCount(); i++) {
+        TablaPedidos.getColumnModel()
                .getColumn(i)
                .setHeaderRenderer(headerRenderer);
     }
 
    
 
-    jTable1.setForeground(Color.WHITE);
-    jTable1.setBackground(new Color(36, 30, 26));
+    TablaPedidos.setForeground(Color.WHITE);
+    TablaPedidos.setBackground(new Color(36, 30, 26));
 
-    jScrollPane2.setBackground(
+    ScrollPedidos.setBackground(
             new Color(36, 30, 26));
 
-    jScrollPane2.getViewport().setBackground(
+    ScrollPedidos.getViewport().setBackground(
             new Color(36, 30, 26));
 }
 
@@ -67,16 +67,19 @@ public class PedidosPanel extends javax.swing.JPanel {
 
         PedidosPanel = new javax.swing.JPanel();
         Encabezado2 = new javax.swing.JPanel();
-        jLabel16 = new javax.swing.JLabel();
+        PedidosTitulo = new javax.swing.JLabel();
         FechaHora2 = new javax.swing.JPanel();
-        jLabel24 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
+        FechaTxt = new javax.swing.JLabel();
+        HoraTxt = new javax.swing.JLabel();
+        HoraNum = new javax.swing.JLabel();
+        FechaNum = new javax.swing.JLabel();
+        PanelUsusario = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        ScrollPedidos = new javax.swing.JScrollPane();
+        TablaPedidos = new javax.swing.JTable();
 
         PedidosPanel.setBackground(new java.awt.Color(36, 30, 26));
 
@@ -84,15 +87,12 @@ public class PedidosPanel extends javax.swing.JPanel {
         Encabezado2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         Encabezado2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(242, 242, 242));
-        jLabel16.setText("Pedidos");
-        Encabezado2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 129, 80));
+        PedidosTitulo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        PedidosTitulo.setForeground(new java.awt.Color(242, 242, 242));
+        PedidosTitulo.setText("Pedidos");
+        Encabezado2.add(PedidosTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 129, 80));
 
         FechaHora2.setBackground(new java.awt.Color(36, 30, 26));
-
-        jLabel24.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel24.setText("Fecha");
 
         jPanel10.setBackground(new java.awt.Color(109, 93, 83));
         jPanel10.setPreferredSize(new java.awt.Dimension(2, 50));
@@ -108,6 +108,18 @@ public class PedidosPanel extends javax.swing.JPanel {
             .addGap(0, 80, Short.MAX_VALUE)
         );
 
+        FechaTxt.setForeground(new java.awt.Color(255, 255, 255));
+        FechaTxt.setText("Fecha:");
+
+        HoraTxt.setForeground(new java.awt.Color(255, 255, 255));
+        HoraTxt.setText(" Hora:");
+
+        HoraNum.setForeground(new java.awt.Color(255, 255, 255));
+        HoraNum.setText("00:00");
+
+        FechaNum.setForeground(new java.awt.Color(255, 255, 255));
+        FechaNum.setText(" 00/00/0000");
+
         javax.swing.GroupLayout FechaHora2Layout = new javax.swing.GroupLayout(FechaHora2);
         FechaHora2.setLayout(FechaHora2Layout);
         FechaHora2Layout.setHorizontalGroup(
@@ -115,24 +127,38 @@ public class PedidosPanel extends javax.swing.JPanel {
             .addGroup(FechaHora2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
-                .addComponent(jLabel24)
-                .addGap(0, 68, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(FechaHora2Layout.createSequentialGroup()
+                        .addComponent(FechaTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(FechaNum)
+                        .addContainerGap())
+                    .addGroup(FechaHora2Layout.createSequentialGroup()
+                        .addComponent(HoraTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(HoraNum))))
         );
         FechaHora2Layout.setVerticalGroup(
             FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(FechaHora2Layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel24)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FechaHora2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(FechaHora2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(FechaTxt)
+                    .addComponent(FechaNum))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(HoraTxt)
+                    .addComponent(HoraNum))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        Encabezado2.add(FechaHora2, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, 120, 70));
+        Encabezado2.add(FechaHora2, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, 150, 70));
 
-        jPanel6.setBackground(new java.awt.Color(36, 30, 26));
+        PanelUsusario.setBackground(new java.awt.Color(36, 30, 26));
 
         jLabel17.setForeground(new java.awt.Color(255, 255, 255));
         jLabel17.setText("Usuario");
@@ -144,39 +170,39 @@ public class PedidosPanel extends javax.swing.JPanel {
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/imagen/icon-icons (1).png"))); // NOI18N
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+        javax.swing.GroupLayout PanelUsusarioLayout = new javax.swing.GroupLayout(PanelUsusario);
+        PanelUsusario.setLayout(PanelUsusarioLayout);
+        PanelUsusarioLayout.setHorizontalGroup(
+            PanelUsusarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsusarioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(PanelUsusarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17)
                     .addComponent(jLabel18))
                 .addContainerGap())
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        PanelUsusarioLayout.setVerticalGroup(
+            PanelUsusarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelUsusarioLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(PanelUsusarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addGroup(PanelUsusarioLayout.createSequentialGroup()
                         .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel18)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        Encabezado2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 0, 150, 70));
+        Encabezado2.add(PanelUsusario, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 0, 150, 70));
 
-        jScrollPane2.setBackground(new java.awt.Color(41, 34, 28));
-        jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        ScrollPedidos.setBackground(new java.awt.Color(41, 34, 28));
+        ScrollPedidos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        jTable1.setBackground(new java.awt.Color(41, 34, 28));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TablaPedidos.setBackground(new java.awt.Color(41, 34, 28));
+        TablaPedidos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -192,16 +218,16 @@ public class PedidosPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jTable1.setGridColor(new java.awt.Color(41, 34, 28));
-        jTable1.setSelectionBackground(new java.awt.Color(41, 34, 28));
-        jTable1.getTableHeader().setResizingAllowed(false);
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        TablaPedidos.setGridColor(new java.awt.Color(41, 34, 28));
+        TablaPedidos.setSelectionBackground(new java.awt.Color(41, 34, 28));
+        TablaPedidos.getTableHeader().setResizingAllowed(false);
+        TablaPedidos.getTableHeader().setReorderingAllowed(false);
+        TablaPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                TablaPedidosMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(jTable1);
+        ScrollPedidos.setViewportView(TablaPedidos);
 
         javax.swing.GroupLayout PedidosPanelLayout = new javax.swing.GroupLayout(PedidosPanel);
         PedidosPanel.setLayout(PedidosPanelLayout);
@@ -211,7 +237,7 @@ public class PedidosPanel extends javax.swing.JPanel {
             .addGroup(PedidosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(PedidosPanelLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 828, Short.MAX_VALUE)
+                    .addComponent(ScrollPedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 828, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         PedidosPanelLayout.setVerticalGroup(
@@ -222,7 +248,7 @@ public class PedidosPanel extends javax.swing.JPanel {
             .addGroup(PedidosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PedidosPanelLayout.createSequentialGroup()
                     .addContainerGap(83, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 611, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ScrollPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 611, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap()))
         );
 
@@ -238,23 +264,26 @@ public class PedidosPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+    private void TablaPedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaPedidosMouseClicked
         
-    }//GEN-LAST:event_jTable1MouseClicked
+    }//GEN-LAST:event_TablaPedidosMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Encabezado2;
     private javax.swing.JPanel FechaHora2;
+    private javax.swing.JLabel FechaNum;
+    private javax.swing.JLabel FechaTxt;
+    private javax.swing.JLabel HoraNum;
+    private javax.swing.JLabel HoraTxt;
+    private javax.swing.JPanel PanelUsusario;
     private javax.swing.JPanel PedidosPanel;
-    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel PedidosTitulo;
+    private javax.swing.JScrollPane ScrollPedidos;
+    private javax.swing.JTable TablaPedidos;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel24;
     private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

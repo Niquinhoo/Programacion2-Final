@@ -409,7 +409,7 @@
                 <Property name="useNullLayout" type="boolean" value="false"/>
               </Layout>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jPanel4">
+                <Container class="javax.swing.JPanel" name="ContenidoMenu">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="1a" green="1e" red="24" type="rgb"/>
@@ -425,7 +425,7 @@
                     <Property name="useNullLayout" type="boolean" value="false"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabel1">
+                    <Component class="javax.swing.JLabel" name="CategoriasTxt">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="14" style="1"/>
@@ -441,7 +441,7 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+                    <Container class="javax.swing.JScrollPane" name="ScrollCategorias">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="41" green="3f" red="3c" type="rgb"/>
@@ -755,7 +755,7 @@
                         </Container>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+                    <Container class="javax.swing.JScrollPane" name="ScrollProducPedido">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="1c" green="22" red="29" type="rgb"/>
@@ -805,7 +805,7 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel12">
+                    <Container class="javax.swing.JPanel" name="PanelPedido">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="1c" green="22" red="29" type="rgb"/>
@@ -831,17 +831,17 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                                          <Component id="jLabel10" min="-2" pref="84" max="-2" attributes="0"/>
+                                          <Component id="Totaltxt" min="-2" pref="84" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="lblPrecioCal" min="-2" pref="122" max="-2" attributes="0"/>
+                                          <Component id="TotalNum" min="-2" pref="122" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jPanel10" pref="275" max="32767" attributes="0"/>
+                                          <Component id="Separador" pref="275" max="32767" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                                          <Component id="jButton12" min="-2" pref="104" max="-2" attributes="0"/>
+                                          <Component id="btnCancelarPedido" min="-2" pref="104" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Component id="btnConfirmarPedido" pref="130" max="32767" attributes="0"/>
                                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
@@ -856,14 +856,14 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jLabel10" alignment="3" min="-2" pref="48" max="-2" attributes="0"/>
-                                      <Component id="lblPrecioCal" alignment="3" min="-2" pref="48" max="-2" attributes="0"/>
+                                      <Component id="Totaltxt" alignment="3" min="-2" pref="48" max="-2" attributes="0"/>
+                                      <Component id="TotalNum" alignment="3" min="-2" pref="48" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jPanel10" min="-2" pref="2" max="-2" attributes="0"/>
+                                  <Component id="Separador" min="-2" pref="2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jButton12" alignment="0" min="-2" pref="37" max="-2" attributes="0"/>
+                                      <Component id="btnCancelarPedido" alignment="0" min="-2" pref="37" max="-2" attributes="0"/>
                                       <Component id="btnConfirmarPedido" alignment="0" min="-2" pref="45" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace pref="15" max="32767" attributes="0"/>
@@ -872,7 +872,7 @@
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel10">
+                        <Component class="javax.swing.JLabel" name="Totaltxt">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -886,7 +886,7 @@
                             <Property name="text" type="java.lang.String" value="Total"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="lblPrecioCal">
+                        <Component class="javax.swing.JLabel" name="TotalNum">
                           <Properties>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Segoe UI" size="18" style="0"/>
@@ -898,7 +898,7 @@
                             <Property name="text" type="java.lang.String" value="$0.0"/>
                           </Properties>
                         </Component>
-                        <Container class="javax.swing.JPanel" name="jPanel10">
+                        <Container class="javax.swing.JPanel" name="Separador">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="53" green="5d" red="6d" type="rgb"/>
@@ -921,7 +921,7 @@
                             </DimensionLayout>
                           </Layout>
                         </Container>
-                        <Component class="javax.swing.JButton" name="jButton12">
+                        <Component class="javax.swing.JButton" name="btnCancelarPedido">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="32" green="3d" red="49" type="rgb"/>
@@ -938,6 +938,9 @@
                               </Border>
                             </Property>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelarPedidoActionPerformed"/>
+                          </Events>
                         </Component>
                         <Component class="javax.swing.JButton" name="btnConfirmarPedido">
                           <Properties>
@@ -1027,7 +1030,7 @@
                     <Property name="useNullLayout" type="boolean" value="false"/>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JLabel" name="jLabel14">
+                    <Component class="javax.swing.JLabel" name="TituloSeccion">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="18" style="1"/>
@@ -1051,7 +1054,7 @@
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                          <AbsoluteConstraints x="670" y="0" width="120" height="70"/>
+                          <AbsoluteConstraints x="670" y="0" width="150" height="70"/>
                         </Constraint>
                       </Constraints>
 
@@ -1060,37 +1063,56 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                                  <Component id="jLabel22" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="68" max="32767" attributes="0"/>
+                                  <Component id="SeparadorHora" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="HoraMenuTxt" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="HoraMenuNum" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="HoraTxt" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace pref="29" max="32767" attributes="0"/>
+                                          <Component id="FechaMenuNum" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-                                  <Component id="jLabel22" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                              </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  <Component id="jPanel8" min="-2" pref="80" max="-2" attributes="0"/>
+                                  <Component id="SeparadorHora" min="-2" pref="80" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="HoraTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="FechaMenuNum" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="HoraMenuTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="HoraMenuNum" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JLabel" name="jLabel22">
+                        <Component class="javax.swing.JLabel" name="HoraTxt">
                           <Properties>
                             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="ff" green="ff" red="ff" type="rgb"/>
                             </Property>
-                            <Property name="text" type="java.lang.String" value="Fecha"/>
+                            <Property name="text" type="java.lang.String" value="Fecha:"/>
                           </Properties>
                         </Component>
-                        <Container class="javax.swing.JPanel" name="jPanel8">
+                        <Container class="javax.swing.JPanel" name="SeparadorHora">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="53" green="5d" red="6d" type="rgb"/>
@@ -1113,9 +1135,33 @@
                             </DimensionLayout>
                           </Layout>
                         </Container>
+                        <Component class="javax.swing.JLabel" name="HoraMenuTxt">
+                          <Properties>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value=" Hora:"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="FechaMenuNum">
+                          <Properties>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value=" 00/00/0000"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="HoraMenuNum">
+                          <Properties>
+                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="00:00"/>
+                          </Properties>
+                        </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel6">
+                    <Container class="javax.swing.JPanel" name="PanelUsuario">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="1a" green="1e" red="24" type="rgb"/>

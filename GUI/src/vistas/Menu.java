@@ -82,9 +82,9 @@ public class Menu extends javax.swing.JFrame {
         PanelConfiguraciones = new javax.swing.JPanel();
         Contenido = new javax.swing.JPanel();
         MenuPanel = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        ContenidoMenu = new javax.swing.JPanel();
+        CategoriasTxt = new javax.swing.JLabel();
+        ScrollCategorias = new javax.swing.JScrollPane();
         PanelCategorias = new javax.swing.JPanel();
         CatTodas = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -100,22 +100,25 @@ public class Menu extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         CatPostres = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        ScrollProducPedido = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jPanel12 = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        lblPrecioCal = new javax.swing.JLabel();
-        jPanel10 = new javax.swing.JPanel();
-        jButton12 = new javax.swing.JButton();
+        PanelPedido = new javax.swing.JPanel();
+        Totaltxt = new javax.swing.JLabel();
+        TotalNum = new javax.swing.JLabel();
+        Separador = new javax.swing.JPanel();
+        btnCancelarPedido = new javax.swing.JButton();
         btnConfirmarPedido = new javax.swing.JButton();
         jScrollProductos = new javax.swing.JScrollPane();
         panelProductos = new javax.swing.JPanel();
         Encabezado = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
+        TituloSeccion = new javax.swing.JLabel();
         FechaHora = new javax.swing.JPanel();
-        jLabel22 = new javax.swing.JLabel();
-        jPanel8 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
+        HoraTxt = new javax.swing.JLabel();
+        SeparadorHora = new javax.swing.JPanel();
+        HoraMenuTxt = new javax.swing.JLabel();
+        FechaMenuNum = new javax.swing.JLabel();
+        HoraMenuNum = new javax.swing.JLabel();
+        PanelUsuario = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -321,16 +324,16 @@ public class Menu extends javax.swing.JFrame {
         MenuPanel.setBackground(new java.awt.Color(102, 102, 102));
         MenuPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel4.setBackground(new java.awt.Color(36, 30, 26));
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        ContenidoMenu.setBackground(new java.awt.Color(36, 30, 26));
+        ContenidoMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("CATEGORIAS");
-        jPanel4.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(14, 23, 96, 21));
+        CategoriasTxt.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        CategoriasTxt.setForeground(new java.awt.Color(255, 255, 255));
+        CategoriasTxt.setText("CATEGORIAS");
+        ContenidoMenu.add(CategoriasTxt, new org.netbeans.lib.awtextra.AbsoluteConstraints(14, 23, 96, 21));
 
-        jScrollPane1.setBackground(new java.awt.Color(60, 63, 65));
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        ScrollCategorias.setBackground(new java.awt.Color(60, 63, 65));
+        ScrollCategorias.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
         PanelCategorias.setBackground(new java.awt.Color(41, 34, 28));
 
@@ -524,12 +527,12 @@ public class Menu extends javax.swing.JFrame {
                 .addContainerGap(289, Short.MAX_VALUE))
         );
 
-        jScrollPane1.setViewportView(PanelCategorias);
+        ScrollCategorias.setViewportView(PanelCategorias);
 
-        jPanel4.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(14, 50, -1, -1));
+        ContenidoMenu.add(ScrollCategorias, new org.netbeans.lib.awtextra.AbsoluteConstraints(14, 50, -1, -1));
 
-        jScrollPane2.setBackground(new java.awt.Color(41, 34, 28));
-        jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        ScrollProducPedido.setBackground(new java.awt.Color(41, 34, 28));
+        ScrollProducPedido.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
         jTable1.setBackground(new java.awt.Color(41, 34, 28));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -557,41 +560,42 @@ public class Menu extends javax.swing.JFrame {
                 jTable1MouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(jTable1);
+        ScrollProducPedido.setViewportView(jTable1);
 
-        jPanel4.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 20, 289, -1));
+        ContenidoMenu.add(ScrollProducPedido, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 20, 289, -1));
 
-        jPanel12.setBackground(new java.awt.Color(41, 34, 28));
-        jPanel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        PanelPedido.setBackground(new java.awt.Color(41, 34, 28));
+        PanelPedido.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        jLabel10.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setText("Total");
+        Totaltxt.setBackground(new java.awt.Color(255, 255, 255));
+        Totaltxt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Totaltxt.setForeground(new java.awt.Color(255, 255, 255));
+        Totaltxt.setText("Total");
 
-        lblPrecioCal.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lblPrecioCal.setForeground(new java.awt.Color(249, 155, 32));
-        lblPrecioCal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblPrecioCal.setText("$0.0");
+        TotalNum.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        TotalNum.setForeground(new java.awt.Color(249, 155, 32));
+        TotalNum.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TotalNum.setText("$0.0");
 
-        jPanel10.setBackground(new java.awt.Color(109, 93, 83));
-        jPanel10.setPreferredSize(new java.awt.Dimension(2, 0));
+        Separador.setBackground(new java.awt.Color(109, 93, 83));
+        Separador.setPreferredSize(new java.awt.Dimension(2, 0));
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout SeparadorLayout = new javax.swing.GroupLayout(Separador);
+        Separador.setLayout(SeparadorLayout);
+        SeparadorLayout.setHorizontalGroup(
+            SeparadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        SeparadorLayout.setVerticalGroup(
+            SeparadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 2, Short.MAX_VALUE)
         );
 
-        jButton12.setBackground(new java.awt.Color(73, 61, 50));
-        jButton12.setForeground(new java.awt.Color(255, 255, 255));
-        jButton12.setText("Cancelar");
-        jButton12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        btnCancelarPedido.setBackground(new java.awt.Color(73, 61, 50));
+        btnCancelarPedido.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancelarPedido.setText("Cancelar");
+        btnCancelarPedido.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        btnCancelarPedido.addActionListener(this::btnCancelarPedidoActionPerformed);
 
         btnConfirmarPedido.setBackground(new java.awt.Color(249, 155, 32));
         btnConfirmarPedido.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -600,45 +604,45 @@ public class Menu extends javax.swing.JFrame {
         btnConfirmarPedido.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
         btnConfirmarPedido.addActionListener(this::btnConfirmarPedidoActionPerformed);
 
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel12Layout.createSequentialGroup()
+        javax.swing.GroupLayout PanelPedidoLayout = new javax.swing.GroupLayout(PanelPedido);
+        PanelPedido.setLayout(PanelPedidoLayout);
+        PanelPedidoLayout.setHorizontalGroup(
+            PanelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelPedidoLayout.createSequentialGroup()
+                .addGroup(PanelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelPedidoLayout.createSequentialGroup()
                         .addGap(17, 17, 17)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Totaltxt, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblPrecioCal, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addComponent(TotalNum, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PanelPedidoLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE))
-                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addComponent(Separador, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE))
+                    .addGroup(PanelPedidoLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCancelarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnConfirmarPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                         .addGap(8, 8, 8)))
                 .addContainerGap())
         );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
+        PanelPedidoLayout.setVerticalGroup(
+            PanelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelPedidoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPrecioCal, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(PanelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Totaltxt, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TotalNum, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Separador, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(PanelPedidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCancelarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnConfirmarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
-        jPanel4.add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 440, 289, 130));
+        ContenidoMenu.add(PanelPedido, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 440, 289, 130));
 
         jScrollProductos.setBackground(new java.awt.Color(36, 30, 26));
         jScrollProductos.setBorder(null);
@@ -658,37 +662,46 @@ public class Menu extends javax.swing.JFrame {
 
         jScrollProductos.setViewportView(panelProductos);
 
-        jPanel4.add(jScrollProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 50, 390, 510));
+        ContenidoMenu.add(jScrollProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 50, 390, 510));
 
-        MenuPanel.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 840, 620));
+        MenuPanel.add(ContenidoMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 840, 620));
 
         Encabezado.setBackground(new java.awt.Color(36, 30, 26));
         Encabezado.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         Encabezado.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(242, 242, 242));
-        jLabel14.setText("Menú");
-        Encabezado.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 129, 80));
+        TituloSeccion.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        TituloSeccion.setForeground(new java.awt.Color(242, 242, 242));
+        TituloSeccion.setText("Menú");
+        Encabezado.add(TituloSeccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 129, 80));
 
         FechaHora.setBackground(new java.awt.Color(36, 30, 26));
 
-        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel22.setText("Fecha");
+        HoraTxt.setForeground(new java.awt.Color(255, 255, 255));
+        HoraTxt.setText("Fecha:");
 
-        jPanel8.setBackground(new java.awt.Color(109, 93, 83));
-        jPanel8.setPreferredSize(new java.awt.Dimension(2, 50));
+        SeparadorHora.setBackground(new java.awt.Color(109, 93, 83));
+        SeparadorHora.setPreferredSize(new java.awt.Dimension(2, 50));
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout SeparadorHoraLayout = new javax.swing.GroupLayout(SeparadorHora);
+        SeparadorHora.setLayout(SeparadorHoraLayout);
+        SeparadorHoraLayout.setHorizontalGroup(
+            SeparadorHoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 2, Short.MAX_VALUE)
         );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        SeparadorHoraLayout.setVerticalGroup(
+            SeparadorHoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 80, Short.MAX_VALUE)
         );
+
+        HoraMenuTxt.setForeground(new java.awt.Color(255, 255, 255));
+        HoraMenuTxt.setText(" Hora:");
+
+        FechaMenuNum.setForeground(new java.awt.Color(255, 255, 255));
+        FechaMenuNum.setText(" 00/00/0000");
+
+        HoraMenuNum.setForeground(new java.awt.Color(255, 255, 255));
+        HoraMenuNum.setText("00:00");
 
         javax.swing.GroupLayout FechaHoraLayout = new javax.swing.GroupLayout(FechaHora);
         FechaHora.setLayout(FechaHoraLayout);
@@ -696,25 +709,39 @@ public class Menu extends javax.swing.JFrame {
             FechaHoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(FechaHoraLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
-                .addComponent(jLabel22)
-                .addGap(0, 68, Short.MAX_VALUE))
+                .addComponent(SeparadorHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(FechaHoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(FechaHoraLayout.createSequentialGroup()
+                        .addComponent(HoraMenuTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(HoraMenuNum))
+                    .addGroup(FechaHoraLayout.createSequentialGroup()
+                        .addComponent(HoraTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addComponent(FechaMenuNum)))
+                .addContainerGap())
         );
         FechaHoraLayout.setVerticalGroup(
             FechaHoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(FechaHoraLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel22)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FechaHoraLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(SeparadorHora, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(FechaHoraLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(FechaHoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(HoraTxt)
+                    .addComponent(FechaMenuNum))
+                .addGap(18, 18, 18)
+                .addGroup(FechaHoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(HoraMenuTxt)
+                    .addComponent(HoraMenuNum))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        Encabezado.add(FechaHora, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, 120, 70));
+        Encabezado.add(FechaHora, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, 150, 70));
 
-        jPanel6.setBackground(new java.awt.Color(36, 30, 26));
+        PanelUsuario.setBackground(new java.awt.Color(36, 30, 26));
 
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("Usuario");
@@ -726,33 +753,33 @@ public class Menu extends javax.swing.JFrame {
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/imagen/icon-icons (1).png"))); // NOI18N
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+        javax.swing.GroupLayout PanelUsuarioLayout = new javax.swing.GroupLayout(PanelUsuario);
+        PanelUsuario.setLayout(PanelUsuarioLayout);
+        PanelUsuarioLayout.setHorizontalGroup(
+            PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsuarioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel15)
                     .addComponent(jLabel16))
                 .addContainerGap())
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        PanelUsuarioLayout.setVerticalGroup(
+            PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelUsuarioLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addGroup(PanelUsuarioLayout.createSequentialGroup()
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel16)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        Encabezado.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 0, 150, 70));
+        Encabezado.add(PanelUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 0, 150, 70));
 
         MenuPanel.add(Encabezado, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 80));
 
@@ -831,10 +858,10 @@ public class Menu extends javax.swing.JFrame {
     jTable1.setForeground(Color.WHITE);
     jTable1.setBackground(new Color(36, 30, 26));
 
-    jScrollPane2.setBackground(
+    ScrollProducPedido.setBackground(
             new Color(36, 30, 26));
 
-    jScrollPane2.getViewport().setBackground(
+    ScrollProducPedido.getViewport().setBackground(
             new Color(36, 30, 26));
 }
     
@@ -999,20 +1026,22 @@ public class Menu extends javax.swing.JFrame {
 //   List<Producto> productos = ServicioFactory.getProductoServicio().obtenerPorCategoria(categoria);
     private void btnConfirmarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarPedidoActionPerformed
         //llevar al checkout    
-        
-        
         CheckoutDialog dialog = new CheckoutDialog(
             (java.awt.Frame) SwingUtilities.getWindowAncestor(this),
             true
     );
-    
-      
-        
+
     dialog.setLocationRelativeTo(null);
     dialog.setVisible(true);
+        
+        
         //Agregar al listado de pedidos
         
     }//GEN-LAST:event_btnConfirmarPedidoActionPerformed
+
+    private void btnCancelarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPedidoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCancelarPedidoActionPerformed
         
     
     
@@ -1104,7 +1133,7 @@ public class Menu extends javax.swing.JFrame {
         );
     }
 
-    lblPrecioCal.setText("$" + total);
+    TotalNum.setText("$" + total);
 }
     
     
@@ -1145,9 +1174,15 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel CatPizza;
     private javax.swing.JPanel CatPostres;
     private javax.swing.JPanel CatTodas;
+    private javax.swing.JLabel CategoriasTxt;
     private javax.swing.JPanel Contenido;
+    private javax.swing.JPanel ContenidoMenu;
     private javax.swing.JPanel Encabezado;
     private javax.swing.JPanel FechaHora;
+    private javax.swing.JLabel FechaMenuNum;
+    private javax.swing.JLabel HoraMenuNum;
+    private javax.swing.JLabel HoraMenuTxt;
+    private javax.swing.JLabel HoraTxt;
     private javax.swing.JLabel LogoSistema;
     private javax.swing.JLabel Menu;
     private javax.swing.JPanel MenuPanel;
@@ -1156,25 +1191,30 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel PanelConfiguraciones;
     private javax.swing.JPanel PanelMenu;
     private javax.swing.JPanel PanelMesas;
+    private javax.swing.JPanel PanelPedido;
     private javax.swing.JPanel PanelPedidos;
     private javax.swing.JPanel PanelProductos;
     private javax.swing.JPanel PanelReportes;
+    private javax.swing.JPanel PanelUsuario;
     private javax.swing.JPanel PanelUsusario;
     private javax.swing.JLabel Pedidos;
     private javax.swing.JLabel Productos;
     private javax.swing.JLabel Reportes;
+    private javax.swing.JScrollPane ScrollCategorias;
+    private javax.swing.JScrollPane ScrollProducPedido;
+    private javax.swing.JPanel Separador;
+    private javax.swing.JPanel SeparadorHora;
     private javax.swing.JPanel SideBar;
+    private javax.swing.JLabel TituloSeccion;
+    private javax.swing.JLabel TotalNum;
+    private javax.swing.JLabel Totaltxt;
     private javax.swing.JLabel Usuario;
+    private javax.swing.JButton btnCancelarPedido;
     private javax.swing.JButton btnConfirmarPedido;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1182,16 +1222,8 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollProductos;
     private javax.swing.JTable jTable1;
-    private javax.swing.JLabel lblPrecioCal;
     private javax.swing.JPanel panelProductos;
     // End of variables declaration//GEN-END:variables
 }

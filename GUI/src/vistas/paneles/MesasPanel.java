@@ -24,14 +24,14 @@ public class MesasPanel extends javax.swing.JPanel {
         
         detallesPanel = new DetallesMesasPanel();
         
-        jPanel3.setLayout(new BorderLayout());
-        jPanel3.add(detallesPanel, BorderLayout.CENTER);
+        ContenedorDetalles.setLayout(new BorderLayout());
+        ContenedorDetalles.add(detallesPanel, BorderLayout.CENTER);
         
         
         
         detallesPanel.setVisible(false);
-        jPanel3.setVisible(true);
-        jPanel3.setPreferredSize(new java.awt.Dimension(820, 198));
+        ContenedorDetalles.setVisible(true);
+        ContenedorDetalles.setPreferredSize(new java.awt.Dimension(820, 198));
         registrarEventosMesas();
     }
 
@@ -62,8 +62,8 @@ public class MesasPanel extends javax.swing.JPanel {
     detallesPanel.mostrarMesa(boton.getText());
     
     detallesPanel.setVisible(true);
-    jPanel3.revalidate();
-    jPanel3.repaint();
+    ContenedorDetalles.revalidate();
+    ContenedorDetalles.repaint();
 }
     
     
@@ -79,11 +79,14 @@ public class MesasPanel extends javax.swing.JPanel {
 
         MesasPanel = new javax.swing.JPanel();
         Encabezado2 = new javax.swing.JPanel();
-        jLabel16 = new javax.swing.JLabel();
+        MesasTitulo = new javax.swing.JLabel();
         FechaHora2 = new javax.swing.JPanel();
-        jLabel24 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
+        FechaTxt = new javax.swing.JLabel();
+        HoraTxt = new javax.swing.JLabel();
+        FechaNum = new javax.swing.JLabel();
+        HoraNum = new javax.swing.JLabel();
+        PanelUsuario = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
@@ -103,9 +106,9 @@ public class MesasPanel extends javax.swing.JPanel {
         Mesa14 = new javax.swing.JButton();
         Mesa15 = new javax.swing.JButton();
         Mesa16 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        MostradorMap = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        ContenedorDetalles = new javax.swing.JPanel();
 
         MesasPanel.setBackground(new java.awt.Color(36, 30, 26));
         MesasPanel.setPreferredSize(new java.awt.Dimension(840, 700));
@@ -114,15 +117,12 @@ public class MesasPanel extends javax.swing.JPanel {
         Encabezado2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         Encabezado2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(242, 242, 242));
-        jLabel16.setText("Mesas");
-        Encabezado2.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 129, 80));
+        MesasTitulo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        MesasTitulo.setForeground(new java.awt.Color(242, 242, 242));
+        MesasTitulo.setText("Mesas");
+        Encabezado2.add(MesasTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 129, 80));
 
         FechaHora2.setBackground(new java.awt.Color(36, 30, 26));
-
-        jLabel24.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel24.setText("Fecha");
 
         jPanel10.setBackground(new java.awt.Color(109, 93, 83));
         jPanel10.setPreferredSize(new java.awt.Dimension(2, 50));
@@ -138,6 +138,18 @@ public class MesasPanel extends javax.swing.JPanel {
             .addGap(0, 80, Short.MAX_VALUE)
         );
 
+        FechaTxt.setForeground(new java.awt.Color(255, 255, 255));
+        FechaTxt.setText("Fecha:");
+
+        HoraTxt.setForeground(new java.awt.Color(255, 255, 255));
+        HoraTxt.setText(" Hora:");
+
+        FechaNum.setForeground(new java.awt.Color(255, 255, 255));
+        FechaNum.setText(" 00/00/0000");
+
+        HoraNum.setForeground(new java.awt.Color(255, 255, 255));
+        HoraNum.setText("00:00");
+
         javax.swing.GroupLayout FechaHora2Layout = new javax.swing.GroupLayout(FechaHora2);
         FechaHora2.setLayout(FechaHora2Layout);
         FechaHora2Layout.setHorizontalGroup(
@@ -145,24 +157,42 @@ public class MesasPanel extends javax.swing.JPanel {
             .addGroup(FechaHora2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
-                .addComponent(jLabel24)
-                .addGap(0, 68, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(FechaTxt)
+                    .addComponent(HoraTxt))
+                .addGap(0, 92, Short.MAX_VALUE))
+            .addGroup(FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(FechaHora2Layout.createSequentialGroup()
+                    .addContainerGap(73, Short.MAX_VALUE)
+                    .addGroup(FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(HoraNum, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(FechaNum, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addContainerGap()))
         );
         FechaHora2Layout.setVerticalGroup(
             FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(FechaHora2Layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel24)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FechaHora2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(FechaHora2Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(FechaTxt)
+                .addGap(18, 18, 18)
+                .addComponent(HoraTxt)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(FechaHora2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(FechaHora2Layout.createSequentialGroup()
+                    .addGap(15, 15, 15)
+                    .addComponent(FechaNum)
+                    .addGap(18, 18, 18)
+                    .addComponent(HoraNum)
+                    .addContainerGap(15, Short.MAX_VALUE)))
         );
 
-        Encabezado2.add(FechaHora2, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, 120, 70));
+        Encabezado2.add(FechaHora2, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, 140, 70));
 
-        jPanel6.setBackground(new java.awt.Color(36, 30, 26));
+        PanelUsuario.setBackground(new java.awt.Color(36, 30, 26));
 
         jLabel17.setForeground(new java.awt.Color(255, 255, 255));
         jLabel17.setText("Usuario");
@@ -174,33 +204,33 @@ public class MesasPanel extends javax.swing.JPanel {
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/imagen/icon-icons (1).png"))); // NOI18N
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+        javax.swing.GroupLayout PanelUsuarioLayout = new javax.swing.GroupLayout(PanelUsuario);
+        PanelUsuario.setLayout(PanelUsuarioLayout);
+        PanelUsuarioLayout.setHorizontalGroup(
+            PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsuarioLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel17)
                     .addComponent(jLabel18))
                 .addContainerGap())
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        PanelUsuarioLayout.setVerticalGroup(
+            PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelUsuarioLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(PanelUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
+                    .addGroup(PanelUsuarioLayout.createSequentialGroup()
                         .addComponent(jLabel17)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel18)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        Encabezado2.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 0, 150, 70));
+        Encabezado2.add(PanelUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 0, 150, 70));
 
         Mesa1.setBackground(new java.awt.Color(51, 204, 0));
         Mesa1.setText("Mesa 1");
@@ -252,7 +282,7 @@ public class MesasPanel extends javax.swing.JPanel {
         Mesa16.setBackground(new java.awt.Color(51, 204, 0));
         Mesa16.setText("Mesa 16");
 
-        jPanel1.setBackground(new java.awt.Color(102, 51, 0));
+        MostradorMap.setBackground(new java.awt.Color(102, 51, 0));
 
         jPanel2.setBackground(new java.awt.Color(68, 34, 0));
 
@@ -267,32 +297,32 @@ public class MesasPanel extends javax.swing.JPanel {
             .addGap(0, 150, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout MostradorMapLayout = new javax.swing.GroupLayout(MostradorMap);
+        MostradorMap.setLayout(MostradorMapLayout);
+        MostradorMapLayout.setHorizontalGroup(
+            MostradorMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MostradorMapLayout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 50, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        MostradorMapLayout.setVerticalGroup(
+            MostradorMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MostradorMapLayout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 49, Short.MAX_VALUE))
         );
 
-        jPanel3.setBackground(new java.awt.Color(53, 44, 38));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
+        ContenedorDetalles.setBackground(new java.awt.Color(53, 44, 38));
+        ContenedorDetalles.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout ContenedorDetallesLayout = new javax.swing.GroupLayout(ContenedorDetalles);
+        ContenedorDetalles.setLayout(ContenedorDetallesLayout);
+        ContenedorDetallesLayout.setHorizontalGroup(
+            ContenedorDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        ContenedorDetallesLayout.setVerticalGroup(
+            ContenedorDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 198, Short.MAX_VALUE)
         );
 
@@ -314,7 +344,7 @@ public class MesasPanel extends javax.swing.JPanel {
                         .addComponent(Mesa3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(Mesa4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(MostradorMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(MesasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(MesasPanelLayout.createSequentialGroup()
@@ -344,7 +374,7 @@ public class MesasPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(MesasPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ContenedorDetalles, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         MesasPanelLayout.setVerticalGroup(
@@ -368,7 +398,7 @@ public class MesasPanel extends javax.swing.JPanel {
                             .addComponent(Mesa10, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Mesa9, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Mesa8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(MostradorMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(MesasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Mesa4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -379,7 +409,7 @@ public class MesasPanel extends javax.swing.JPanel {
                     .addComponent(Mesa6, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Mesa1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ContenedorDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -401,8 +431,13 @@ public class MesasPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel ContenedorDetalles;
     private javax.swing.JPanel Encabezado2;
     private javax.swing.JPanel FechaHora2;
+    private javax.swing.JLabel FechaNum;
+    private javax.swing.JLabel FechaTxt;
+    private javax.swing.JLabel HoraNum;
+    private javax.swing.JLabel HoraTxt;
     private javax.swing.JButton Mesa1;
     private javax.swing.JButton Mesa10;
     private javax.swing.JButton Mesa11;
@@ -420,15 +455,13 @@ public class MesasPanel extends javax.swing.JPanel {
     private javax.swing.JButton Mesa8;
     private javax.swing.JButton Mesa9;
     private javax.swing.JPanel MesasPanel;
-    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel MesasTitulo;
+    private javax.swing.JPanel MostradorMap;
+    private javax.swing.JPanel PanelUsuario;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel6;
     // End of variables declaration//GEN-END:variables
 }
