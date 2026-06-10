@@ -170,10 +170,23 @@ public class Login extends javax.swing.JFrame {
 //   Usuario user = ServicioFactory.getAutenticacion().iniciarSesion(usuario, password);
 //   if (user != null) { new Menu(user).setVisible(true); } else { mostrarError("Credenciales inválidas"); }
     private void EntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EntrarActionPerformed
-            Menu menu = new Menu();
-            menu.setVisible(true);
             
-            this.dispose();
+        String usuario = Usuarioimput.getText();
+        String password = String.valueOf(Password.getPassword());
+
+        System.out.println("Usuario: " + usuario);
+        System.out.println("Password: " + password);
+        
+        //Aca deberia ir la funcion para validar el acceso al menu
+        
+        
+        
+        
+        //Esto invoca al frame de Menu
+        Menu menu = new Menu();
+        menu.setVisible(true);
+            
+        this.dispose();
     }//GEN-LAST:event_EntrarActionPerformed
 
     private void registrarseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrarseMouseClicked

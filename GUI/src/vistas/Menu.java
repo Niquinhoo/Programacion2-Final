@@ -1025,14 +1025,27 @@ public class Menu extends javax.swing.JFrame {
     // TODO: Reemplazar datos hardcodeados con:
 //   List<Producto> productos = ServicioFactory.getProductoServicio().obtenerPorCategoria(categoria);
     private void btnConfirmarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarPedidoActionPerformed
-        //llevar al checkout    
-        CheckoutDialog dialog = new CheckoutDialog(
-            (java.awt.Frame) SwingUtilities.getWindowAncestor(this),
-            true
-    );
+        
 
-    dialog.setLocationRelativeTo(null);
-    dialog.setVisible(true);
+
+
+        //llevar al checkout    
+        CheckoutDialog dialog = new CheckoutDialog(this, true);
+
+        //dialog.cargarMesas(mesas);
+
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+
+        if(dialog.isConfirmado()){
+
+            String mesa = dialog.getMesaSeleccionada();
+            String metodoPago = dialog.getMetodoPago();
+            String observaciones = dialog.getObservaciones();
+            String descuento = dialog.getDescuento();
+
+    
+        };
         
         
         //Agregar al listado de pedidos

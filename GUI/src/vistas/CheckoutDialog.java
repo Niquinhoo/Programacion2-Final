@@ -10,6 +10,8 @@ package vistas;
  */
 public class CheckoutDialog extends javax.swing.JDialog {
     
+    private boolean confirmado = false;
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CheckoutDialog.class.getName());
 
     /**
@@ -23,7 +25,9 @@ public class CheckoutDialog extends javax.swing.JDialog {
     }
 
     
-    
+    public boolean isConfirmado() {
+        return confirmado;
+    }
     
     public void cargarMesas(String[] mesas) {
 
@@ -32,6 +36,17 @@ public class CheckoutDialog extends javax.swing.JDialog {
         for (String mesa : mesas) {
             MesaSelect.addItem(mesa);
         }
+    }
+    
+    
+    public String getMetodoPago() {
+        return (String) MetodoPago.getSelectedItem();
+    }
+    public String getObservaciones() {
+        return jTextField1.getText();
+    }
+    public String getDescuento() {
+        return DescuentoVar.getText();
     }
     
     public String getMesaSeleccionada() {
@@ -73,8 +88,8 @@ public class CheckoutDialog extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jSeparator5 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnCancelarPedido = new javax.swing.JButton();
+        btnConfirmarPedido = new javax.swing.JButton();
         jSeparator7 = new javax.swing.JSeparator();
         DescuentoVar = new javax.swing.JTextField();
         MesaSelect = new javax.swing.JComboBox<>();
@@ -195,16 +210,18 @@ public class CheckoutDialog extends javax.swing.JDialog {
         jSeparator5.setBackground(new java.awt.Color(109, 93, 83));
         jSeparator5.setForeground(new java.awt.Color(109, 93, 83));
 
-        jButton1.setBackground(new java.awt.Color(109, 93, 83));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancelar");
-        jButton1.setBorder(null);
+        btnCancelarPedido.setBackground(new java.awt.Color(109, 93, 83));
+        btnCancelarPedido.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancelarPedido.setText("Cancelar");
+        btnCancelarPedido.setBorder(null);
+        btnCancelarPedido.addActionListener(this::btnCancelarPedidoActionPerformed);
 
-        jButton2.setBackground(new java.awt.Color(249, 155, 32));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Confirmar");
-        jButton2.setBorder(null);
+        btnConfirmarPedido.setBackground(new java.awt.Color(249, 155, 32));
+        btnConfirmarPedido.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnConfirmarPedido.setForeground(new java.awt.Color(255, 255, 255));
+        btnConfirmarPedido.setText("Confirmar");
+        btnConfirmarPedido.setBorder(null);
+        btnConfirmarPedido.addActionListener(this::btnConfirmarPedidoActionPerformed);
 
         jSeparator7.setBackground(new java.awt.Color(109, 93, 83));
         jSeparator7.setForeground(new java.awt.Color(109, 93, 83));
@@ -281,9 +298,9 @@ public class CheckoutDialog extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(62, 62, 62)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCancelarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnConfirmarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(70, 70, 70))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -340,8 +357,8 @@ public class CheckoutDialog extends javax.swing.JDialog {
                         .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnCancelarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnConfirmarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(DescuentoVar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
@@ -364,6 +381,17 @@ public class CheckoutDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnConfirmarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarPedidoActionPerformed
+        
+        
+        confirmado = true;
+    dispose();
+    }//GEN-LAST:event_btnConfirmarPedidoActionPerformed
+
+    private void btnCancelarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPedidoActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelarPedidoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -415,19 +443,16 @@ public class CheckoutDialog extends javax.swing.JDialog {
     private javax.swing.JLabel SubtotalNum;
     private javax.swing.JLabel SubtotalTxt;
     private javax.swing.JLabel TItuloTxt;
-    private javax.swing.JLabel TItuloTxt1;
     private javax.swing.JLabel TotalNum;
     private javax.swing.JLabel TotalTxt;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnCancelarPedido;
+    private javax.swing.JButton btnConfirmarPedido;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;

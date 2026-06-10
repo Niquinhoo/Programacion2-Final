@@ -44,7 +44,7 @@ public class Registro extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         registrarse = new javax.swing.JLabel();
         UsuarioTxt1 = new javax.swing.JLabel();
-        Usuarioimput1 = new javax.swing.JTextField();
+        Correoimput1 = new javax.swing.JTextField();
         jSeparator3 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -146,12 +146,12 @@ public class Registro extends javax.swing.JFrame {
         UsuarioTxt1.setText("CORREO ELECTRONICO");
         bg.add(UsuarioTxt1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 160, -1, -1));
 
-        Usuarioimput1.setBackground(new java.awt.Color(36, 30, 26));
-        Usuarioimput1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        Usuarioimput1.setForeground(new java.awt.Color(153, 153, 153));
-        Usuarioimput1.setBorder(null);
-        Usuarioimput1.addActionListener(this::Usuarioimput1ActionPerformed);
-        bg.add(Usuarioimput1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 430, 30));
+        Correoimput1.setBackground(new java.awt.Color(36, 30, 26));
+        Correoimput1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        Correoimput1.setForeground(new java.awt.Color(153, 153, 153));
+        Correoimput1.setBorder(null);
+        Correoimput1.addActionListener(this::Correoimput1ActionPerformed);
+        bg.add(Correoimput1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 180, 430, 30));
 
         jSeparator3.setForeground(new java.awt.Color(255, 255, 255));
         bg.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 210, 440, -1));
@@ -180,7 +180,24 @@ public class Registro extends javax.swing.JFrame {
 //   if (user != null) { new Menu(user).setVisible(true); } else { mostrarError("El usuario ya existe"); }
     
     
+    
+    
     private void EntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EntrarActionPerformed
+        
+        String email = Correoimput1.getText();
+        String usuario = Usuarioimput.getText();
+        String password = String.valueOf(Password.getPassword());
+
+        System.out.println("Email: " + email);
+        System.out.println("Usuario: " + usuario);
+        System.out.println("Password: " + password);
+        
+        
+        //Aca deberian llamar a la funcion para registar a los usuarios
+        
+        
+        
+        //Aca esta la seccion de codigo que invoca al frame de Menu
         Menu menu = new Menu();
         menu.setVisible(true);
 
@@ -194,9 +211,9 @@ public class Registro extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_registrarseMouseClicked
 
-    private void Usuarioimput1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Usuarioimput1ActionPerformed
+    private void Correoimput1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Correoimput1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_Usuarioimput1ActionPerformed
+    }//GEN-LAST:event_Correoimput1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,6 +242,7 @@ public class Registro extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ContrasenaTxt1;
+    private javax.swing.JTextField Correoimput1;
     private javax.swing.JButton Entrar;
     private javax.swing.JLabel IniciarSesion;
     private javax.swing.JLabel NombreEmpresa;
@@ -233,7 +251,6 @@ public class Registro extends javax.swing.JFrame {
     private javax.swing.JLabel UsuarioTxt;
     private javax.swing.JLabel UsuarioTxt1;
     private javax.swing.JTextField Usuarioimput;
-    private javax.swing.JTextField Usuarioimput1;
     private javax.swing.JPanel bg;
     private javax.swing.JLabel imagen;
     private javax.swing.JLabel jLabel1;

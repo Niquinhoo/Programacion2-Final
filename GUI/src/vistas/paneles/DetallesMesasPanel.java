@@ -5,6 +5,9 @@
 package vistas.paneles;
 
 import java.awt.Color;
+import java.time.LocalDateTime;
+import javax.swing.SwingUtilities;
+import vistas.ReservaDialog;
 
 /**
  *
@@ -199,6 +202,7 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
 
         btnReservar.setBackground(new java.awt.Color(255, 255, 0));
         btnReservar.setText("Reservar");
+        btnReservar.addActionListener(this::btnReservarActionPerformed);
 
         btnCancelarReserva.setBackground(new java.awt.Color(255, 0, 0));
         btnCancelarReserva.setText("Cancelar Reserva");
@@ -268,6 +272,28 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
             .addComponent(DetallesMesa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnReservarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReservarActionPerformed
+         ReservaDialog dialog = new ReservaDialog(
+            (java.awt.Frame) SwingUtilities.getWindowAncestor(this),
+            true);
+
+    dialog.setLocationRelativeTo(this);
+    dialog.setVisible(true);
+
+    if (dialog.isConfirmado()) {
+
+        String nombre = dialog.getNombre();
+        String telefono = dialog.getTelefono();
+        LocalDateTime fechaHora = dialog.getFechaHora();
+
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Teléfono: " + telefono);
+        System.out.println("Fecha: " + fechaHora);
+
+        
+    }
+    }//GEN-LAST:event_btnReservarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
