@@ -1,4 +1,171 @@
 package com.restaurant.backend.dao;
 
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.restaurant.backend.model.DetallePedido;
+import com.restaurant.backend.model.EstadoMesa;
+import com.restaurant.backend.model.EstadoPedido;
+import com.restaurant.backend.model.Mesa;
+import com.restaurant.backend.model.Pedido;
+
+
 public class PedidoDAOImpl implements PedidoDAO {
+
+
+  @Override
+  public List<Pedido> getPedidos() {
+
+    List<Pedido> lista = new ArrayList<>();
+    String query = 
+            """
+            SELECT 
+                p.id AS pedido_id,
+                p.mesa_id AS pedido_mesa_id,
+                p.fecha,
+                p.total,
+                p.estado AS estado_pedido,
+
+                m.id AS mesa_id,
+                m.numero,
+                m.estado AS estado_mesa
+            FROM pedido p
+            JOIN mesa m ON p.mesa_id = m.id;
+            """;
+
+    try {
+      Connection conn = DatabaseConnection.getConnection();
+      PreparedStatement ps = conn.prepareStatement(query);
+      ResultSet result = ps.executeQuery();
+
+      while (result.next()) {
+        // ----Mesa----
+        Mesa m = new Mesa();
+        m.setIdMesa(result.getInt("mesa_id"));
+        m.setNumero(result.getInt("numero"));
+        
+        String estadoMesaoDb = result.getString("estado_mesa");
+        m.setEstado(EstadoMesa.valueOf(estadoMesaoDb));
+        
+        //----Pedido----
+        Pedido p = new Pedido();
+        p.setIdPedido(result.getInt("pedido_id"));
+        p.setMesa(m);
+        p.setCreatedAt(result.getTimestamp("fecha").toLocalDateTime());
+        p.setTotal(result.getBigDecimal("total"));
+        
+        String estadoPeidoDb = result.getString("estado_pedido");
+        p.setEstado(EstadoPedido.valueOf(estadoPeidoDb));
+
+        lista.add(p);
+      }
+      
+      ps.close();
+      conn.close();
+      return lista;
+
+    } catch (SQLException ex) {
+      System.out.println("Error" + ex);
+      return lista;
+    }
+  }
+  
+    @Override
+    public String Insertar(Pedido p,List<DetallePedido> detalles) {
+      String queryPedido = "INSERT INTO pedido(mesa_id,fecha,total,estado) VALUES(?,?,?,?)";
+      String queryDetalles = "INSERT INTO detalle_pedido(pedido_id,producto_id,cantidad,precio_unitario) VALUES(?,?,?,?)";
+      Connection conn = null;
+
+      try {
+
+        conn = DatabaseConnection.getConnection();
+        conn.setAutoCommit(false); // desactiva el insert automatico
+
+        // ---INSERT PEDIDO---
+        PreparedStatement ps = conn.prepareStatement(queryPedido,Statement.RETURN_GENERATED_KEYS); // Retorna el id de pedido
+
+        ps.setInt(1, p.getMesa().getIdMesa());
+        ps.setTimestamp(2, java.sql.Timestamp.valueOf(p.getCreatedAt()));
+        ps.setBigDecimal(3, p.getTotal());
+        ps.setString(4, EstadoPedido.ABIERTO.toString());
+
+        int filas = ps.executeUpdate(); // Obtiene el numero de filas que cambiaron 
+        
+        if(filas == 0){
+          conn.rollback();
+          return "No se pudo insertar el pedido";
+        }
+        
+        // ---OBETENER ID PEDIDO---
+        ResultSet rs = ps.getGeneratedKeys(); 
+        int pedidoId = -1;
+        if(rs.next()){
+          pedidoId = rs.getInt(1);
+        }
+
+        // ---INSERT DETALLES---
+        PreparedStatement psDetalles = conn.prepareStatement(queryDetalles);
+        for(DetallePedido d : detalles){
+          psDetalles.setInt(1,pedidoId);
+          psDetalles.setInt(2,d.getProducto().getIdProducto());
+          psDetalles.setInt(3,d.getCantidad());
+          psDetalles.setBigDecimal(4, d.getPrecioUnitario());
+
+          psDetalles.addBatch(); // Guarda cada insert en una cola 
+
+        }
+
+        psDetalles.executeBatch(); // ejecuta todos los insert juntos 
+
+        // si sale bien se guarda 
+        conn.commit();
+        return "Pedido y detalles insertados correctamente";
+
+        
+      } catch (SQLException ex) {
+        // si sale mal, se deshace todo
+        try {
+
+          if (conn != null) conn.rollback();
+
+        } catch (SQLException e) {
+
+          System.out.println("Error en rollback: " + e);
+
+        }
+
+        System.out.println("Error: " + ex);
+        return "Error al insertar pedido";
+
+      }finally{
+        // restaura y cierra conexion
+        try {
+
+          if (conn != null) conn.setAutoCommit(true); // vuelte a poner los inset automaticos 
+          if (conn != null) conn.close(); 
+
+        } catch (SQLException e) {
+
+          System.out.println("Error cerrando conexión: " + e);
+
+        }
+      }
+    }
+
+  @Override
+  public List<Pedido> getPedidosPendientes() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getPedidosPendientes'");
+  }
+
+  @Override
+  public String ModificarEstado(int id) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'ModificarEstado'");
+  }
 }
