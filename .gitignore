@@ -1,3 +1,4 @@
 .vscode/
+/Backend/target/
 /GUI/target/
 *.pem
