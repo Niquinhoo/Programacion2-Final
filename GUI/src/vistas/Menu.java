@@ -77,8 +77,6 @@ public class Menu extends javax.swing.JFrame {
         Productos = new javax.swing.JLabel();
         PanelReportes = new javax.swing.JPanel();
         Reportes = new javax.swing.JLabel();
-        PanelUsusario = new javax.swing.JPanel();
-        Usuario = new javax.swing.JLabel();
         PanelConfiguraciones = new javax.swing.JPanel();
         Contenido = new javax.swing.JPanel();
         MenuPanel = new javax.swing.JPanel();
@@ -242,26 +240,6 @@ public class Menu extends javax.swing.JFrame {
             .addComponent(Reportes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
         );
 
-        PanelUsusario.setBackground(new java.awt.Color(27, 24, 21));
-        PanelUsusario.setRequestFocusEnabled(false);
-
-        Usuario.setForeground(new java.awt.Color(255, 255, 255));
-        Usuario.setText("Usuario");
-
-        javax.swing.GroupLayout PanelUsusarioLayout = new javax.swing.GroupLayout(PanelUsusario);
-        PanelUsusario.setLayout(PanelUsusarioLayout);
-        PanelUsusarioLayout.setHorizontalGroup(
-            PanelUsusarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsusarioLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
-        );
-        PanelUsusarioLayout.setVerticalGroup(
-            PanelUsusarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Usuario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-        );
-
         PanelConfiguraciones.setBackground(new java.awt.Color(27, 24, 21));
         PanelConfiguraciones.setRequestFocusEnabled(false);
 
@@ -287,7 +265,6 @@ public class Menu extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(PanelConfiguraciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(PanelUsusario, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE)
                             .addComponent(PanelReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE)
                             .addComponent(PanelProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE)
                             .addComponent(PanelPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE)))
@@ -312,9 +289,7 @@ public class Menu extends javax.swing.JFrame {
                 .addComponent(PanelProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelReportes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PanelUsusario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(62, 62, 62)
                 .addComponent(PanelConfiguraciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(145, Short.MAX_VALUE))
         );
@@ -916,14 +891,14 @@ public class Menu extends javax.swing.JFrame {
         Contenido.add(new vistas.paneles.PedidosPanel(), "PEDIDOS");
         Contenido.add(new vistas.paneles.ProductosPanel(), "PRODUCTOS");
         Contenido.add(new vistas.paneles.ReportesPanel(), "REPORTES");
-        Contenido.add(new vistas.paneles.UsuarioPanel(), "USUARIO");
+        
 
         registrarNavegacion("MENU", PanelMenu, Menu);
         registrarNavegacion("MESAS", PanelMesas, Mesas);
         registrarNavegacion("PEDIDOS", PanelPedidos, Pedidos);
         registrarNavegacion("PRODUCTOS", PanelProductos, Productos);
         registrarNavegacion("REPORTES", PanelReportes, Reportes);
-        registrarNavegacion("USUARIO", PanelUsusario, Usuario);
+        
 
         mostrarPanel("MENU");
     }
@@ -964,14 +939,14 @@ public class Menu extends javax.swing.JFrame {
         PanelPedidos.setBackground("PEDIDOS".equals(tarjeta) ? fondoActivo : fondoNormal);
         PanelProductos.setBackground("PRODUCTOS".equals(tarjeta) ? fondoActivo : fondoNormal);
         PanelReportes.setBackground("REPORTES".equals(tarjeta) ? fondoActivo : fondoNormal);
-        PanelUsusario.setBackground("USUARIO".equals(tarjeta) ? fondoActivo : fondoNormal);
+        
 
         Menu.setForeground("MENU".equals(tarjeta) ? textoActivo : textoNormal);
         Mesas.setForeground("MESAS".equals(tarjeta) ? textoActivo : textoNormal);
         Pedidos.setForeground("PEDIDOS".equals(tarjeta) ? textoActivo : textoNormal);
         Productos.setForeground("PRODUCTOS".equals(tarjeta) ? textoActivo : textoNormal);
         Reportes.setForeground("REPORTES".equals(tarjeta) ? textoActivo : textoNormal);
-        Usuario.setForeground("USUARIO".equals(tarjeta) ? textoActivo : textoNormal);
+        
     }
 
     private void MesasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MesasMouseClicked
@@ -1209,7 +1184,6 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel PanelProductos;
     private javax.swing.JPanel PanelReportes;
     private javax.swing.JPanel PanelUsuario;
-    private javax.swing.JPanel PanelUsusario;
     private javax.swing.JLabel Pedidos;
     private javax.swing.JLabel Productos;
     private javax.swing.JLabel Reportes;
@@ -1221,7 +1195,6 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JLabel TituloSeccion;
     private javax.swing.JLabel TotalNum;
     private javax.swing.JLabel Totaltxt;
-    private javax.swing.JLabel Usuario;
     private javax.swing.JButton btnCancelarPedido;
     private javax.swing.JButton btnConfirmarPedido;
     private javax.swing.JLabel jLabel15;
