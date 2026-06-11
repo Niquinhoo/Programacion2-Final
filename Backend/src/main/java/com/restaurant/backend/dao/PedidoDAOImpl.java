@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import com.restaurant.backend.model.DetallePedido;
 import com.restaurant.backend.model.EstadoMesa;
 import com.restaurant.backend.model.EstadoPedido;
@@ -38,10 +39,11 @@ public class PedidoDAOImpl implements PedidoDAO {
             JOIN mesa m ON p.mesa_id = m.id;
             """;
 
-    try {
+    try(
       Connection conn = DatabaseConnection.getConnection();
       PreparedStatement ps = conn.prepareStatement(query);
-      ResultSet result = ps.executeQuery();
+      ResultSet result = ps.executeQuery();) {
+      
 
       while (result.next()) {
         // ----Mesa----
@@ -65,12 +67,10 @@ public class PedidoDAOImpl implements PedidoDAO {
         lista.add(p);
       }
       
-      ps.close();
-      conn.close();
       return lista;
 
-    } catch (SQLException ex) {
-      System.out.println("Error" + ex);
+    } catch (SQLException e) {
+      System.out.println("Error" + e.getMessage());
       return lista;
     }
   }
@@ -151,21 +151,101 @@ public class PedidoDAOImpl implements PedidoDAO {
 
         } catch (SQLException e) {
 
-          System.out.println("Error cerrando conexión: " + e);
+          System.out.println("Error cerrando conexión: " +  e.getMessage());
 
         }
       }
     }
 
+
+
   @Override
-  public List<Pedido> getPedidosPendientes() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPedidosPendientes'");
+  public List<Pedido> getPedidosPorEstado (EstadoPedido estado) {
+    List<Pedido> list = new ArrayList<Pedido>();
+    String query = """
+            SELECT p.id,
+                  p.fecha,
+                  p.estado AS estado_pedido,
+                  m.id AS mesa_id,
+                  m.numero,
+                  m.estado AS estado_mesa
+            FROM pedido p
+            INNER JOIN mesa m ON p.mesa_id = m.id
+            WHERE p.estado = ?;
+                  """;
+    try( 
+      Connection conn  = DatabaseConnection.getConnection();
+      PreparedStatement ps = conn.prepareStatement(query);
+      ) {
+     
+      ps.setString(1, estado.toString());
+      
+      try (ResultSet resp = ps.executeQuery()) {
+        while(resp.next()){
+          Mesa m = new Mesa();
+          m.setIdMesa(resp.getInt("mesa_id"));
+          m.setNumero(resp.getInt("numero"));
+          m.setEstado(EstadoMesa.valueOf(resp.getString("estado_mesa")));
+
+          Pedido p = new Pedido();
+          p.setIdPedido(resp.getInt("id"));
+          p.setCreatedAt(resp.getTimestamp("fecha").toLocalDateTime());
+          p.setEstado(EstadoPedido.valueOf(resp.getString("estado_pedido")));
+          p.setMesa(m);
+
+          list.add(p);
+
+        }
+      }
+      
+    }catch (SQLException e) {
+      System.out.println("Error cerrando conexión: " + e.getMessage());
+    }
+
+    return list;
+  }
+
+
+
+  
+  @Override
+  public String ModificarEstado(int id,EstadoPedido estado) {
+    String query = "UPDATE pedido SET estado = ? WHERE id = ?";
+
+    try(
+      Connection conn = DatabaseConnection.getConnection();
+      PreparedStatement ps = conn.prepareStatement(query);) {
+      
+      
+      ps.setString(1, estado.toString());
+      ps.setInt(2,id);
+
+      int filasAfectadas = ps.executeUpdate();
+      if(filasAfectadas > 0) return "Estado actualizado correctamente";
+      
+      return "No se encontró el pedido";
+
+    } catch (SQLException e) {
+      return "Error: " + e.getMessage();
+    }
+    
   }
 
   @Override
-  public String ModificarEstado(int id) {
+  public List<DetallePedido> getDetallesPedido(int pedidoId) {
     // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'ModificarEstado'");
+    throw new UnsupportedOperationException("Unimplemented method 'getDetallesPedido'");
+  }
+
+  @Override
+  public Pedido getPedidoPorId(int id) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getPedidoPorId'");
+  }
+
+  @Override
+  public List<Pedido> getPedidosPorMesa(int mesaId) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getPedidosPorMesa'");
   }
 }
