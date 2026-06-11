@@ -10,7 +10,10 @@ public interface ProductoDAO {
   
   // Crud
   public String insertar();
+  public String insertar(Producto producto);
   public String eliminar();
+  public String eliminar(int id);
   public String editar();
+  public String editar(Producto producto);
   public Producto getProductoPorId(int id);
 }
