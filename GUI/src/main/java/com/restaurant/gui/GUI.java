@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -25,6 +26,10 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.restaurant.backend.dao.MesaDAOImpl;
+import com.restaurant.backend.model.EstadoMesa;
+import com.restaurant.backend.model.Mesa;
+
 
 
 public class GUI {
@@ -35,8 +40,16 @@ public class GUI {
     private static final Color ACCENT = new Color(15, 110, 86);
 
     public static void main(String[] args) {       
-    
-        SwingUtilities.invokeLater(GUI::crearVentana);
+        
+        MesaDAOImpl mImpl = new MesaDAOImpl();
+        List<Mesa> mesas = mImpl.getMesasPorEstado(EstadoMesa.FUERA_DE_SERVICIO);
+        for (Mesa mesa : mesas) {
+            System.out.println("ID: " + mesa.getIdMesa());
+            System.out.println("NUMERO: " + mesa.getNumero());
+            System.out.println("ESTADO: " + mesa.getEstado());
+            
+        }
+        //SwingUtilities.invokeLater(GUI::crearVentana);
     }
 
     private static void crearVentana() {

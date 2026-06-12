@@ -2,7 +2,9 @@ package com.restaurant.backend.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.restaurant.backend.model.EstadoMesa;
@@ -75,5 +77,38 @@ public class MesaDAOImpl implements MesaDAO {
   public Mesa getMesaPorId(int id) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getMesaPorId'");
+  }
+
+
+
+
+  @Override
+  public List<Mesa> getMesasPorEstado(EstadoMesa estado) {
+    List<Mesa> listMesa = new ArrayList<Mesa>();
+    String query = "SELECT * FROM mesa WHERE estado = ?";
+    try (
+        Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)
+       
+        ) {
+          ps.setString(1, estado.toString());
+          
+          try (ResultSet result = ps.executeQuery()) {
+            while(result.next()){
+              Mesa m = new Mesa();
+              m.setIdMesa(result.getInt("id"));
+              m.setNumero(result.getInt("numero"));
+              m.setEstado(EstadoMesa.valueOf(result.getString("estado")));
+
+              listMesa.add(m);
+            }
+          } catch (SQLException e) {
+            System.out.println("ERROR: " + e.getMessage());
+          }
+      
+    } catch (SQLException e) {
+      System.out.println("ERROR: " + e.getMessage());
+    }
+    return listMesa;
   }
 }

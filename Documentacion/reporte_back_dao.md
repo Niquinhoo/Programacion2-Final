@@ -135,9 +135,10 @@
 - `getPedidoPorId()` - Obtiene un pedido específico
 - `getPedidosPorMesa()` - Obtiene pedidos de una mesa
 
-#### MesaDAOImpl ⚠️ PARCIALMENTE COMPLETO (2/5 métodos)
+#### MesaDAOImpl ⚠️ PARCIALMENTE COMPLETO (3/6 métodos)
 - `nuevaMesa()` ✓ - Inserta nueva mesa
 - `cambiarEstado()` ✓ - Actualiza estado de mesa
+- `getMesasPorEstado()` ✓ - Obtiene mesas filtradas por estado
 - `borrarMesa()` ❌ - Pendiente de implementación
 - `getMesas()` ❌ - Pendiente de implementación
 - `getMesaPorId()` ❌ - Pendiente de implementación
@@ -160,3 +161,33 @@
 
 - `Backend/src/main/java/com/restaurant/backend/dao/MesaDAOImpl.java`
 - `Backend/src/main/java/com/restaurant/backend/dao/PedidoDAOImpl.java`
+
+---
+
+## 2026-06-12 - Actualización de reportes
+
+### Correcciones en MesaDAOImpl
+
+Se identificó que el método `getMesasPorEstado()` ya estaba implementado en `MesaDAOImpl` pero no había sido reportado correctamente.
+
+#### `getMesasPorEstado(EstadoMesa estado)` ✓ COMPLETO
+- Consulta SQL que filtra mesas por estado
+- Mapea correctamente los valores del enum `EstadoMesa`
+- Retorna lista de mesas (`ArrayList<Mesa>`)
+- Mapea todos los campos: `id`, `numero`, `estado`
+- Manejo de excepciones SQL con devolución de lista vacía en caso de error
+- Implementa try-with-resources para gestión automática de conexión
+
+### Actualización de estado
+
+#### MesaDAOImpl actualizado: ⚠️ PARCIALMENTE COMPLETO (3/6 métodos)
+- `nuevaMesa()` ✓
+- `cambiarEstado()` ✓
+- `getMesasPorEstado()` ✓ (recién reportado)
+- `borrarMesa()` ❌
+- `getMesas()` ❌
+- `getMesaPorId()` ❌
+
+### Archivos verificados
+
+- `Backend/src/main/java/com/restaurant/backend/dao/MesaDAOImpl.java`

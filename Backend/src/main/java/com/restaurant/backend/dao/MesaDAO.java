@@ -10,5 +10,6 @@ public interface MesaDAO {
   public String borrarMesa(int id);
   public String cambiarEstado(int id,EstadoMesa estado);
   List<Mesa> getMesas();
+  List<Mesa> getMesasPorEstado(EstadoMesa estado);
   Mesa getMesaPorId(int id);
 }
