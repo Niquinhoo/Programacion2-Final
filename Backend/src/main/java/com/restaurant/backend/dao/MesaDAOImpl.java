@@ -35,42 +35,42 @@ public class MesaDAOImpl implements MesaDAO {
     }
     
 
-  @Override
-  public String borrarMesa(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'borrarMesa'");
-  }
-
-
-  @Override
-  public String cambiarEstado(int id,EstadoMesa estado) {
-    String query = "UPDATE mesa SET estado = ? WHERE id = ? ";
-    try(Connection conn = DatabaseConnection.getConnection();
+    
+    
+    @Override
+    public String cambiarEstado(int id,EstadoMesa estado) {
+      String query = "UPDATE mesa SET estado = ? WHERE id = ? ";
+      try(Connection conn = DatabaseConnection.getConnection();
       PreparedStatement ps = conn.prepareStatement(query);) {
-      
-      
-      ps.setString(1, estado.toString());
-      ps.setInt(2, id);
-
-      int filasAfectadas = ps.executeUpdate();
-      if(filasAfectadas > 0) return "Se cambio el estado";
-      return "No se encontro la mesa";
-
-    } catch (SQLException e) {
+        
+        
+        ps.setString(1, estado.toString());
+        ps.setInt(2, id);
+        
+        int filasAfectadas = ps.executeUpdate();
+        if(filasAfectadas > 0) return "Se cambio el estado";
+        return "No se encontro la mesa";
+        
+      } catch (SQLException e) {
         System.out.println("Error: "+ e);
         return "Error al editar estado: " + e;
+      }
+    
     }
     
-  }
-
-
+    @Override
+    public String borrarMesa(int id) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'borrarMesa'");
+    }
+  
   @Override
   public List<Mesa> getMesas() {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getMesas'");
   }
-
-
+  
+  
   @Override
   public Mesa getMesaPorId(int id) {
     // TODO Auto-generated method stub

@@ -8,12 +8,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.crypto.Data;
 
 import com.restaurant.backend.model.DetallePedido;
 import com.restaurant.backend.model.EstadoMesa;
 import com.restaurant.backend.model.EstadoPedido;
 import com.restaurant.backend.model.Mesa;
 import com.restaurant.backend.model.Pedido;
+import com.restaurant.backend.model.Producto;
 
 
 public class PedidoDAOImpl implements PedidoDAO {
@@ -233,19 +235,164 @@ public class PedidoDAOImpl implements PedidoDAO {
 
   @Override
   public List<DetallePedido> getDetallesPedido(int pedidoId) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getDetallesPedido'");
+    String query = """
+                  SELECT
+                    dp.id,
+                    dp.pedido_id,
+                    dp.producto_id,
+                    dp.cantidad,
+                    dp.precio_unitario,
+                    p.nombre
+                FROM detalle_pedido dp
+                INNER JOIN producto p ON dp.producto_id = p.id
+                WHERE dp.pedido_id = ?;
+                  """; 
+    List<DetallePedido> listDetalles = new ArrayList<DetallePedido>();
+    try ( Connection conn = DatabaseConnection.getConnection();
+          PreparedStatement ps = conn.prepareStatement(query);
+        ) {
+          
+          ps.setInt(1, pedidoId);
+          
+          try (ResultSet result = ps.executeQuery();) {
+            
+            while(result.next()){
+              Pedido pedido = new Pedido();
+              pedido.setIdPedido(result.getInt("pedido_id"));
+
+              Producto producto = new Producto();
+              producto.setIdProducto(result.getInt("producto_id"));
+              producto.setNombre(result.getString("nombre"));
+
+              DetallePedido dp = new DetallePedido();
+              dp.setIdDetalle(result.getInt("id"));
+              dp.setPedido(pedido);
+              dp.setProducto(producto);
+              dp.setCantidad(result.getInt("cantidad"));
+              dp.setPrecioUnitario(result.getBigDecimal("precio_unitario"));
+
+              listDetalles.add(dp);
+              
+            }
+          } catch (SQLException e) {
+            System.err.println("Error: " + e.getMessage());
+          }
+
+
+
+    } catch (SQLException e) {
+      System.err.println("Error: " + e.getMessage());
+    }
+    return listDetalles;
   }
 
+
+
+
+  
   @Override
   public Pedido getPedidoPorId(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPedidoPorId'");
+    Pedido p = new Pedido();
+    String query =  """
+                      SELECT
+                          p.id,
+                          p.fecha,
+                          p.total,
+                          p.estado,
+
+                          m.id AS mesa_id,
+                          m.numero
+                      FROM pedido p
+                      INNER JOIN mesa m ON p.mesa_id = m.id
+                      WHERE p.id = ?;
+                    """;;
+
+    try (Connection
+          conn = DatabaseConnection.getConnection();
+          PreparedStatement ps = conn.prepareStatement(query)
+        ) {
+
+       ps.setInt(1, id);
+
+       try (ResultSet result = ps.executeQuery()) {
+        if(result.next()){
+          
+          Mesa mesa = new Mesa();
+          mesa.setIdMesa(result.getInt("mesa_id"));
+          mesa.setNumero(result.getInt("numero"));
+  
+          p.setIdPedido(result.getInt("id"));
+          p.setCreatedAt(result.getTimestamp("fecha").toLocalDateTime());
+          p.setEstado(EstadoPedido.valueOf(result.getString("estado")));
+          p.setTotal(result.getBigDecimal("total"));
+          p.setMesa(mesa);
+        }
+
+        
+
+       } catch (Exception e) {
+        System.err.println("Error: " + e.getMessage());
+       }
+
+
+    } catch (SQLException e) {
+      System.err.println("Error: " + e.getMessage());
+    }
+    return p;
   }
+
+
 
   @Override
   public List<Pedido> getPedidosPorMesa(int mesaId) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getPedidosPorMesa'");
-  }
+    String query = """
+              SELECT
+                p.id,
+                p.fecha,
+                p.total,
+                p.estado,
+                m.id AS mesa_id,
+                m.numero
+            FROM pedido p
+            INNER JOIN mesa m ON p.mesa_id = m.id
+            WHERE p.mesa_id = ?;
+                  """;; 
+
+    List<Pedido> listPedidos = new ArrayList<Pedido>();
+    try (
+      Connection conn = DatabaseConnection.getConnection();
+      PreparedStatement ps = conn.prepareStatement(query)
+    ) {
+        ps.setInt(1, mesaId);
+        try (ResultSet result = ps.executeQuery()) {
+
+          while (result.next()) {
+            Mesa mesa = new Mesa();
+            mesa.setIdMesa(result.getInt("mesa_id"));
+            mesa.setNumero(result.getInt("numero"));
+
+
+            Pedido p = new Pedido();
+            p.setIdPedido(result.getInt("id"));
+            p.setMesa(mesa);
+            p.setCreatedAt(result.getTimestamp("fecha").toLocalDateTime());
+            p.setTotal(result.getBigDecimal("total"));
+            p.setEstado(EstadoPedido.valueOf(result.getString("estado")));
+
+            listPedidos.add(p);
+          }
+
+      } catch (SQLException e) {
+         System.err.println("Error: " + e.getMessage());
+      }  
+    } catch (SQLException e) {
+       System.err.println("Error: " + e.getMessage());
+    }
+
+    return listPedidos;
+  } 
+
+
+
+
 }

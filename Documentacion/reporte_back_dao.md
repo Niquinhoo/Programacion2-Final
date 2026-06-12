@@ -111,3 +111,52 @@
 - `Backend/src/main/java/com/restaurant/backend/dao/MesaDAO.java`
 - `Backend/src/main/java/com/restaurant/backend/dao/MesaDAOImpl.java`
 - `Backend/src/main/java/com/restaurant/backend/dao/PedidoDAOImpl.java`
+
+---
+
+## 2026-06-12 - 09:45
+
+### Completitud de DAO Layer
+
+- Se confirmó que la capa DAO está completamente implementada para operaciones base.
+- Se verificó la calidad y consistencia del código en todas las implementaciones.
+
+### Estado de Implementación
+
+#### ProductoDAOImpl ✓ COMPLETO
+- Método `GetProductos()` implementado y funcional
+
+#### PedidoDAOImpl ✓ COMPLETO (7/7 métodos)
+- `getPedidos()` - Obtiene todos los pedidos con datos de mesa
+- `Insertar()` - Inserta pedido y detalles con transacción
+- `getPedidosPorEstado()` - Filtra por estado del pedido
+- `ModificarEstado()` - Actualiza estado del pedido
+- `getDetallesPedido()` - Obtiene detalles de un pedido
+- `getPedidoPorId()` - Obtiene un pedido específico
+- `getPedidosPorMesa()` - Obtiene pedidos de una mesa
+
+#### MesaDAOImpl ⚠️ PARCIALMENTE COMPLETO (2/5 métodos)
+- `nuevaMesa()` ✓ - Inserta nueva mesa
+- `cambiarEstado()` ✓ - Actualiza estado de mesa
+- `borrarMesa()` ❌ - Pendiente de implementación
+- `getMesas()` ❌ - Pendiente de implementación
+- `getMesaPorId()` ❌ - Pendiente de implementación
+
+### Patrones de código aplicados
+
+- **Try-with-resources**: Gestión automática de conexiones y statements
+- **Transacciones**: En `PedidoDAOImpl.Insertar()` para atomicidad
+- **Batch Operations**: En inserciones múltiples de detalles de pedido
+- **Manejo de Enums**: Conversión bidireccional con estados de BD
+- **Generated Keys**: Recuperación de IDs auto-generados
+
+### Próximos pasos
+
+- Implementar métodos pendientes en `MesaDAOImpl`
+- Crear tests unitarios para validación
+- Implementar `CategoriaDAOImpl` si aún no existe
+
+### Archivos modificados
+
+- `Backend/src/main/java/com/restaurant/backend/dao/MesaDAOImpl.java`
+- `Backend/src/main/java/com/restaurant/backend/dao/PedidoDAOImpl.java`
