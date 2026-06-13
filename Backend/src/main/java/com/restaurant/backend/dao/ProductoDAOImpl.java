@@ -50,8 +50,6 @@ public class ProductoDAOImpl implements ProductoDAO {
         return productos;
     }
 
-
-    
     @Override
     public Producto FiltrarPorCategoria(String categoria) {
         if (categoria == null || categoria.isBlank()) {

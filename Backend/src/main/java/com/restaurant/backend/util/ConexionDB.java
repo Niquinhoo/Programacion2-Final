@@ -40,17 +40,13 @@ public final class ConexionDB {
     }
 
     private void cargarPropiedades() {
-        try {
-            InputStream inputStream = Thread.currentThread()
-                    .getContextClassLoader()
-                    .getResourceAsStream(CONFIG_FILE);
-            
+        try (InputStream inputStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(CONFIG_FILE)) {
             if (inputStream == null) {
-                inputStream = new java.io.FileInputStream("Backend/src/main/resources/" + CONFIG_FILE);
+                throw new IllegalStateException("No se encontro " + CONFIG_FILE + " en resources");
             }
-            
             properties.load(inputStream);
-            inputStream.close();
         } catch (IOException exception) {
             throw new IllegalStateException("No se pudo cargar la configuracion de base de datos", exception);
         }
