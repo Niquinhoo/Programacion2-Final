@@ -3,3 +3,4 @@
 /Backend/target/
 /GUI/target/
 *.pem
+.class
