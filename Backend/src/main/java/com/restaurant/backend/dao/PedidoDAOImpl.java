@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.crypto.Data;
-
 import com.restaurant.backend.model.DetallePedido;
 import com.restaurant.backend.model.EstadoMesa;
 import com.restaurant.backend.model.EstadoPedido;
@@ -28,17 +26,17 @@ public class PedidoDAOImpl implements PedidoDAO {
     String query = 
             """
             SELECT 
-                p.id AS pedido_id,
-                p.mesa_id AS pedido_mesa_id,
-                p.fecha,
+                p.id_pedido,
+                p.id_mesa AS pedido_mesa_id,
+                p.created_at AS fecha,
                 p.total,
                 p.estado AS estado_pedido,
 
-                m.id AS mesa_id,
+                m.id_mesa,
                 m.numero,
                 m.estado AS estado_mesa
-            FROM pedido p
-            JOIN mesa m ON p.mesa_id = m.id;
+            FROM pedidos p
+            JOIN mesas m ON p.id_mesa = m.id_mesa;
             """;
 
     try(
@@ -48,17 +46,15 @@ public class PedidoDAOImpl implements PedidoDAO {
       
 
       while (result.next()) {
-        // ----Mesa----
         Mesa m = new Mesa();
-        m.setIdMesa(result.getInt("mesa_id"));
+        m.setIdMesa(result.getInt("id_mesa"));
         m.setNumero(result.getInt("numero"));
         
         String estadoMesaoDb = result.getString("estado_mesa");
         m.setEstado(EstadoMesa.valueOf(estadoMesaoDb));
         
-        //----Pedido----
         Pedido p = new Pedido();
-        p.setIdPedido(result.getInt("pedido_id"));
+        p.setIdPedido(result.getInt("id_pedido"));
         p.setMesa(m);
         p.setCreatedAt(result.getTimestamp("fecha").toLocalDateTime());
         p.setTotal(result.getBigDecimal("total"));
@@ -79,58 +75,55 @@ public class PedidoDAOImpl implements PedidoDAO {
   
     @Override
     public String Insertar(Pedido p,List<DetallePedido> detalles) {
-      String queryPedido = "INSERT INTO pedido(mesa_id,fecha,total,estado) VALUES(?,?,?,?)";
-      String queryDetalles = "INSERT INTO detalle_pedido(pedido_id,producto_id,cantidad,precio_unitario) VALUES(?,?,?,?)";
+      String queryPedido = "INSERT INTO pedidos(id_mesa,id_usuario,created_at,total,estado) VALUES(?,?,?,?,?)";
+      String queryDetalles = "INSERT INTO detalle_pedido(id_pedido,id_producto,cantidad,precio_unitario,subtotal) VALUES(?,?,?,?,?)";
       Connection conn = null;
 
       try {
 
         conn = DatabaseConnection.getConnection();
-        conn.setAutoCommit(false); // desactiva el insert automatico
+        conn.setAutoCommit(false);
 
-        // ---INSERT PEDIDO---
-        PreparedStatement ps = conn.prepareStatement(queryPedido,Statement.RETURN_GENERATED_KEYS); // Retorna el id de pedido
+        PreparedStatement ps = conn.prepareStatement(queryPedido,Statement.RETURN_GENERATED_KEYS);
 
         ps.setInt(1, p.getMesa().getIdMesa());
-        ps.setTimestamp(2, java.sql.Timestamp.valueOf(p.getCreatedAt()));
-        ps.setBigDecimal(3, p.getTotal());
-        ps.setString(4, EstadoPedido.ABIERTO.toString());
+        ps.setInt(2, p.getUsuario().getIdUsuario());
+        ps.setTimestamp(3, java.sql.Timestamp.valueOf(p.getCreatedAt()));
+        ps.setBigDecimal(4, p.getTotal());
+        ps.setString(5, EstadoPedido.ABIERTO.toString());
 
-        int filas = ps.executeUpdate(); // Obtiene el numero de filas que cambiaron 
+        int filas = ps.executeUpdate();
         
         if(filas == 0){
           conn.rollback();
           return "No se pudo insertar el pedido";
         }
         
-        // ---OBETENER ID PEDIDO---
         ResultSet rs = ps.getGeneratedKeys(); 
         int pedidoId = -1;
         if(rs.next()){
           pedidoId = rs.getInt(1);
         }
 
-        // ---INSERT DETALLES---
         PreparedStatement psDetalles = conn.prepareStatement(queryDetalles);
         for(DetallePedido d : detalles){
           psDetalles.setInt(1,pedidoId);
           psDetalles.setInt(2,d.getProducto().getIdProducto());
           psDetalles.setInt(3,d.getCantidad());
           psDetalles.setBigDecimal(4, d.getPrecioUnitario());
+          psDetalles.setBigDecimal(5, d.getSubtotal());
 
-          psDetalles.addBatch(); // Guarda cada insert en una cola 
+          psDetalles.addBatch();
 
         }
 
-        psDetalles.executeBatch(); // ejecuta todos los insert juntos 
+        psDetalles.executeBatch();
 
-        // si sale bien se guarda 
         conn.commit();
         return "Pedido y detalles insertados correctamente";
 
         
       } catch (SQLException ex) {
-        // si sale mal, se deshace todo
         try {
 
           if (conn != null) conn.rollback();
@@ -145,15 +138,14 @@ public class PedidoDAOImpl implements PedidoDAO {
         return "Error al insertar pedido";
 
       }finally{
-        // restaura y cierra conexion
         try {
 
-          if (conn != null) conn.setAutoCommit(true); // vuelte a poner los inset automaticos 
+          if (conn != null) conn.setAutoCommit(true);
           if (conn != null) conn.close(); 
 
         } catch (SQLException e) {
 
-          System.out.println("Error cerrando conexión: " +  e.getMessage());
+          System.out.println("Error cerrando conexi\u00f3n: " +  e.getMessage());
 
         }
       }
@@ -165,14 +157,15 @@ public class PedidoDAOImpl implements PedidoDAO {
   public List<Pedido> getPedidosPorEstado (EstadoPedido estado) {
     List<Pedido> list = new ArrayList<Pedido>();
     String query = """
-            SELECT p.id,
-                  p.fecha,
+            SELECT p.id_pedido,
+                  p.created_at AS fecha,
+                  p.total,
                   p.estado AS estado_pedido,
-                  m.id AS mesa_id,
+                  m.id_mesa,
                   m.numero,
                   m.estado AS estado_mesa
-            FROM pedido p
-            INNER JOIN mesa m ON p.mesa_id = m.id
+            FROM pedidos p
+            INNER JOIN mesas m ON p.id_mesa = m.id_mesa
             WHERE p.estado = ?;
                   """;
     try( 
@@ -185,13 +178,14 @@ public class PedidoDAOImpl implements PedidoDAO {
       try (ResultSet resp = ps.executeQuery()) {
         while(resp.next()){
           Mesa m = new Mesa();
-          m.setIdMesa(resp.getInt("mesa_id"));
+          m.setIdMesa(resp.getInt("id_mesa"));
           m.setNumero(resp.getInt("numero"));
           m.setEstado(EstadoMesa.valueOf(resp.getString("estado_mesa")));
 
           Pedido p = new Pedido();
-          p.setIdPedido(resp.getInt("id"));
+          p.setIdPedido(resp.getInt("id_pedido"));
           p.setCreatedAt(resp.getTimestamp("fecha").toLocalDateTime());
+          p.setTotal(resp.getBigDecimal("total"));
           p.setEstado(EstadoPedido.valueOf(resp.getString("estado_pedido")));
           p.setMesa(m);
 
@@ -201,7 +195,7 @@ public class PedidoDAOImpl implements PedidoDAO {
       }
       
     }catch (SQLException e) {
-      System.out.println("Error cerrando conexión: " + e.getMessage());
+      System.out.println("Error cerrando conexi\u00f3n: " + e.getMessage());
     }
 
     return list;
@@ -212,7 +206,7 @@ public class PedidoDAOImpl implements PedidoDAO {
   
   @Override
   public String ModificarEstado(int id,EstadoPedido estado) {
-    String query = "UPDATE pedido SET estado = ? WHERE id = ?";
+    String query = "UPDATE pedidos SET estado = ? WHERE id_pedido = ?";
 
     try(
       Connection conn = DatabaseConnection.getConnection();
@@ -225,7 +219,7 @@ public class PedidoDAOImpl implements PedidoDAO {
       int filasAfectadas = ps.executeUpdate();
       if(filasAfectadas > 0) return "Estado actualizado correctamente";
       
-      return "No se encontró el pedido";
+      return "No se encontr\u00f3 el pedido";
 
     } catch (SQLException e) {
       return "Error: " + e.getMessage();
@@ -237,15 +231,15 @@ public class PedidoDAOImpl implements PedidoDAO {
   public List<DetallePedido> getDetallesPedido(int pedidoId) {
     String query = """
                   SELECT
-                    dp.id,
-                    dp.pedido_id,
-                    dp.producto_id,
+                    dp.id_detalle,
+                    dp.id_pedido,
+                    dp.id_producto,
                     dp.cantidad,
                     dp.precio_unitario,
                     p.nombre
                 FROM detalle_pedido dp
-                INNER JOIN producto p ON dp.producto_id = p.id
-                WHERE dp.pedido_id = ?;
+                INNER JOIN productos p ON dp.id_producto = p.id_producto
+                WHERE dp.id_pedido = ?;
                   """; 
     List<DetallePedido> listDetalles = new ArrayList<DetallePedido>();
     try ( Connection conn = DatabaseConnection.getConnection();
@@ -258,14 +252,14 @@ public class PedidoDAOImpl implements PedidoDAO {
             
             while(result.next()){
               Pedido pedido = new Pedido();
-              pedido.setIdPedido(result.getInt("pedido_id"));
+              pedido.setIdPedido(result.getInt("id_pedido"));
 
               Producto producto = new Producto();
-              producto.setIdProducto(result.getInt("producto_id"));
+              producto.setIdProducto(result.getInt("id_producto"));
               producto.setNombre(result.getString("nombre"));
 
               DetallePedido dp = new DetallePedido();
-              dp.setIdDetalle(result.getInt("id"));
+              dp.setIdDetalle(result.getInt("id_detalle"));
               dp.setPedido(pedido);
               dp.setProducto(producto);
               dp.setCantidad(result.getInt("cantidad"));
@@ -295,16 +289,15 @@ public class PedidoDAOImpl implements PedidoDAO {
     Pedido p = new Pedido();
     String query =  """
                       SELECT
-                          p.id,
-                          p.fecha,
+                          p.id_pedido,
+                          p.created_at AS fecha,
                           p.total,
                           p.estado,
-
-                          m.id AS mesa_id,
+                          p.id_mesa,
                           m.numero
-                      FROM pedido p
-                      INNER JOIN mesa m ON p.mesa_id = m.id
-                      WHERE p.id = ?;
+                      FROM pedidos p
+                      INNER JOIN mesas m ON p.id_mesa = m.id_mesa
+                      WHERE p.id_pedido = ?;
                     """;;
 
     try (Connection
@@ -318,10 +311,10 @@ public class PedidoDAOImpl implements PedidoDAO {
         if(result.next()){
           
           Mesa mesa = new Mesa();
-          mesa.setIdMesa(result.getInt("mesa_id"));
+          mesa.setIdMesa(result.getInt("id_mesa"));
           mesa.setNumero(result.getInt("numero"));
   
-          p.setIdPedido(result.getInt("id"));
+          p.setIdPedido(result.getInt("id_pedido"));
           p.setCreatedAt(result.getTimestamp("fecha").toLocalDateTime());
           p.setEstado(EstadoPedido.valueOf(result.getString("estado")));
           p.setTotal(result.getBigDecimal("total"));
@@ -347,15 +340,15 @@ public class PedidoDAOImpl implements PedidoDAO {
   public List<Pedido> getPedidosPorMesa(int mesaId) {
     String query = """
               SELECT
-                p.id,
-                p.fecha,
+                p.id_pedido,
+                p.created_at AS fecha,
                 p.total,
                 p.estado,
-                m.id AS mesa_id,
+                m.id_mesa,
                 m.numero
-            FROM pedido p
-            INNER JOIN mesa m ON p.mesa_id = m.id
-            WHERE p.mesa_id = ?;
+            FROM pedidos p
+            INNER JOIN mesas m ON p.id_mesa = m.id_mesa
+            WHERE p.id_mesa = ?;
                   """;; 
 
     List<Pedido> listPedidos = new ArrayList<Pedido>();
@@ -368,12 +361,12 @@ public class PedidoDAOImpl implements PedidoDAO {
 
           while (result.next()) {
             Mesa mesa = new Mesa();
-            mesa.setIdMesa(result.getInt("mesa_id"));
+            mesa.setIdMesa(result.getInt("id_mesa"));
             mesa.setNumero(result.getInt("numero"));
 
 
             Pedido p = new Pedido();
-            p.setIdPedido(result.getInt("id"));
+            p.setIdPedido(result.getInt("id_pedido"));
             p.setMesa(mesa);
             p.setCreatedAt(result.getTimestamp("fecha").toLocalDateTime());
             p.setTotal(result.getBigDecimal("total"));
@@ -392,7 +385,40 @@ public class PedidoDAOImpl implements PedidoDAO {
     return listPedidos;
   } 
 
+  @Override
+  public String insertarDetalle(int pedidoId, DetallePedido detalle) {
+    String query = "INSERT INTO detalle_pedido(id_pedido,id_producto,cantidad,precio_unitario,subtotal,observacion) VALUES(?,?,?,?,?,?)";
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(query)) {
+      ps.setInt(1, pedidoId);
+      ps.setInt(2, detalle.getProducto().getIdProducto());
+      ps.setInt(3, detalle.getCantidad());
+      ps.setBigDecimal(4, detalle.getPrecioUnitario());
+      ps.setBigDecimal(5, detalle.getSubtotal());
+      ps.setString(6, detalle.getObservacion());
+      int filas = ps.executeUpdate();
+      if (filas > 0) return "Detalle insertado correctamente";
+      return "No se pudo insertar el detalle";
+    } catch (SQLException e) {
+      return "Error al insertar detalle: " + e.getMessage();
+    }
+  }
 
+  @Override
+  public String actualizarTotal(int pedidoId, java.math.BigDecimal total) {
+    String query = "UPDATE pedidos SET total = ? WHERE id_pedido = ?";
+    try (Connection conn = DatabaseConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(query)) {
+      ps.setBigDecimal(1, total);
+      ps.setInt(2, pedidoId);
+      int filas = ps.executeUpdate();
+      if (filas > 0) return "Total actualizado correctamente";
+      return "No se encontr\u00f3 el pedido";
+    } catch (SQLException e) {
+      return "Error al actualizar total: " + e.getMessage();
+    }
+  }
 
 
 }
+

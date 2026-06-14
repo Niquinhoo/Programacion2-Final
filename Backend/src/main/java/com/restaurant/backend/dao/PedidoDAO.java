@@ -15,5 +15,7 @@ public interface PedidoDAO {
   List<DetallePedido> getDetallesPedido(int pedidoId);
   Pedido getPedidoPorId(int id);
   List<Pedido> getPedidosPorMesa(int mesaId);
+  String insertarDetalle(int pedidoId, DetallePedido detalle);
+  String actualizarTotal(int pedidoId, java.math.BigDecimal total);
   
 }

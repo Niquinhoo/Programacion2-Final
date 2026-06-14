@@ -12,17 +12,17 @@ import com.restaurant.backend.model.Mesa;
 
 public class MesaDAOImpl implements MesaDAO {
 
-  
     @Override
     public String nuevaMesa(Mesa mesa) {
-      String query = "INSERT INTO mesa(numero,estado) VALUES(?,?)";
+      String query = "INSERT INTO mesas(numero,capacidad,estado) VALUES(?,?,?)";
       try(
       Connection conn = DatabaseConnection.getConnection();
       PreparedStatement ps = conn.prepareStatement(query);) {
 
       
         ps.setInt(1, mesa.getNumero());
-        ps.setString(2,mesa.getEstado().toString());
+        ps.setInt(2, mesa.getCapacidad());
+        ps.setString(3,mesa.getEstado().toString());
 
         int filasAfectadas = ps.executeUpdate();
         if(filasAfectadas > 0) return "Se agrego la mesa ";
@@ -39,9 +39,10 @@ public class MesaDAOImpl implements MesaDAO {
 
     
     
+
     @Override
     public String cambiarEstado(int id,EstadoMesa estado) {
-      String query = "UPDATE mesa SET estado = ? WHERE id = ? ";
+      String query = "UPDATE mesas SET estado = ? WHERE id_mesa = ? ";
       try(Connection conn = DatabaseConnection.getConnection();
       PreparedStatement ps = conn.prepareStatement(query);) {
         
@@ -68,15 +69,51 @@ public class MesaDAOImpl implements MesaDAO {
   
   @Override
   public List<Mesa> getMesas() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getMesas'");
+    List<Mesa> listMesa = new ArrayList<>();
+    String query = "SELECT id_mesa, numero, capacidad, estado FROM mesas ORDER BY numero";
+
+    try (Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet result = ps.executeQuery()) {
+
+      while (result.next()) {
+        listMesa.add(mapearMesa(result));
+      }
+    } catch (SQLException e) {
+      System.out.println("ERROR: " + e.getMessage());
+    }
+
+    return listMesa;
   }
-  
-  
+
   @Override
   public Mesa getMesaPorId(int id) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getMesaPorId'");
+    String query = "SELECT id_mesa, numero, capacidad, estado FROM mesas WHERE id_mesa = ?";
+
+    try (Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query)) {
+
+      ps.setInt(1, id);
+
+      try (ResultSet result = ps.executeQuery()) {
+        if (result.next()) {
+          return mapearMesa(result);
+        }
+      }
+    } catch (SQLException e) {
+      System.out.println("ERROR: " + e.getMessage());
+    }
+
+    return null;
+  }
+
+  private Mesa mapearMesa(ResultSet result) throws SQLException {
+    Mesa mesa = new Mesa();
+    mesa.setIdMesa(result.getInt("id_mesa"));
+    mesa.setNumero(result.getInt("numero"));
+    mesa.setCapacidad(result.getInt("capacidad"));
+    mesa.setEstado(EstadoMesa.valueOf(result.getString("estado")));
+    return mesa;
   }
 
 
@@ -85,7 +122,7 @@ public class MesaDAOImpl implements MesaDAO {
   @Override
   public List<Mesa> getMesasPorEstado(EstadoMesa estado) {
     List<Mesa> listMesa = new ArrayList<Mesa>();
-    String query = "SELECT * FROM mesa WHERE estado = ?";
+    String query = "SELECT id_mesa, numero, capacidad, estado FROM mesas WHERE estado = ?";
     try (
         Connection conn = DatabaseConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(query)
@@ -95,12 +132,7 @@ public class MesaDAOImpl implements MesaDAO {
           
           try (ResultSet result = ps.executeQuery()) {
             while(result.next()){
-              Mesa m = new Mesa();
-              m.setIdMesa(result.getInt("id"));
-              m.setNumero(result.getInt("numero"));
-              m.setEstado(EstadoMesa.valueOf(result.getString("estado")));
-
-              listMesa.add(m);
+              listMesa.add(mapearMesa(result));
             }
           } catch (SQLException e) {
             System.out.println("ERROR: " + e.getMessage());
