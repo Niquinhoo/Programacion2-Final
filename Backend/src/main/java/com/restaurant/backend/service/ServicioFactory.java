@@ -6,6 +6,7 @@ public final class ServicioFactory {
     private static MesaService mesaService;
     private static PedidoService pedidoService;
     private static ReporteService reporteService;
+    private static UsuarioService usuarioService;
 
     private ServicioFactory() {
     }
@@ -36,5 +37,12 @@ public final class ServicioFactory {
             reporteService = new ReporteService();
         }
         return reporteService;
+    }
+
+    public static UsuarioService getUsuarioService() {
+        if (usuarioService == null) {
+            usuarioService = new UsuarioService();
+        }
+        return usuarioService;
     }
 }

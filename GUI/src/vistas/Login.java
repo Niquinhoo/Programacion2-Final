@@ -4,6 +4,9 @@
  */
 package vistas;
 
+import com.restaurant.backend.model.Usuario;
+import com.restaurant.backend.service.ServicioFactory;
+
 
 
 
@@ -164,28 +167,37 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_UsuarioimputActionPerformed
 
-    
-    
-// TODO: Reemplazar con:
-//   Usuario user = ServicioFactory.getAutenticacion().iniciarSesion(usuario, password);
-//   if (user != null) { new Menu(user).setVisible(true); } else { mostrarError("Credenciales inválidas"); }
     private void EntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EntrarActionPerformed
-            
-        String usuario = Usuarioimput.getText();
-        String password = String.valueOf(Password.getPassword());
+        String nombreUsuario = Usuarioimput.getText().trim();
+        String contrasena = String.valueOf(Password.getPassword());
 
-        System.out.println("Usuario: " + usuario);
-        System.out.println("Password: " + password);
-        
-        //Aca deberia ir la funcion para validar el acceso al menu
-        
-        
-        
-        
-        //Esto invoca al frame de Menu
-        Menu menu = new Menu();
+        if (nombreUsuario.isEmpty() || contrasena.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Por favor ingresá usuario y contraseña.",
+                    "Campos requeridos",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Autenticar contra la base de datos usando SHA2(?, 256)
+        Usuario usuarioAutenticado = ServicioFactory.getUsuarioService()
+                .iniciarSesion(nombreUsuario, contrasena);
+
+        if (usuarioAutenticado == null) {
+            javax.swing.JOptionPane.showMessageDialog(
+                    this,
+                    "Usuario o contraseña incorrectos.",
+                    "Acceso denegado",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            Password.setText("");
+            Usuarioimput.requestFocus();
+            return;
+        }
+
+        // Credenciales válidas: abrir el menú principal con el usuario autenticado
+        Menu menu = new Menu(usuarioAutenticado);
         menu.setVisible(true);
-            
         this.dispose();
     }//GEN-LAST:event_EntrarActionPerformed
 

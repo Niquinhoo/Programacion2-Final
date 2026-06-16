@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.restaurant</groupId>
+        <artifactId>restaurant-parent</artifactId>
+        <version>1.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>GUI</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <!-- Directorio fuente de NetBeans (sin la estructura src/main/java estándar) -->
+        <sourceDirectory>${project.basedir}/src</sourceDirectory>
+    </properties>
+
+    <dependencies>
+        <!-- Módulo Backend (clases de modelo, servicio y DAO) -->
+        <dependency>
+            <groupId>com.restaurant</groupId>
+            <artifactId>Backend</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- JARs locales en lib/ usando system scope -->
+        <!-- AbsoluteLayout — layout manager de NetBeans -->
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>local</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/AbsoluteLayout.jar</systemPath>
+        </dependency>
+
+        <!-- LGoodDatePicker — selector de fechas -->
+        <dependency>
+            <groupId>com.github.lgooddatepicker</groupId>
+            <artifactId>LGoodDatePicker</artifactId>
+            <version>local</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/LGoodDatePicker.jar</systemPath>
+        </dependency>
+
+        <!-- JFreeChart — gráficos de reportes -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jfreechart-1.5.4.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Apuntar al directorio src/ de NetBeans en lugar del estándar src/main/java -->
+        <sourceDirectory>${project.basedir}/src</sourceDirectory>
+
+        <resources>
+            <!-- Incluir recursos (imágenes, etc.) desde el directorio fuente -->
+            <resource>
+                <directory>${project.basedir}/src</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>17</release>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>vistas.Login</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                    <finalName>RestoManager-GUI</finalName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

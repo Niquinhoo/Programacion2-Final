@@ -4,6 +4,7 @@
  */
 package vistas;
 
+import com.restaurant.backend.model.Usuario;
 import javax.swing.table.DefaultTableModel;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -22,23 +23,39 @@ public class Menu extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Menu.class.getName());
     private CardLayout cardLayout;
+    private Usuario usuarioActual;
 
     /**
-     * Creates new form Menu
+     * Creates new form Menu (sin usuario autenticado, para compatibilidad con diseñador NetBeans).
      */
     public Menu() {
-    initComponents();
-    
-    configurarPanelProductos();
-    configurarContenidoPrincipal();
-    configurarTabla();
-    configurarScrollBars();
-    
-    
-    
-    
-    mostrarProductos("TODAS");
-}
+        this(null);
+    }
+
+    /**
+     * Creates new form Menu con el usuario autenticado.
+     * Actualiza el encabezado con el nombre y rol del usuario.
+     *
+     * @param usuario el usuario que inició sesión, puede ser null
+     */
+    public Menu(Usuario usuario) {
+        this.usuarioActual = usuario;
+        initComponents();
+
+        configurarPanelProductos();
+        configurarContenidoPrincipal();
+        configurarTabla();
+        configurarScrollBars();
+
+        // Mostrar información del usuario autenticado en el encabezado
+        if (usuarioActual != null) {
+            jLabel15.setText(usuarioActual.getNombreCompleto());
+            jLabel16.setText(
+                    usuarioActual.getRol() != null ? usuarioActual.getRol().getNombre() : "");
+        }
+
+        mostrarProductos("TODAS");
+    }
     
     
     private void marcarCategoriaActiva(String categoria) {
