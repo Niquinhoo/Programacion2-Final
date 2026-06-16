@@ -7,6 +7,9 @@ package vistas.paneles;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import vistas.util.AsyncDataLoader;
 
 
 /**
@@ -27,15 +30,57 @@ public class MesasPanel extends javax.swing.JPanel {
         ContenedorDetalles.setLayout(new BorderLayout());
         ContenedorDetalles.add(detallesPanel, BorderLayout.CENTER);
         
-        
-        
         detallesPanel.setVisible(false);
         ContenedorDetalles.setVisible(true);
         ContenedorDetalles.setPreferredSize(new java.awt.Dimension(820, 198));
         registrarEventosMesas();
+        actualizarFechaHora();
+        actualizarMesasAsync();
     }
 
-    
+    private void actualizarMesasAsync() {
+        AsyncDataLoader.load(
+                this,
+                () -> com.restaurant.backend.service.ServicioFactory.getMesaService().listar(),
+                this::colorearBotonesMesas,
+                error -> System.err.println("Error al actualizar mesas: " + error.getMessage())
+        );
+    }
+
+    private void actualizarFechaHora() {
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter fmtFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
+        FechaNum.setText(" " + fmtFecha.format(ahora));
+        HoraNum.setText(fmtHora.format(ahora));
+    }
+
+    private void colorearBotonesMesas(java.util.List<com.restaurant.backend.model.Mesa> listaMesas) {
+        javax.swing.JButton[] botones = {
+            Mesa1, Mesa2, Mesa3, Mesa4,
+            Mesa5, Mesa6, Mesa7, Mesa8,
+            Mesa9, Mesa10, Mesa11, Mesa12,
+            Mesa13, Mesa14, Mesa15, Mesa16
+        };
+
+        for (com.restaurant.backend.model.Mesa m : listaMesas) {
+            int numero = m.getNumero();
+            if (numero >= 1 && numero <= 16) {
+                javax.swing.JButton btn = botones[numero - 1];
+                btn.setToolTipText("Capacidad: " + m.getCapacidad() + " - Estado: " + m.getEstado());
+                switch (m.getEstado()) {
+                    case LIBRE -> btn.setBackground(new java.awt.Color(51, 204, 0));
+                    case OCUPADA -> btn.setBackground(new java.awt.Color(255, 51, 51));
+                    case RESERVADA -> btn.setBackground(new java.awt.Color(249, 155, 32));
+                    case FUERA_DE_SERVICIO -> btn.setBackground(new java.awt.Color(100, 100, 100));
+                }
+            }
+        }
+    }
+
+    public void actualizarMesas() {
+        actualizarMesasAsync();
+    }
     
     private void registrarEventosMesas() {
 

@@ -6,6 +6,7 @@ package vistas;
 
 import com.restaurant.backend.model.Usuario;
 import com.restaurant.backend.service.ServicioFactory;
+import vistas.util.AsyncDataLoader;
 
 
 
@@ -180,25 +181,41 @@ public class Login extends javax.swing.JFrame {
             return;
         }
 
-        // Autenticar contra la base de datos usando SHA2(?, 256)
-        Usuario usuarioAutenticado = ServicioFactory.getUsuarioService()
-                .iniciarSesion(nombreUsuario, contrasena);
+        Entrar.setEnabled(false);
+        Entrar.setText("Ingresando...");
 
-        if (usuarioAutenticado == null) {
-            javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Usuario o contraseña incorrectos.",
-                    "Acceso denegado",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-            Password.setText("");
-            Usuarioimput.requestFocus();
-            return;
-        }
+        AsyncDataLoader.load(
+                this,
+                () -> ServicioFactory.getUsuarioService().iniciarSesion(nombreUsuario, contrasena),
+                usuarioAutenticado -> {
+                    Entrar.setEnabled(true);
+                    Entrar.setText("ENTRAR");
 
-        // Credenciales válidas: abrir el menú principal con el usuario autenticado
-        Menu menu = new Menu(usuarioAutenticado);
-        menu.setVisible(true);
-        this.dispose();
+                    if (usuarioAutenticado == null) {
+                        javax.swing.JOptionPane.showMessageDialog(
+                                this,
+                                "Usuario o contraseña incorrectos.",
+                                "Acceso denegado",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+                        Password.setText("");
+                        Usuarioimput.requestFocus();
+                        return;
+                    }
+
+                    Menu menu = new Menu(usuarioAutenticado);
+                    menu.setVisible(true);
+                    this.dispose();
+                },
+                error -> {
+                    Entrar.setEnabled(true);
+                    Entrar.setText("ENTRAR");
+                    javax.swing.JOptionPane.showMessageDialog(
+                            this,
+                            "Error de conexión: " + error.getMessage(),
+                            "Error",
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+        );
     }//GEN-LAST:event_EntrarActionPerformed
 
     private void registrarseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registrarseMouseClicked

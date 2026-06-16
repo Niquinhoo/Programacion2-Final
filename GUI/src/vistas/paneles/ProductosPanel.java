@@ -5,6 +5,25 @@
 package vistas.paneles;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import com.restaurant.backend.controller.ProductoController;
+import com.restaurant.backend.controller.CategoriaController;
+import com.restaurant.backend.model.Producto;
+import com.restaurant.backend.model.Categoria;
+import vistas.util.AsyncDataLoader;
+
+
 
 /**
  *
@@ -12,14 +31,318 @@ import java.awt.Color;
  */
 public class ProductosPanel extends javax.swing.JPanel {
 
+    private final ProductoController productoController = new ProductoController();
+    private final CategoriaController categoriaController = new CategoriaController();
+
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+
     /**
      * Creates new form ProductosPanel
      */
     public ProductosPanel() {
         initComponents();
-        
         configurarTabla();
-        
+        agregarBotonesAccion();
+        listarProductos();
+    }
+
+    private void agregarBotonesAccion() {
+        btnAgregar = new javax.swing.JButton("Agregar");
+        btnEditar = new javax.swing.JButton("Editar");
+        btnEliminar = new javax.swing.JButton("Eliminar");
+
+        btnAgregar.setBackground(new Color(51, 153, 51));
+        btnAgregar.setForeground(Color.WHITE);
+        btnAgregar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        btnEditar.setBackground(new Color(249, 155, 32));
+        btnEditar.setForeground(Color.WHITE);
+        btnEditar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        btnEliminar.setBackground(new Color(204, 51, 51));
+        btnEliminar.setForeground(Color.WHITE);
+        btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        Encabezado2.add(btnAgregar, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 25, 90, 30));
+        Encabezado2.add(btnEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 25, 90, 30));
+        Encabezado2.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 25, 90, 30));
+
+        btnAgregar.addActionListener(e -> mostrarDialogoFormulario(null));
+
+        btnEditar.addActionListener(e -> {
+            int selectedRow = jTable1.getSelectedRow();
+            if (selectedRow >= 0) {
+                int id = (Integer) jTable1.getValueAt(selectedRow, 3);
+                AsyncDataLoader.load(
+                        this,
+                        () -> productoController.obtenerPorId(id),
+                        p -> {
+                            if (p != null) {
+                                mostrarDialogoFormulario(p);
+                            } else {
+                                JOptionPane.showMessageDialog(this, "No se pudo recuperar el producto de la base de datos.");
+                            }
+                        }
+                );
+            } else {
+                JOptionPane.showMessageDialog(this, "Seleccione un producto de la tabla para editar.");
+            }
+        });
+
+        btnEliminar.addActionListener(e -> {
+            int selectedRow = jTable1.getSelectedRow();
+            if (selectedRow >= 0) {
+                int id = (Integer) jTable1.getValueAt(selectedRow, 3);
+                String nombre = (String) jTable1.getValueAt(selectedRow, 0);
+                int opt = JOptionPane.showConfirmDialog(this,
+                    "Esta seguro de que desea eliminar el producto \"" + nombre + "\"?\nEsta accion no se puede deshacer.",
+                    "Confirmar Eliminacion",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+                if (opt == JOptionPane.YES_OPTION) {
+                    AsyncDataLoader.execute(
+                            this,
+                            () -> productoController.eliminar(id),
+                            resultado -> {
+                                JOptionPane.showMessageDialog(this, resultado);
+                                listarProductos();
+                            }
+                    );
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Seleccione un producto de la tabla para eliminar.");
+            }
+        });
+    }
+
+    public void listarProductos() {
+        AsyncDataLoader.load(
+                this,
+                () -> {
+                    java.util.Map<Integer, Long> ventasMap = new java.util.HashMap<>();
+                    try {
+                        List<com.restaurant.backend.service.dto.VentaPorProductoDTO> ventas =
+                            com.restaurant.backend.service.ServicioFactory.getReporteService().ventasPorProducto();
+                        for (com.restaurant.backend.service.dto.VentaPorProductoDTO v : ventas) {
+                            ventasMap.put(v.getIdProducto(), v.getUnidadesVendidas());
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Error al obtener estadisticas de ventas: " + ex.getMessage());
+                    }
+
+                    List<Producto> productos = productoController.listar();
+
+                    Object[][] filas = new Object[productos.size()][5];
+                    int i = 0;
+                    for (Producto p : productos) {
+                        long unidadesVendidas = ventasMap.getOrDefault(p.getIdProducto(), 0L);
+                        filas[i++] = new Object[]{
+                            p.getNombre(),
+                            p.getStock(),
+                            p.getPrecio(),
+                            p.getIdProducto(),
+                            unidadesVendidas
+                        };
+                    }
+                    return filas;
+                },
+                filas -> {
+                    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                    model.setRowCount(0);
+                    for (Object[] fila : filas) {
+                        model.addRow(fila);
+                    }
+                }
+        );
+    }
+
+    private void mostrarDialogoFormulario(Producto productoEditar) {
+        AsyncDataLoader.load(
+                this,
+                () -> categoriaController.listar(),
+                categorias -> construirDialogoFormulario(productoEditar, categorias)
+        );
+    }
+
+    private void construirDialogoFormulario(Producto productoEditar, List<Categoria> categorias) {
+        boolean esNuevo = (productoEditar == null);
+        JDialog dialog = new JDialog((java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(this),
+            esNuevo ? "Agregar Producto" : "Editar Producto", true);
+        dialog.setSize(400, 450);
+        dialog.setLocationRelativeTo(this);
+        dialog.getContentPane().setBackground(new Color(36, 30, 26));
+        dialog.setLayout(null);
+
+        JLabel lblNombre = new JLabel("Nombre:");
+        lblNombre.setForeground(Color.WHITE);
+        lblNombre.setBounds(30, 20, 100, 25);
+        dialog.add(lblNombre);
+
+        JTextField txtNombre = new JTextField();
+        txtNombre.setBounds(150, 20, 200, 25);
+        txtNombre.setBackground(new Color(41, 34, 28));
+        txtNombre.setForeground(Color.WHITE);
+        txtNombre.setCaretColor(Color.WHITE);
+        dialog.add(txtNombre);
+
+        JLabel lblDesc = new JLabel("Descripción:");
+        lblDesc.setForeground(Color.WHITE);
+        lblDesc.setBounds(30, 60, 100, 25);
+        dialog.add(lblDesc);
+
+        JTextField txtDesc = new JTextField();
+        txtDesc.setBounds(150, 60, 200, 25);
+        txtDesc.setBackground(new Color(41, 34, 28));
+        txtDesc.setForeground(Color.WHITE);
+        txtDesc.setCaretColor(Color.WHITE);
+        dialog.add(txtDesc);
+
+        JLabel lblPrecio = new JLabel("Precio:");
+        lblPrecio.setForeground(Color.WHITE);
+        lblPrecio.setBounds(30, 100, 100, 25);
+        dialog.add(lblPrecio);
+
+        JTextField txtPrecio = new JTextField();
+        txtPrecio.setBounds(150, 100, 200, 25);
+        txtPrecio.setBackground(new Color(41, 34, 28));
+        txtPrecio.setForeground(Color.WHITE);
+        txtPrecio.setCaretColor(Color.WHITE);
+        dialog.add(txtPrecio);
+
+        JLabel lblStock = new JLabel("Stock:");
+        lblStock.setForeground(Color.WHITE);
+        lblStock.setBounds(30, 140, 100, 25);
+        dialog.add(lblStock);
+
+        JTextField txtStock = new JTextField();
+        txtStock.setBounds(150, 140, 200, 25);
+        txtStock.setBackground(new Color(41, 34, 28));
+        txtStock.setForeground(Color.WHITE);
+        txtStock.setCaretColor(Color.WHITE);
+        dialog.add(txtStock);
+
+        JLabel lblCat = new JLabel("Categoría:");
+        lblCat.setForeground(Color.WHITE);
+        lblCat.setBounds(30, 180, 100, 25);
+        dialog.add(lblCat);
+
+        JComboBox<Categoria> cmbCategoria = new JComboBox<>();
+        cmbCategoria.setBounds(150, 180, 200, 25);
+        cmbCategoria.setBackground(new Color(41, 34, 28));
+        cmbCategoria.setForeground(Color.WHITE);
+        for (Categoria c : categorias) {
+            cmbCategoria.addItem(c);
+        }
+        dialog.add(cmbCategoria);
+
+        JLabel lblDisp = new JLabel("Disponible:");
+        lblDisp.setForeground(Color.WHITE);
+        lblDisp.setBounds(30, 220, 100, 25);
+        dialog.add(lblDisp);
+
+        JCheckBox chkDisponible = new JCheckBox();
+        chkDisponible.setBounds(150, 220, 50, 25);
+        chkDisponible.setBackground(new Color(36, 30, 26));
+        chkDisponible.setSelected(true);
+        dialog.add(chkDisponible);
+
+        if (!esNuevo) {
+            txtNombre.setText(productoEditar.getNombre());
+            txtDesc.setText(productoEditar.getDescripcion() != null ? productoEditar.getDescripcion() : "");
+            txtPrecio.setText(productoEditar.getPrecio().toString());
+            txtStock.setText(String.valueOf(productoEditar.getStock()));
+            chkDisponible.setSelected(productoEditar.isDisponible());
+
+            if (productoEditar.getCategoria() != null) {
+                for (int i = 0; i < cmbCategoria.getItemCount(); i++) {
+                    if (cmbCategoria.getItemAt(i).getIdCategoria().equals(productoEditar.getCategoria().getIdCategoria())) {
+                        cmbCategoria.setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+        }
+
+        JButton btnGuardar = new JButton("Guardar");
+        btnGuardar.setBounds(80, 300, 100, 35);
+        btnGuardar.setBackground(new Color(249, 155, 32));
+        btnGuardar.setForeground(Color.WHITE);
+        btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        dialog.add(btnGuardar);
+
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBounds(200, 300, 100, 35);
+        btnCancelar.setBackground(new Color(109, 93, 83));
+        btnCancelar.setForeground(Color.WHITE);
+        btnCancelar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        dialog.add(btnCancelar);
+
+        btnCancelar.addActionListener(e -> dialog.dispose());
+
+        btnGuardar.addActionListener(e -> {
+            String nombre = txtNombre.getText().trim();
+            String desc = txtDesc.getText().trim();
+            String precioStr = txtPrecio.getText().trim();
+            String stockStr = txtStock.getText().trim();
+            Categoria cat = (Categoria) cmbCategoria.getSelectedItem();
+
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "El nombre es obligatorio.", "Validación", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (cat == null) {
+                JOptionPane.showMessageDialog(dialog, "Debe seleccionar una categoría.", "Validación", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            BigDecimal precio;
+            try {
+                precio = new BigDecimal(precioStr);
+                if (precio.compareTo(BigDecimal.ZERO) < 0) {
+                    JOptionPane.showMessageDialog(dialog, "El precio no puede ser negativo.", "Validación", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "El precio debe ser un número válido.", "Validación", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int stock;
+            try {
+                stock = Integer.parseInt(stockStr);
+                if (stock < 0) {
+                    JOptionPane.showMessageDialog(dialog, "El stock no puede ser negativo.", "Validación", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "El stock debe ser un número entero válido.", "Validación", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Producto prod = esNuevo ? new Producto() : productoEditar;
+            prod.setNombre(nombre);
+            prod.setDescripcion(desc.isEmpty() ? null : desc);
+            prod.setPrecio(precio);
+            prod.setStock(stock);
+            prod.setCategoria(cat);
+            prod.setDisponible(chkDisponible.isSelected());
+
+            AsyncDataLoader.execute(
+                    this,
+                    () -> esNuevo ? productoController.crear(prod) : productoController.editar(prod),
+                    res -> {
+                        JOptionPane.showMessageDialog(dialog, res);
+                        if (res.toLowerCase().contains("correctamente") || res.toLowerCase().contains("insertado") || res.toLowerCase().contains("editado")) {
+                            dialog.dispose();
+                            listarProductos();
+                        }
+                    }
+            );
+        });
+
+        dialog.setVisible(true);
     }
     
     private void configurarTabla() {
@@ -40,8 +363,8 @@ public class ProductosPanel extends javax.swing.JPanel {
     jTable1.getColumnModel().getColumn(0).setPreferredWidth(180);
     jTable1.getColumnModel().getColumn(1).setPreferredWidth(60);
     jTable1.getColumnModel().getColumn(2).setPreferredWidth(80);
-    
-
+    jTable1.getColumnModel().getColumn(3).setPreferredWidth(30);
+    jTable1.getColumnModel().getColumn(4).setPreferredWidth(80);
     
     jTable1.setForeground(Color.WHITE);
     jTable1.setBackground(new Color(36, 30, 26));
@@ -52,14 +375,8 @@ public class ProductosPanel extends javax.swing.JPanel {
     jScrollPane2.getViewport().setBackground(
             new Color(36, 30, 26));
 }
-    
-    
-    private void listarProductos(){
-        
-    }
-    
-    
-    
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.

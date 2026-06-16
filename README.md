@@ -112,7 +112,8 @@ ant run
 ```
 O bien desde la raíz del proyecto usando `java`:
 ```bash
-java -cp GUI/lib/jfreechart-1.5.4.jar:GUI/lib/AbsoluteLayout.jar:GUI/lib/LGoodDatePicker.jar:GUI/dist/Login.jar vistas.Login
+java -cp "GUI\target\classes;Backend\target\Backend-1.0.jar;GUI\lib\AbsoluteLayout.jar;GUI\lib\LGoodDatePicker.jar;GUI\lib\jfreechart-1.5.4.jar;C:\Users\nicot\.m2\repository\com\mysql\mysql-connector-j\9.1.0\mysql-connector-j-9.1.0.jar" vistas.Login
+
 ```
 
 ---

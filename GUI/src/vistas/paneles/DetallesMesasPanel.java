@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.time.LocalDateTime;
 import javax.swing.SwingUtilities;
 import vistas.ReservaDialog;
+import vistas.util.AsyncDataLoader;
 
 /**
  *
@@ -22,42 +23,80 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
         initComponents();
         
         configurarTabla();
+        
+        btnOcupar.addActionListener(e -> btnOcuparActionPerformed());
+        btnLiberar.addActionListener(e -> btnLiberarActionPerformed());
+        btnCancelarReserva.addActionListener(e -> btnCancelarReservaActionPerformed());
     }
     
         
     
     
+    private com.restaurant.backend.model.Mesa mesaSeleccionada;
+
     public void mostrarMesa(String nombreMesa) {
+        try {
+            int numero = Integer.parseInt(nombreMesa.replace("Mesa", "").trim());
+            AsyncDataLoader.load(
+                    this,
+                    () -> com.restaurant.backend.service.ServicioFactory.getMesaService().obtenerPorNumero(numero),
+                    m -> {
+                        if (m != null) {
+                            mostrarMesa(m);
+                        } else {
+                            EstadoVar.setText("Mesa " + numero + " - No encontrada");
+                        }
+                    },
+                    error -> EstadoVar.setText("Error al cargar mesa " + numero)
+            );
+        } catch (NumberFormatException e) {
+            EstadoVar.setText(nombreMesa);
+        }
+    }
 
-    EstadoVar.setText(nombreMesa);
+    private void mostrarMesa(com.restaurant.backend.model.Mesa m) {
+        this.mesaSeleccionada = m;
+        EstadoVar.setText("Mesa " + m.getNumero() + " (" + m.getEstado() + ")");
 
-    actualizarBotones(nombreMesa);
-}
-    
-    
-    
-// TODO: Conectar con servicios:
-//   ServicioFactory.getMesaServicio().ocupar(mesaId);
-//   ServicioFactory.getMesaServicio().liberar(mesaId);
-//   ServicioFactory.getReservaServicio().crearReserva(reserva);    
-    private void actualizarBotones(String nombreMesa) {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        model.setColumnIdentifiers(new String[]{"Pedido ID", "Mozo", "Fecha/Hora", "Estado", "Total"});
 
-    btnOcupar.setVisible(true);
-    btnLiberar.setVisible(false);
+        AsyncDataLoader.load(
+                this,
+                () -> com.restaurant.backend.service.ServicioFactory.getPedidoService().listarTodos(),
+                pedidos -> {
+                    for (com.restaurant.backend.model.Pedido p : pedidos) {
+                        if (p.getMesa() != null && p.getMesa().getIdMesa().equals(m.getIdMesa())) {
+                            if (p.getEstado() == com.restaurant.backend.model.EstadoPedido.ABIERTO ||
+                                p.getEstado() == com.restaurant.backend.model.EstadoPedido.EN_COCINA ||
+                                p.getEstado() == com.restaurant.backend.model.EstadoPedido.LISTO) {
 
-    // lógica según el estado de la mesa
-}
-    
-    
-    
-    public void actualizarBotones(){
-        btnOcupar.setVisible(false);
-        btnLiberar.setVisible(false);
-        
-        
-        
-        
-        
+                                String mozo = p.getUsuario() != null
+                                        ? (p.getUsuario().getNombre() + " " + p.getUsuario().getApellido())
+                                        : "N/A";
+                                String fecha = p.getCreatedAt() != null
+                                        ? p.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                                        : "N/A";
+
+                                model.addRow(new Object[]{
+                                    "#" + p.getIdPedido(),
+                                    mozo,
+                                    fecha,
+                                    p.getEstado().toString(),
+                                    "$" + p.getTotal()
+                                });
+                            }
+                        }
+                    }
+                },
+                error -> System.err.println("Error al cargar pedidos activos: " + error.getMessage())
+        );
+
+        btnOcupar.setVisible(m.getEstado() == com.restaurant.backend.model.EstadoMesa.LIBRE || m.getEstado() == com.restaurant.backend.model.EstadoMesa.RESERVADA);
+        btnLiberar.setVisible(m.getEstado() == com.restaurant.backend.model.EstadoMesa.OCUPADA || m.getEstado() == com.restaurant.backend.model.EstadoMesa.FUERA_DE_SERVICIO);
+        btnReservar.setVisible(m.getEstado() == com.restaurant.backend.model.EstadoMesa.LIBRE);
+        btnCancelarReserva.setVisible(m.getEstado() == com.restaurant.backend.model.EstadoMesa.RESERVADA);
     }
     
     
@@ -294,6 +333,67 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
         
     }
     }//GEN-LAST:event_btnReservarActionPerformed
+
+    private void btnOcuparActionPerformed() {
+        if (mesaSeleccionada != null) {
+            AsyncDataLoader.execute(
+                    this,
+                    () -> com.restaurant.backend.service.ServicioFactory.getMesaService().ocupar(mesaSeleccionada.getIdMesa()),
+                    res -> {
+                        javax.swing.JOptionPane.showMessageDialog(this, res, "Ocupar Mesa", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                        refrescarMesa();
+                    }
+            );
+        }
+    }
+
+    private void btnLiberarActionPerformed() {
+        if (mesaSeleccionada != null) {
+            AsyncDataLoader.execute(
+                    this,
+                    () -> com.restaurant.backend.service.ServicioFactory.getMesaService().liberar(mesaSeleccionada.getIdMesa()),
+                    res -> {
+                        javax.swing.JOptionPane.showMessageDialog(this, res, "Liberar Mesa", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                        refrescarMesa();
+                    }
+            );
+        }
+    }
+
+    private void btnCancelarReservaActionPerformed() {
+        if (mesaSeleccionada != null) {
+            AsyncDataLoader.execute(
+                    this,
+                    () -> com.restaurant.backend.service.ServicioFactory.getMesaService().cancelarReserva(mesaSeleccionada.getIdMesa()),
+                    res -> {
+                        javax.swing.JOptionPane.showMessageDialog(this, res, "Cancelar Reserva", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                        refrescarMesa();
+                    }
+            );
+        }
+    }
+
+    private void refrescarMesa() {
+        if (mesaSeleccionada != null) {
+            AsyncDataLoader.load(
+                    this,
+                    () -> com.restaurant.backend.service.ServicioFactory.getMesaService().obtenerPorId(mesaSeleccionada.getIdMesa()),
+                    m -> {
+                        if (m != null) {
+                            mostrarMesa(m);
+                        }
+                        java.awt.Container parent = getParent();
+                        while (parent != null && !(parent instanceof MesasPanel)) {
+                            parent = parent.getParent();
+                        }
+                        if (parent instanceof MesasPanel) {
+                            ((MesasPanel) parent).actualizarMesas();
+                        }
+                    },
+                    error -> System.err.println("Error al refrescar mesa: " + error.getMessage())
+            );
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

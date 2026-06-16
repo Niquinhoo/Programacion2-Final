@@ -18,7 +18,7 @@ import com.restaurant.backend.model.Usuario;
 
 public class PedidoService {
 
-    private static final Set<EstadoMesa> ESTADOS_MESA_VALIDOS = EnumSet.of(EstadoMesa.LIBRE, EstadoMesa.RESERVADA);
+    private static final Set<EstadoMesa> ESTADOS_MESA_VALIDOS = EnumSet.of(EstadoMesa.LIBRE, EstadoMesa.RESERVADA, EstadoMesa.OCUPADA);
 
     private final PedidoDAO pedidoDAO;
     private final MesaService mesaService;
@@ -35,6 +35,10 @@ public class PedidoService {
     }
 
     public String crearPedido(Mesa mesa, Usuario usuario, List<DetallePedido> detalles) {
+        return crearPedido(mesa, usuario, detalles, null);
+    }
+
+    public String crearPedido(Mesa mesa, Usuario usuario, List<DetallePedido> detalles, String observacion) {
         if (mesa == null || mesa.getIdMesa() == null) {
             return "La mesa es obligatoria";
         }
@@ -77,6 +81,7 @@ public class PedidoService {
         pedido.setMesa(mesaActual);
         pedido.setUsuario(usuario);
         pedido.setEstado(EstadoPedido.ABIERTO);
+        pedido.setObservacion(observacion);
         pedido.setCreatedAt(LocalDateTime.now());
 
         for (DetallePedido detalle : detalles) {
@@ -87,6 +92,15 @@ public class PedidoService {
         String resultadoInsercion = pedidoDAO.Insertar(pedido, detalles);
         if (!resultadoInsercion.toLowerCase().contains("correctamente")) {
             return resultadoInsercion;
+        }
+
+        // Descontar stock inmediatamente al crear el pedido
+        for (DetallePedido detalle : detalles) {
+            productoService.descontarStock(detalle.getProducto().getIdProducto(), detalle.getCantidad());
+        }
+
+        if (mesaActual.getEstado() == EstadoMesa.OCUPADA) {
+            return "Pedido y detalles insertados correctamente";
         }
 
         return mesaService.ocupar(mesaActual.getIdMesa());
@@ -164,23 +178,11 @@ public class PedidoService {
             return "No se puede cerrar un pedido cancelado";
         }
 
-        List<DetallePedido> detalles = pedidoDAO.getDetallesPedido(pedidoId);
-        for (DetallePedido detalle : detalles) {
-            String resultadoDescuento = productoService.descontarStock(
-                    detalle.getProducto().getIdProducto(),
-                    detalle.getCantidad());
-            if (!resultadoDescuento.toLowerCase().contains("correctamente")) {
-                return resultadoDescuento;
-            }
-        }
+
 
         String resultadoEstado = pedidoDAO.ModificarEstado(pedidoId, EstadoPedido.CERRADO);
         if (!resultadoEstado.toLowerCase().contains("correctamente")) {
             return resultadoEstado;
-        }
-
-        if (pedido.getMesa() != null && pedido.getMesa().getIdMesa() != null) {
-            return mesaService.liberar(pedido.getMesa().getIdMesa());
         }
 
         return resultadoEstado;
@@ -207,8 +209,14 @@ public class PedidoService {
             return resultadoEstado;
         }
 
-        if (pedido.getMesa() != null && pedido.getMesa().getIdMesa() != null) {
-            return mesaService.liberar(pedido.getMesa().getIdMesa());
+        // Devolver stock al cancelar el pedido
+        List<DetallePedido> detalles = pedidoDAO.getDetallesPedido(pedidoId);
+        for (DetallePedido detalle : detalles) {
+            Producto prod = productoService.obtenerPorId(detalle.getProducto().getIdProducto());
+            if (prod != null) {
+                prod.setStock(prod.getStock() + detalle.getCantidad());
+                productoService.actualizar(prod);
+            }
         }
 
         return resultadoEstado;

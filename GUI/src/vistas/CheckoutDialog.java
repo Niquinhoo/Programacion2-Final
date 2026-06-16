@@ -4,6 +4,10 @@
  */
 package vistas;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 /**
  *
  * @author enzol
@@ -22,11 +26,75 @@ public class CheckoutDialog extends javax.swing.JDialog {
     public CheckoutDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        actualizarFechaHora();
+    }
+
+    private void actualizarFechaHora() {
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter fmtFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
+        FechaNum.setText(fmtFecha.format(ahora));
+        HoraNum.setText(fmtHora.format(ahora));
     }
 
     
+    private double subtotalOriginal = 0.0;
+
     public boolean isConfirmado() {
         return confirmado;
+    }
+
+    public void setSubtotalYCalcular(double subtotal) {
+        this.subtotalOriginal = subtotal;
+        this.SubtotalNum.setText(String.format(java.util.Locale.US, "$%.2f", subtotal));
+        recalcularTotalConDescuento();
+        
+        DescuentoVar.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { recalcularTotalConDescuento(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { recalcularTotalConDescuento(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { recalcularTotalConDescuento(); }
+        });
+    }
+
+    private void recalcularTotalConDescuento() {
+        String descText = DescuentoVar.getText().trim();
+        double descuento = 0.0;
+        if (!descText.isEmpty()) {
+            try {
+                if (descText.endsWith("%")) {
+                    descText = descText.substring(0, descText.length() - 1).trim();
+                }
+                descuento = Double.parseDouble(descText);
+            } catch (NumberFormatException e) {
+                descuento = 0.0;
+            }
+        }
+        
+        double total = subtotalOriginal;
+        if (descuento > 0) {
+            if (descuento <= 100) {
+                total = subtotalOriginal * (1 - (descuento / 100.0));
+            } else {
+                total = Math.max(0.0, subtotalOriginal - descuento);
+            }
+        }
+        TotalNum.setText(String.format(java.util.Locale.US, "$%.2f", total));
+    }
+
+    public void cargarDetalles(List<String[]> items) {
+        jPanel3.removeAll();
+        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
+        for (String[] item : items) {
+            String nombre = item[0];
+            String cantidad = item[1];
+            String precio = item[2];
+            javax.swing.JLabel label = new javax.swing.JLabel("  " + cantidad + " x " + nombre + " ($" + precio + ")");
+            label.setForeground(java.awt.Color.WHITE);
+            label.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 13));
+            jPanel3.add(label);
+        }
+        jPanel3.revalidate();
+        jPanel3.repaint();
     }
     
     public void cargarMesas(String[] mesas) {

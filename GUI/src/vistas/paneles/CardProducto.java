@@ -33,6 +33,13 @@ public class CardProducto extends javax.swing.JPanel {
         initComponents();
     }
 
+    public void setProducto(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+        lblNombre.setText(nombre);
+        lblPrecio.setText(String.format(java.util.Locale.US, "$%.2f", precio));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

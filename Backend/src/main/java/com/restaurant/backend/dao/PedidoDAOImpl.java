@@ -74,23 +74,24 @@ public class PedidoDAOImpl implements PedidoDAO {
   }
   
     @Override
-    public String Insertar(Pedido p,List<DetallePedido> detalles) {
-      String queryPedido = "INSERT INTO pedidos(id_mesa,id_usuario,created_at,total,estado) VALUES(?,?,?,?,?)";
-      String queryDetalles = "INSERT INTO detalle_pedido(id_pedido,id_producto,cantidad,precio_unitario,subtotal) VALUES(?,?,?,?,?)";
-      Connection conn = null;
+  public String Insertar(Pedido p,List<DetallePedido> detalles) {
+    String queryPedido = "INSERT INTO pedidos(id_mesa,id_usuario,created_at,total,estado,observacion) VALUES(?,?,?,?,?,?)";
+    String queryDetalles = "INSERT INTO detalle_pedido(id_pedido,id_producto,cantidad,precio_unitario,subtotal) VALUES(?,?,?,?,?)";
+    Connection conn = null;
 
-      try {
+    try {
 
-        conn = DatabaseConnection.getConnection();
-        conn.setAutoCommit(false);
+      conn = DatabaseConnection.getConnection();
+      conn.setAutoCommit(false);
 
-        PreparedStatement ps = conn.prepareStatement(queryPedido,Statement.RETURN_GENERATED_KEYS);
+      PreparedStatement ps = conn.prepareStatement(queryPedido,Statement.RETURN_GENERATED_KEYS);
 
-        ps.setInt(1, p.getMesa().getIdMesa());
-        ps.setInt(2, p.getUsuario().getIdUsuario());
-        ps.setTimestamp(3, java.sql.Timestamp.valueOf(p.getCreatedAt()));
-        ps.setBigDecimal(4, p.getTotal());
-        ps.setString(5, EstadoPedido.ABIERTO.toString());
+      ps.setInt(1, p.getMesa().getIdMesa());
+      ps.setInt(2, p.getUsuario().getIdUsuario());
+      ps.setTimestamp(3, java.sql.Timestamp.valueOf(p.getCreatedAt()));
+      ps.setBigDecimal(4, p.getTotal());
+      ps.setString(5, EstadoPedido.ABIERTO.toString());
+      ps.setString(6, p.getObservacion());
 
         int filas = ps.executeUpdate();
         
@@ -293,6 +294,7 @@ public class PedidoDAOImpl implements PedidoDAO {
                           p.created_at AS fecha,
                           p.total,
                           p.estado,
+                          p.observacion,
                           p.id_mesa,
                           m.numero
                       FROM pedidos p
@@ -318,6 +320,7 @@ public class PedidoDAOImpl implements PedidoDAO {
           p.setCreatedAt(result.getTimestamp("fecha").toLocalDateTime());
           p.setEstado(EstadoPedido.valueOf(result.getString("estado")));
           p.setTotal(result.getBigDecimal("total"));
+          p.setObservacion(result.getString("observacion"));
           p.setMesa(mesa);
         }
 

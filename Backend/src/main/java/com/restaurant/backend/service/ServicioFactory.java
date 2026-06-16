@@ -2,47 +2,79 @@ package com.restaurant.backend.service;
 
 public final class ServicioFactory {
 
-    private static ProductoService productoService;
-    private static MesaService mesaService;
-    private static PedidoService pedidoService;
-    private static ReporteService reporteService;
-    private static UsuarioService usuarioService;
+    private static volatile ProductoService productoService;
+    private static volatile MesaService mesaService;
+    private static volatile PedidoService pedidoService;
+    private static volatile ReporteService reporteService;
+    private static volatile UsuarioService usuarioService;
+
+    private static final Object LOCK = new Object();
 
     private ServicioFactory() {
     }
 
     public static ProductoService getProductoService() {
-        if (productoService == null) {
-            productoService = new ProductoService();
+        ProductoService result = productoService;
+        if (result == null) {
+            synchronized (LOCK) {
+                result = productoService;
+                if (result == null) {
+                    productoService = result = new ProductoService();
+                }
+            }
         }
-        return productoService;
+        return result;
     }
 
     public static MesaService getMesaService() {
-        if (mesaService == null) {
-            mesaService = new MesaService();
+        MesaService result = mesaService;
+        if (result == null) {
+            synchronized (LOCK) {
+                result = mesaService;
+                if (result == null) {
+                    mesaService = result = new MesaService();
+                }
+            }
         }
-        return mesaService;
+        return result;
     }
 
     public static PedidoService getPedidoService() {
-        if (pedidoService == null) {
-            pedidoService = new PedidoService();
+        PedidoService result = pedidoService;
+        if (result == null) {
+            synchronized (LOCK) {
+                result = pedidoService;
+                if (result == null) {
+                    pedidoService = result = new PedidoService();
+                }
+            }
         }
-        return pedidoService;
+        return result;
     }
 
     public static ReporteService getReporteService() {
-        if (reporteService == null) {
-            reporteService = new ReporteService();
+        ReporteService result = reporteService;
+        if (result == null) {
+            synchronized (LOCK) {
+                result = reporteService;
+                if (result == null) {
+                    reporteService = result = new ReporteService();
+                }
+            }
         }
-        return reporteService;
+        return result;
     }
 
     public static UsuarioService getUsuarioService() {
-        if (usuarioService == null) {
-            usuarioService = new UsuarioService();
+        UsuarioService result = usuarioService;
+        if (result == null) {
+            synchronized (LOCK) {
+                result = usuarioService;
+                if (result == null) {
+                    usuarioService = result = new UsuarioService();
+                }
+            }
         }
-        return usuarioService;
+        return result;
     }
 }

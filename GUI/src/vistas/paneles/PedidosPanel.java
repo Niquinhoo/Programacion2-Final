@@ -5,6 +5,9 @@
 package vistas.paneles;
 
 import java.awt.Color;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import vistas.util.AsyncDataLoader;
 
 
 /**
@@ -20,6 +23,16 @@ public class PedidosPanel extends javax.swing.JPanel {
         initComponents();
         
         configurarTabla();
+        actualizarFechaHora();
+        listarPedidos();
+    }
+
+    private void actualizarFechaHora() {
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter fmtFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
+        FechaNum.setText(" " + fmtFecha.format(ahora));
+        HoraNum.setText(fmtHora.format(ahora));
     }
     
     
@@ -51,9 +64,46 @@ public class PedidosPanel extends javax.swing.JPanel {
 }
 
     
-// TODO: Reemplazar con:
-//   List<Producto> productos = ServicioFactory.getProductoServicio().obtenerTodos();
-//   llenarTabla(productos);
+    public void listarPedidos() {
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) TablaPedidos.getModel();
+        model.setRowCount(0);
+
+        AsyncDataLoader.load(
+                this,
+                () -> {
+                    java.util.List<com.restaurant.backend.model.Pedido> pedidos =
+                        com.restaurant.backend.service.ServicioFactory.getPedidoService().listarTodos();
+                    java.util.List<Object[]> filas = new java.util.ArrayList<>();
+
+                    for (com.restaurant.backend.model.Pedido p : pedidos) {
+                        java.util.List<com.restaurant.backend.model.DetallePedido> detalles =
+                            com.restaurant.backend.service.ServicioFactory.getPedidoService().obtenerDetalles(p.getIdPedido());
+                        String mesaStr = p.getMesa() != null ? "Mesa " + p.getMesa().getNumero() : "N/A";
+                        String horaStr = p.getCreatedAt() != null
+                            ? p.getCreatedAt().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")) : "N/A";
+                        String estadoStr = p.getEstado() != null ? p.getEstado().toString() : "N/A";
+
+                        for (com.restaurant.backend.model.DetallePedido d : detalles) {
+                            filas.add(new Object[]{
+                                mesaStr,
+                                d.getProducto() != null ? d.getProducto().getNombre() : "N/A",
+                                d.getCantidad(),
+                                "$" + d.getPrecioUnitario(),
+                                estadoStr,
+                                horaStr
+                            });
+                        }
+                    }
+                    return filas;
+                },
+                rows -> {
+                    for (Object[] row : rows) {
+                        model.addRow(row);
+                    }
+                },
+                error -> System.err.println("Error al cargar listado de pedidos: " + error.getMessage())
+        );
+    }
     
     
     /**

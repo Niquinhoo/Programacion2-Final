@@ -108,7 +108,7 @@ FROM detalle_pedido dp
 JOIN productos p ON dp.id_producto = p.id_producto
 JOIN categorias c ON p.id_categoria = c.id_categoria
 JOIN pedidos pe ON dp.id_pedido = pe.id_pedido
-WHERE pe.estado = 'CERRADO'
+WHERE pe.estado != 'CANCELADO'
 GROUP BY p.id_producto, p.nombre, c.nombre
 ORDER BY total_recaudado DESC;
 

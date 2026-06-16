@@ -1,11 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package vistas.paneles.reportes;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.math.BigDecimal;
+import java.util.List;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -15,138 +14,160 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.chart.plot.RingPlot;
-/**
- *
- * @author enzol
- */
+
+import com.restaurant.backend.service.ServicioFactory;
+import com.restaurant.backend.service.dto.ResumenGeneralDTO;
+import com.restaurant.backend.service.dto.VentaPorProductoDTO;
+import vistas.util.AsyncDataLoader;
+
 public class GeneralPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form GeneralPanel
-     */
     public GeneralPanel() {
         initComponents();
-        
-        cargarGraficoBarras();
-        cargarGraficoTorta();
+        cargarDatosReporte();
     }
 
-    
-    
-    private void cargarGraficoBarras() {
+    private void cargarDatosReporte() {
+        AsyncDataLoader.load(
+                this,
+                () -> {
+                    ResumenGeneralDTO resumen = ServicioFactory.getReporteService().resumenGeneral();
+                    List<VentaPorProductoDTO> ventas = ServicioFactory.getReporteService().ventasPorProducto();
 
-    // Datos de ejemplo
-    DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+                    Object[] result = new Object[2];
+                    result[0] = resumen;
+                    result[1] = ventas;
+                    return result;
+                },
+                data -> {
+                    ResumenGeneralDTO resumen = (ResumenGeneralDTO) data[0];
+                    @SuppressWarnings("unchecked")
+                    List<VentaPorProductoDTO> ventas = (List<VentaPorProductoDTO>) data[1];
 
-    dataset.addValue(15, "Ventas", "Lun");
-    dataset.addValue(22, "Ventas", "Mar");
-    dataset.addValue(18, "Ventas", "Mié");
-    dataset.addValue(25, "Ventas", "Jue");
-    dataset.addValue(20, "Ventas", "Vie");
-    dataset.addValue(27, "Ventas", "Sáb");
-    dataset.addValue(12, "Ventas", "Dom");
+                    cargarResumen(resumen);
+                    cargarGraficoBarras(ventas);
+                    cargarGraficoTorta(ventas);
+                },
+                error -> {
+                    System.err.println("Error al cargar reporte general: " + error.getMessage());
+                    mostrarDatosVacios();
+                }
+        );
+    }
 
-    // Crear gráfico
-    JFreeChart chart = ChartFactory.createBarChart(
-            null,   // título
-            null,   // eje X
-            null,   // eje Y
-            dataset
-    );
+    private void cargarResumen(ResumenGeneralDTO resumen) {
+        VentasTotal.setText("$" + String.format("%.0f",
+                resumen.getTotalRecaudado() != null ? resumen.getTotalRecaudado().doubleValue() : 0));
+        pedidos.setText(String.valueOf(resumen.getPedidosCerrados()));
+        long pedidosCerrados = resumen.getPedidosCerrados();
+        BigDecimal totalRecaudado = resumen.getTotalRecaudado() != null ? resumen.getTotalRecaudado() : BigDecimal.ZERO;
+        double promedio = pedidosCerrados > 0
+                ? totalRecaudado.doubleValue() / pedidosCerrados
+                : 0;
+        pomedio.setText("$" + String.format("%.2f", promedio));
+    }
 
-    // Personalización
-    CategoryPlot plot = chart.getCategoryPlot();
+    private void cargarGraficoBarras(List<VentaPorProductoDTO> ventas) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-    chart.setBackgroundPaint(new Color(36, 30, 26));
+        int count = 0;
+        for (VentaPorProductoDTO v : ventas) {
+            if (count >= 7) break;
+            String label = v.getProducto() != null && v.getProducto().length() > 6
+                    ? v.getProducto().substring(0, 6) + "."
+                    : v.getProducto();
+            dataset.addValue(v.getUnidadesVendidas(), "Ventas", label);
+            count++;
+        }
 
-    plot.setBackgroundPaint(new Color(36, 30, 26));
-    plot.setOutlinePaint(null);
+        if (dataset.getColumnCount() == 0) {
+            dataset.addValue(0, "Ventas", "Sin datos");
+        }
 
-    plot.getDomainAxis().setTickLabelPaint(Color.WHITE);
-    plot.getRangeAxis().setTickLabelPaint(Color.WHITE);
+        JFreeChart chart = ChartFactory.createBarChart(null, null, null, dataset);
 
-    plot.getDomainAxis().setLabelPaint(Color.WHITE);
-    plot.getRangeAxis().setLabelPaint(Color.WHITE);
+        CategoryPlot plot = chart.getCategoryPlot();
+        chart.setBackgroundPaint(new Color(36, 30, 26));
+        plot.setBackgroundPaint(new Color(36, 30, 26));
+        plot.setOutlinePaint(null);
+        plot.getDomainAxis().setTickLabelPaint(Color.WHITE);
+        plot.getRangeAxis().setTickLabelPaint(Color.WHITE);
+        plot.getDomainAxis().setLabelPaint(Color.WHITE);
+        plot.getRangeAxis().setLabelPaint(Color.WHITE);
 
-    // Color de barras
-    BarRenderer renderer = (BarRenderer) plot.getRenderer();
-    renderer.setSeriesPaint(0, new Color(181, 137, 90));
+        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        renderer.setSeriesPaint(0, new Color(181, 137, 90));
 
-    // Crear panel del gráfico
-    ChartPanel chartPanel = new ChartPanel(chart);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(350, 276));
+        chartPanel.setMouseWheelEnabled(false);
 
-    chartPanel.setPreferredSize(new Dimension(350, 276));
-    chartPanel.setMouseWheelEnabled(false);
+        pnlGraficoBarrras.removeAll();
+        pnlGraficoBarrras.setLayout(new BorderLayout());
+        pnlGraficoBarrras.add(chartPanel, BorderLayout.CENTER);
+        pnlGraficoBarrras.revalidate();
+        pnlGraficoBarrras.repaint();
+    }
 
-    // Insertarlo en tu panel
-    pnlGraficoBarrras.removeAll();
-    pnlGraficoBarrras.setLayout(new BorderLayout());
-    pnlGraficoBarrras.add(chartPanel, BorderLayout.CENTER);
+    private void cargarGraficoTorta(List<VentaPorProductoDTO> ventas) {
+        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
 
-    pnlGraficoBarrras.revalidate();
-    pnlGraficoBarrras.repaint();
-}
-    
-    
-    private void cargarGraficoTorta() {
+        int count = 0;
+        Color[] colores = {
+            new Color(255, 0, 0), new Color(0, 51, 255), new Color(0, 255, 204),
+            new Color(102, 0, 204), new Color(51, 255, 51), new Color(255, 153, 51),
+            new Color(255, 255, 0), new Color(255, 0, 255)
+        };
 
-    DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+        for (VentaPorProductoDTO v : ventas) {
+            if (count >= 8) break;
+            String label = v.getProducto() != null ? v.getProducto() : "N/A";
+            dataset.setValue(label, v.getUnidadesVendidas());
+            count++;
+        }
 
-    dataset.setValue("Pizza", 24);
-    dataset.setValue("Hamburguesa", 25);
-    dataset.setValue("Milanesa", 18);
-    dataset.setValue("Empanadas", 12);
-    dataset.setValue("Papas", 10);
+        if (dataset.getItemCount() == 0) {
+            dataset.setValue("Sin datos", 1);
+        }
 
-    JFreeChart chart = ChartFactory.createRingChart(
-            null,
-            dataset,
-            true,
-            true,
-            false
-    );
+        JFreeChart chart = ChartFactory.createRingChart(null, dataset, true, true, false);
 
-    RingPlot plot = (RingPlot) chart.getPlot();
+        RingPlot plot = (RingPlot) chart.getPlot();
+        chart.setBackgroundPaint(new Color(36, 30, 26));
+        plot.setBackgroundPaint(new Color(36, 30, 26));
+        plot.setOutlinePaint(null);
+        plot.setShadowPaint(null);
+        plot.setLabelPaint(Color.WHITE);
+        plot.setLabelBackgroundPaint(null);
+        plot.setLabelOutlinePaint(null);
+        plot.setLabelShadowPaint(null);
+        plot.setSectionDepth(0.35);
 
-    chart.setBackgroundPaint(new Color(36, 30, 26));
+        int i = 0;
+        for (Object key : dataset.getKeys()) {
+            if (i < colores.length) {
+                plot.setSectionPaint((Comparable<?>) key, colores[i]);
+            }
+            i++;
+        }
 
-    plot.setBackgroundPaint(new Color(36, 30, 26));
-    plot.setOutlinePaint(null);
-    plot.setShadowPaint(null);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(345, 276));
+        chartPanel.setMouseWheelEnabled(false);
 
-    plot.setLabelPaint(Color.WHITE);
-    plot.setLabelBackgroundPaint(null);
-    plot.setLabelOutlinePaint(null);
-    plot.setLabelShadowPaint(null);
+        pnlGraficoTorta.removeAll();
+        pnlGraficoTorta.setLayout(new BorderLayout());
+        pnlGraficoTorta.add(chartPanel, BorderLayout.CENTER);
+        pnlGraficoTorta.revalidate();
+        pnlGraficoTorta.repaint();
+    }
 
-    plot.setSectionDepth(0.35);
+    private void mostrarDatosVacios() {
+        VentasTotal.setText("$0");
+        pedidos.setText("0");
+        pomedio.setText("$0.00");
+    }
 
-    plot.setSectionPaint("Pizza", new Color (255,0,0));
-    plot.setSectionPaint("Hamburguesa", new Color (0,51,255));
-    plot.setSectionPaint("Milanesa", new Color (0,255,204));
-    plot.setSectionPaint("Empanadas", new Color(102,0,204));
-    plot.setSectionPaint("Papas", new Color(51,255,51));
-
-    ChartPanel chartPanel = new ChartPanel(chart);
-
-    chartPanel.setPreferredSize(new Dimension(345, 276));
-    chartPanel.setMouseWheelEnabled(false);
-
-    pnlGraficoTorta.removeAll();
-    pnlGraficoTorta.setLayout(new BorderLayout());
-    pnlGraficoTorta.add(chartPanel, BorderLayout.CENTER);
-
-    pnlGraficoTorta.revalidate();
-    pnlGraficoTorta.repaint();
-}
-    
-    
-    
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -169,13 +190,13 @@ public class GeneralPanel extends javax.swing.JPanel {
         pnlTicketPromedio.setBackground(new java.awt.Color(36, 30, 26));
         pnlTicketPromedio.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        TicketPromTxt.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        TicketPromTxt.setFont(new java.awt.Font("Segoe UI", 1, 14));
         TicketPromTxt.setForeground(new java.awt.Color(255, 255, 255));
         TicketPromTxt.setText("Ticket Promedio");
 
-        pomedio.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        pomedio.setFont(new java.awt.Font("Segoe UI", 1, 36));
         pomedio.setForeground(new java.awt.Color(255, 255, 255));
-        pomedio.setText("$132.12");
+        pomedio.setText("Cargando...");
 
         javax.swing.GroupLayout pnlTicketPromedioLayout = new javax.swing.GroupLayout(pnlTicketPromedio);
         pnlTicketPromedio.setLayout(pnlTicketPromedioLayout);
@@ -204,13 +225,13 @@ public class GeneralPanel extends javax.swing.JPanel {
         pnlPedidosTotales.setBackground(new java.awt.Color(36, 30, 26));
         pnlPedidosTotales.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        PedidosTotalTxt.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        PedidosTotalTxt.setFont(new java.awt.Font("Segoe UI", 1, 14));
         PedidosTotalTxt.setForeground(new java.awt.Color(255, 255, 255));
         PedidosTotalTxt.setText("Pedidos Totales");
 
-        pedidos.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        pedidos.setFont(new java.awt.Font("Segoe UI", 1, 36));
         pedidos.setForeground(new java.awt.Color(255, 255, 255));
-        pedidos.setText("100");
+        pedidos.setText("Cargando...");
 
         javax.swing.GroupLayout pnlPedidosTotalesLayout = new javax.swing.GroupLayout(pnlPedidosTotales);
         pnlPedidosTotales.setLayout(pnlPedidosTotalesLayout);
@@ -239,13 +260,13 @@ public class GeneralPanel extends javax.swing.JPanel {
         pnlVentasTotales.setBackground(new java.awt.Color(36, 30, 26));
         pnlVentasTotales.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(109, 93, 83)));
 
-        VentasTotalTxt.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        VentasTotalTxt.setFont(new java.awt.Font("Segoe UI", 1, 14));
         VentasTotalTxt.setForeground(new java.awt.Color(255, 255, 255));
         VentasTotalTxt.setText("Ventas Totales");
 
-        VentasTotal.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        VentasTotal.setFont(new java.awt.Font("Segoe UI", 1, 36));
         VentasTotal.setForeground(new java.awt.Color(255, 255, 255));
-        VentasTotal.setText("$00000");
+        VentasTotal.setText("Cargando...");
 
         javax.swing.GroupLayout pnlVentasTotalesLayout = new javax.swing.GroupLayout(pnlVentasTotales);
         pnlVentasTotales.setLayout(pnlVentasTotalesLayout);

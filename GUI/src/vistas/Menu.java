@@ -4,16 +4,30 @@
  */
 package vistas;
 
+import com.restaurant.backend.controller.CategoriaController;
+import com.restaurant.backend.model.Categoria;
+import com.restaurant.backend.model.Producto;
 import com.restaurant.backend.model.Usuario;
+import com.restaurant.backend.service.ServicioFactory;
 import javax.swing.table.DefaultTableModel;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import vistas.paneles.CardProducto;
+import vistas.util.AsyncDataLoader;
 
 /**
  *
@@ -24,6 +38,7 @@ public class Menu extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Menu.class.getName());
     private CardLayout cardLayout;
     private Usuario usuarioActual;
+    private Map<JPanel, String> panelesCategoria = new HashMap<>();
 
     /**
      * Creates new form Menu (sin usuario autenticado, para compatibilidad con diseñador NetBeans).
@@ -43,34 +58,161 @@ public class Menu extends javax.swing.JFrame {
         initComponents();
 
         configurarPanelProductos();
+        actualizarFechaHora();
         configurarContenidoPrincipal();
         configurarTabla();
         configurarScrollBars();
 
-        // Mostrar información del usuario autenticado en el encabezado
+        javax.swing.Timer reloj = new javax.swing.Timer(30000, evt -> actualizarFechaHora());
+        reloj.start();
+
         if (usuarioActual != null) {
             jLabel15.setText(usuarioActual.getNombreCompleto());
             jLabel16.setText(
                     usuarioActual.getRol() != null ? usuarioActual.getRol().getNombre() : "");
         }
 
-        mostrarProductos("TODAS");
+        cargarCategoriasYProductos();
+    }
+
+    private void cargarCategoriasYProductos() {
+        mostrarPlaceholderCarga();
+
+        configurarCategoriasDinamicas();
+
+        AsyncDataLoader.load(
+                this,
+                () -> {
+                    List<Producto> todos = ServicioFactory.getProductoService().obtenerTodos();
+                    return todos.stream().filter(Producto::isDisponible)
+                            .collect(java.util.stream.Collectors.toList());
+                },
+                productos -> {
+                    panelProductos.removeAll();
+                    panelProductos.setLayout(new GridLayout(0, 3, 10, 10));
+
+                    for (Producto prod : productos) {
+                        CardProducto card = new CardProducto();
+                        card.setProducto(prod.getNombre(), prod.getPrecio().doubleValue());
+                        card.setOnAgregarListener(
+                                (nombre, precio) -> agregarProductoTabla(nombre, precio)
+                        );
+                        panelProductos.add(card);
+                    }
+
+                    int cantidad = panelProductos.getComponentCount();
+                    int filas = (int) Math.ceil(cantidad / 3.0);
+                    panelProductos.setPreferredSize(
+                            new java.awt.Dimension(panelProductos.getWidth(), filas * 140));
+                    panelProductos.revalidate();
+                    panelProductos.repaint();
+                },
+                error -> {
+                    panelProductos.removeAll();
+                    JLabel errorLabel = new JLabel("Error al cargar productos", SwingConstants.CENTER);
+                    errorLabel.setForeground(Color.RED);
+                    panelProductos.add(errorLabel);
+                    panelProductos.revalidate();
+                    panelProductos.repaint();
+                }
+        );
+    }
+
+    private void mostrarPlaceholderCarga() {
+        panelProductos.removeAll();
+        panelProductos.setLayout(new GridLayout(1, 1));
+
+        JPanel placeholder = new JPanel();
+        placeholder.setBackground(new Color(36, 30, 26));
+        placeholder.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 200));
+
+        JLabel loadingLabel = new JLabel("Cargando productos...");
+        loadingLabel.setForeground(new Color(249, 155, 32));
+        loadingLabel.setFont(loadingLabel.getFont().deriveFont(14f).deriveFont(java.awt.Font.BOLD));
+        placeholder.add(loadingLabel);
+
+        panelProductos.add(placeholder);
+        panelProductos.revalidate();
+        panelProductos.repaint();
     }
     
     
     private void marcarCategoriaActiva(String categoria) {
+        Color normal = new Color(41, 34, 28);
+        Color activa = new Color(64, 46, 28);
 
-    Color normal = new Color(41, 34, 28);
-    Color activa = new Color(64, 46, 28);
+        for (Map.Entry<JPanel, String> entry : panelesCategoria.entrySet()) {
+            JPanel panel = entry.getKey();
+            String cat = entry.getValue();
+            panel.setBackground(cat.equalsIgnoreCase(categoria) ? activa : normal);
+        }
+    }
 
-    CatTodas.setBackground("TODAS".equals(categoria) ? activa : normal);
-    CatEntrada.setBackground("ENTRADAS".equals(categoria) ? activa : normal);
-    CatPizza.setBackground("PIZZAS".equals(categoria) ? activa : normal);
-    CatHamburguesas.setBackground("HAMBURGUESAS".equals(categoria) ? activa : normal);
-    CatPastas.setBackground("PASTAS".equals(categoria) ? activa : normal);
-    CatBebidas.setBackground("BEBIDAS".equals(categoria) ? activa : normal);
-    CatPostres.setBackground("POSTRES".equals(categoria) ? activa : normal);
-}
+    private void configurarCategoriasDinamicas() {
+        PanelCategorias.removeAll();
+        panelesCategoria.clear();
+        PanelCategorias.setLayout(new BoxLayout(PanelCategorias, BoxLayout.Y_AXIS));
+
+        JPanel panelTodas = crearPanelCategoria("TODAS", "Todas");
+        PanelCategorias.add(panelTodas);
+        panelesCategoria.put(panelTodas, "TODAS");
+
+        try {
+            CategoriaController categoriaController = new CategoriaController();
+            List<Categoria> categorias = categoriaController.listar();
+            for (Categoria cat : categorias) {
+                JPanel panel = crearPanelCategoria(cat.getNombre().toUpperCase(), cat.getNombre());
+                PanelCategorias.add(panel);
+                panelesCategoria.put(panel, cat.getNombre());
+            }
+        } catch (Exception e) {
+            logger.warning("No se pudieron cargar las categorias desde la BD, usando respaldo: " + e.getMessage());
+            String[] respaldo = {"ENTRADAS", "PIZZAS", "HAMBURGUESAS", "PASTAS", "BEBIDAS", "POSTRES"};
+            String[] nombres = {"Entradas", "Pizzas", "Hamburguesas", "Pastas", "Bebidas", "Postres"};
+            for (int i = 0; i < respaldo.length; i++) {
+                JPanel panel = crearPanelCategoria(respaldo[i], nombres[i]);
+                PanelCategorias.add(panel);
+                panelesCategoria.put(panel, nombres[i]);
+            }
+        }
+
+        PanelCategorias.revalidate();
+        PanelCategorias.repaint();
+        ScrollCategorias.setViewportView(PanelCategorias);
+    }
+
+    private JPanel crearPanelCategoria(String key, String texto) {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(41, 34, 28));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        panel.setPreferredSize(new Dimension(112, 28));
+
+        JLabel label = new JLabel(texto);
+        label.setForeground(Color.WHITE);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        label.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mostrarProductos(key.equals("TODAS") ? "TODAS" : texto);
+            }
+        });
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(javax.swing.Box.createHorizontalGlue());
+        panel.add(label);
+        panel.add(javax.swing.Box.createHorizontalGlue());
+
+        return panel;
+    }
+
+    private void actualizarFechaHora() {
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter fmtFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
+        FechaMenuNum.setText(" " + fmtFecha.format(ahora));
+        HoraMenuNum.setText(fmtHora.format(ahora));
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -970,11 +1112,39 @@ PanelABMLayout.setVerticalGroup(
             return;
         }
 
+        if ("PRODUCTOS".equals(tarjeta)) {
+            for (java.awt.Component comp : Contenido.getComponents()) {
+                if (comp instanceof vistas.paneles.ProductosPanel) {
+                    ((vistas.paneles.ProductosPanel) comp).listarProductos();
+                    break;
+                }
+            }
+        }
+
+        if ("PEDIDOS".equals(tarjeta)) {
+            for (java.awt.Component comp : Contenido.getComponents()) {
+                if (comp instanceof vistas.paneles.PedidosPanel) {
+                    ((vistas.paneles.PedidosPanel) comp).listarPedidos();
+                    break;
+                }
+            }
+        }
+
+        if ("MESAS".equals(tarjeta)) {
+            for (java.awt.Component comp : Contenido.getComponents()) {
+                if (comp instanceof vistas.paneles.MesasPanel) {
+                    ((vistas.paneles.MesasPanel) comp).actualizarMesas();
+                    break;
+                }
+            }
+        }
+
         cardLayout.show(Contenido, tarjeta);
         marcarItemActivo(tarjeta);
         Contenido.revalidate();
         Contenido.repaint();
     }
+
 
     private void marcarItemActivo(String tarjeta) {
         Color fondoNormal = new Color(27, 24, 21);
@@ -1050,32 +1220,257 @@ PanelABMLayout.setVerticalGroup(
     // TODO: Reemplazar datos hardcodeados con:
 //   List<Producto> productos = ServicioFactory.getProductoServicio().obtenerPorCategoria(categoria);
     private void btnConfirmarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarPedidoActionPerformed
-        
+        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        int rows = modelo.getRowCount();
+        if (rows == 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "El pedido no tiene productos.", "Advertencia", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        btnConfirmarPedido.setEnabled(false);
+        btnConfirmarPedido.setText("Cargando...");
 
+        AsyncDataLoader.load(
+                this,
+                () -> {
+                    java.util.List<com.restaurant.backend.model.Mesa> mesas = ServicioFactory.getMesaService().listar();
+                    java.util.List<String> mesasStr = new java.util.ArrayList<>();
+                    for (com.restaurant.backend.model.Mesa m : mesas) {
+                        if (m.getEstado() == com.restaurant.backend.model.EstadoMesa.LIBRE ||
+                            m.getEstado() == com.restaurant.backend.model.EstadoMesa.RESERVADA ||
+                            m.getEstado() == com.restaurant.backend.model.EstadoMesa.OCUPADA) {
+                            mesasStr.add("Mesa " + m.getNumero());
+                        }
+                    }
+                    return mesasStr;
+                },
+                mesasStr -> {
+                    btnConfirmarPedido.setEnabled(true);
+                    btnConfirmarPedido.setText("Confirmar Pedido");
 
-        //llevar al checkout    
-        CheckoutDialog dialog = new CheckoutDialog(this, true);
+                    if (mesasStr.isEmpty()) {
+                        javax.swing.JOptionPane.showMessageDialog(this,
+                                "No hay mesas disponibles para asignar el pedido.",
+                                "Sin mesas disponibles", javax.swing.JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
 
-        //dialog.cargarMesas(mesas);
+                    java.util.List<String[]> items = new java.util.ArrayList<>();
+                    double subtotal = 0;
+                    for (int i = 0; i < rows; i++) {
+                        String nombre = modelo.getValueAt(i, 0).toString();
+                        String cantidad = modelo.getValueAt(i, 1).toString();
+                        String precio = modelo.getValueAt(i, 2).toString();
+                        items.add(new String[]{nombre, cantidad, precio});
+                        subtotal += Double.parseDouble(precio) * Integer.parseInt(cantidad);
+                    }
 
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
+                    CheckoutDialog dialog = new CheckoutDialog(this, true);
+                    dialog.cargarMesas(mesasStr.toArray(new String[0]));
+                    dialog.cargarDetalles(items);
+                    dialog.setSubtotalYCalcular(subtotal);
+                    dialog.setLocationRelativeTo(this);
+                    dialog.setVisible(true);
 
-        if(dialog.isConfirmado()){
-
-            String mesa = dialog.getMesaSeleccionada();
-            String metodoPago = dialog.getMetodoPago();
-            String observaciones = dialog.getObservaciones();
-            String descuento = dialog.getDescuento();
-
-    
-        };
-        
-        
-        //Agregar al listado de pedidos
-        
+                    if (dialog.isConfirmado()) {
+                        confirmarPedidoEnBackend(dialog, items, subtotal, modelo);
+                    }
+                },
+                error -> {
+                    btnConfirmarPedido.setEnabled(true);
+                    btnConfirmarPedido.setText("Confirmar Pedido");
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                            "Error al cargar mesas: " + error.getMessage(),
+                            "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+        );
     }//GEN-LAST:event_btnConfirmarPedidoActionPerformed
+
+    private void confirmarPedidoEnBackend(CheckoutDialog dialog, java.util.List<String[]> items,
+                                           double subtotal, DefaultTableModel modelo) {
+        String mesaSeleccionada = dialog.getMesaSeleccionada();
+        if (mesaSeleccionada == null) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Debe seleccionar una mesa.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int numMesa = Integer.parseInt(mesaSeleccionada.replace("Mesa ", "").trim());
+        String observaciones = dialog.getObservaciones();
+        String metodoPago = dialog.getMetodoPago();
+        String descuento = dialog.getDescuento();
+
+        AsyncDataLoader.execute(
+                this,
+                () -> {
+                    com.restaurant.backend.model.Mesa mesaObj =
+                            ServicioFactory.getMesaService().obtenerPorNumero(numMesa);
+                    if (mesaObj == null) {
+                        return "Error: No se encontro la mesa seleccionada en el sistema.";
+                    }
+
+                    java.util.List<com.restaurant.backend.model.Producto> todosProductos =
+                            ServicioFactory.getProductoService().obtenerTodos();
+                    java.util.List<com.restaurant.backend.model.DetallePedido> detalles =
+                            new java.util.ArrayList<>();
+
+                    for (String[] item : items) {
+                        String nombreProducto = item[0];
+                        int cantidad = Integer.parseInt(item[1]);
+
+                        com.restaurant.backend.model.Producto prod = null;
+                        for (com.restaurant.backend.model.Producto p : todosProductos) {
+                            if (p.getNombre().equalsIgnoreCase(nombreProducto)) {
+                                prod = p;
+                                break;
+                            }
+                        }
+                        if (prod == null) {
+                            return "Error: No se encontro el producto: " + nombreProducto;
+                        }
+
+                        com.restaurant.backend.model.DetallePedido dp =
+                                new com.restaurant.backend.model.DetallePedido();
+                        dp.setProducto(prod);
+                        dp.setCantidad(cantidad);
+                        dp.setPrecioUnitario(prod.getPrecio());
+                        dp.recalcularSubtotal();
+                        detalles.add(dp);
+                    }
+
+                    Usuario usuario = usuarioActual;
+                    if (usuario == null) {
+                        java.util.List<Usuario> usuarios =
+                                ServicioFactory.getUsuarioService().listar();
+                        if (!usuarios.isEmpty()) {
+                            usuario = usuarios.get(0);
+                        } else {
+                            usuario = new Usuario();
+                            usuario.setIdUsuario(1);
+                            usuario.setNombre("Admin");
+                            usuario.setApellido("Sistema");
+                        }
+                    }
+
+                    StringBuilder obsBuilder = new StringBuilder();
+                    if (observaciones != null && !observaciones.trim().isEmpty()) {
+                        obsBuilder.append(observaciones.trim());
+                    }
+                    if (metodoPago != null && !metodoPago.trim().isEmpty()) {
+                        if (obsBuilder.length() > 0) obsBuilder.append(" | ");
+                        obsBuilder.append("Pago: ").append(metodoPago);
+                    }
+                    if (descuento != null && !descuento.trim().isEmpty()) {
+                        if (obsBuilder.length() > 0) obsBuilder.append(" | ");
+                        obsBuilder.append("Desc: ").append(descuento);
+                    }
+
+                    String resultado = ServicioFactory.getPedidoService()
+                            .crearPedido(mesaObj, usuario, detalles, obsBuilder.toString());
+                    return "OK|" + resultado + "|" + usuario.getNombre() + " " + usuario.getApellido();
+                },
+                result -> {
+                    if (result.startsWith("Error:")) {
+                        javax.swing.JOptionPane.showMessageDialog(this, result,
+                                "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    String[] parts = result.split("\\|", 3);
+                    String resultado = parts.length > 1 ? parts[1] : result;
+                    String mozo = parts.length > 2 ? parts[2] : "Sistema";
+
+                    if (resultado.toLowerCase().contains("se cambio el estado")
+                            || resultado.toLowerCase().contains("correctamente")
+                            || resultado.toLowerCase().contains("exito")
+                            || resultado.isEmpty()) {
+
+                        double descuentoVal = 0.0;
+                        String descText = descuento.trim();
+                        if (!descText.isEmpty()) {
+                            try {
+                                if (descText.endsWith("%")) {
+                                    descText = descText.substring(0, descText.length() - 1).trim();
+                                }
+                                descuentoVal = Double.parseDouble(descText);
+                            } catch (NumberFormatException e) {
+                                descuentoVal = 0.0;
+                            }
+                        }
+                        double total = subtotal;
+                        if (descuentoVal > 0) {
+                            if (descuentoVal <= 100) {
+                                total = subtotal * (1 - (descuentoVal / 100.0));
+                            } else {
+                                total = Math.max(0.0, subtotal - descuentoVal);
+                            }
+                        }
+
+                        modelo.setRowCount(0);
+                        actualizarTotal();
+                        guardarComanda(numMesa, mozo, items, subtotal, total,
+                                metodoPago, observaciones, descuento);
+                    } else {
+                        javax.swing.JOptionPane.showMessageDialog(this,
+                                "Error al crear el pedido en el backend:\n" + resultado,
+                                "Error al guardar pedido",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+        );
+    }
+
+    private void guardarComanda(int numeroMesa, String mozo, java.util.List<String[]> items, double subtotal, double total, String metodoPago, String observaciones, String descuento) {
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter fmtFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
+        
+        StringBuilder ticket = new StringBuilder();
+        ticket.append("==========================================\n");
+        ticket.append("               RestoManager               \n");
+        ticket.append("==========================================\n");
+        ticket.append(String.format("FECHA: %-15s HORA: %s\n", fmtFecha.format(ahora), fmtHora.format(ahora)));
+        ticket.append(String.format("MESA: %-16d\n", numeroMesa));
+        ticket.append(String.format("ATENDIDO POR: %s\n", mozo));
+        ticket.append("------------------------------------------\n");
+        ticket.append(String.format("%-6s %-25s %9s\n", "Cant.", "Producto", "Subtotal"));
+        ticket.append("------------------------------------------\n");
+        for (String[] item : items) {
+            String nombre = item[0];
+            String cantidad = item[1];
+            double precio = Double.parseDouble(item[2]);
+            double sub = Integer.parseInt(cantidad) * precio;
+            ticket.append(String.format("%-6s %-25s %9.2f\n", cantidad, nombre.length() > 25 ? nombre.substring(0, 25) : nombre, sub));
+        }
+        ticket.append("------------------------------------------\n");
+        ticket.append(String.format("SUBTOTAL: %32.2f\n", subtotal));
+        if (descuento != null && !descuento.trim().isEmpty()) {
+            ticket.append(String.format("DESCUENTO: %31s\n", descuento));
+        }
+        ticket.append(String.format("TOTAL: %35.2f\n", total));
+        ticket.append(String.format("METODO DE PAGO: %26s\n", metodoPago));
+        if (observaciones != null && !observaciones.trim().isEmpty()) {
+            ticket.append("\nOBSERVACIONES:\n").append(observaciones).append("\n");
+        }
+        ticket.append("==========================================\n");
+        ticket.append("        ¡Muchas gracias por elegirnos!     \n");
+        ticket.append("==========================================\n");
+
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Imprimir Comanda (Guardar Archivo)");
+        fileChooser.setSelectedFile(new java.io.File("comanda_mesa_" + numeroMesa + ".txt"));
+        int userSelection = fileChooser.showSaveDialog(this);
+        
+        if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToSave = fileChooser.getSelectedFile();
+            try (java.io.FileWriter writer = new java.io.FileWriter(fileToSave)) {
+                writer.write(ticket.toString());
+                javax.swing.JOptionPane.showMessageDialog(this, "Comanda guardada correctamente en:\n" + fileToSave.getAbsolutePath(), "Impresión Exitosa", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } catch (java.io.IOException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error al guardar el archivo: " + e.getMessage(), "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 
     private void btnCancelarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarPedidoActionPerformed
         // TODO add your handling code here:
@@ -1087,40 +1482,57 @@ PanelABMLayout.setVerticalGroup(
 //   List<Producto> productos = ServicioFactory.getProductoServicio().obtenerPorCategoria(categoria);
     
     private void mostrarProductos(String categoria){
-        
         marcarCategoriaActiva(categoria);
-        
-        panelProductos.removeAll();
-        
-        panelProductos.setLayout(new GridLayout(0, 3, 10, 10));
-        
-        
-        for(int i = 0; i < 15; i++){
-            CardProducto card = new CardProducto();
-        
-            card.setOnAgregarListener(
-                    (nombre,precio) -> agregarProductoTabla(nombre, precio)
-            );   
-            panelProductos.add(card);
-              
-        }
-        int cantidad = panelProductos.getComponentCount();
-        int filas = (int) Math.ceil(cantidad / 3.0);
 
-        panelProductos.setPreferredSize(
-            new java.awt.Dimension(
-                panelProductos.getWidth(),
-                filas * 140
-            )
+        mostrarPlaceholderCarga();
+
+        AsyncDataLoader.load(
+                this,
+                () -> {
+                    List<Producto> productos;
+                    if ("TODAS".equalsIgnoreCase(categoria)) {
+                        productos = new java.util.ArrayList<>();
+                        for (Producto p : ServicioFactory.getProductoService().obtenerTodos()) {
+                            if (p.isDisponible()) {
+                                productos.add(p);
+                            }
+                        }
+                    } else {
+                        productos = ServicioFactory.getProductoService().obtenerPorCategoria(categoria);
+                    }
+                    return productos;
+                },
+                productos -> {
+                    panelProductos.removeAll();
+                    panelProductos.setLayout(new GridLayout(0, 3, 10, 10));
+
+                    for (Producto prod : productos) {
+                        CardProducto card = new CardProducto();
+                        card.setProducto(prod.getNombre(), prod.getPrecio().doubleValue());
+                        card.setOnAgregarListener(
+                                (nombre, precio) -> agregarProductoTabla(nombre, precio)
+                        );
+                        panelProductos.add(card);
+                    }
+
+                    int cantidad = panelProductos.getComponentCount();
+                    int filas = (int) Math.ceil(cantidad / 3.0);
+                    panelProductos.setPreferredSize(
+                            new java.awt.Dimension(panelProductos.getWidth(), filas * 140));
+                    panelProductos.revalidate();
+                    panelProductos.repaint();
+                    jScrollProductos.setHorizontalScrollBarPolicy(
+                            javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                },
+                error -> {
+                    panelProductos.removeAll();
+                    JLabel errorLabel = new JLabel("Error al cargar productos", SwingConstants.CENTER);
+                    errorLabel.setForeground(Color.RED);
+                    panelProductos.add(errorLabel);
+                    panelProductos.revalidate();
+                    panelProductos.repaint();
+                }
         );
-        
-        panelProductos.revalidate();
-        panelProductos.repaint();
-        jScrollProductos.getHorizontalScrollBar().setUnitIncrement(16);
-        jScrollProductos.setHorizontalScrollBarPolicy(
-            javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-        );
-        
     }
     
     
@@ -1165,10 +1577,9 @@ PanelABMLayout.setVerticalGroup(
     double total = 0;
 
     for (int i = 0; i < modelo.getRowCount(); i++) {
-
-        total += Double.parseDouble(
-                modelo.getValueAt(i, 2).toString()
-        );
+        int cantidad = Integer.parseInt(modelo.getValueAt(i, 1).toString());
+        double precio = Double.parseDouble(modelo.getValueAt(i, 2).toString());
+        total += precio * cantidad;
     }
 
     TotalNum.setText("$" + total);
