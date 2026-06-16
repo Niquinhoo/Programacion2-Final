@@ -95,6 +95,8 @@ public class Menu extends javax.swing.JFrame {
         PanelReportes = new javax.swing.JPanel();
         Reportes = new javax.swing.JLabel();
         PanelConfiguraciones = new javax.swing.JPanel();
+        PanelABM = new javax.swing.JPanel();
+        Insumos = new javax.swing.JLabel();
         Contenido = new javax.swing.JPanel();
         MenuPanel = new javax.swing.JPanel();
         ContenidoMenu = new javax.swing.JPanel();
@@ -271,6 +273,32 @@ public class Menu extends javax.swing.JFrame {
             .addGap(0, 50, Short.MAX_VALUE)
         );
 
+        PanelABM.setBackground(new java.awt.Color(27, 24, 21));
+        PanelABM.setRequestFocusEnabled(false);
+        
+        Insumos.setForeground(new java.awt.Color(255, 255, 255));
+        Insumos.setText("Insumos");
+
+
+        javax.swing.GroupLayout PanelABMLayout = new javax.swing.GroupLayout(PanelABM);
+        PanelABM.setLayout(PanelABMLayout);
+
+        PanelABMLayout.setHorizontalGroup(
+            PanelABMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelABMLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Insumos, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
+        );
+
+PanelABMLayout.setVerticalGroup(
+    PanelABMLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(Insumos,
+            javax.swing.GroupLayout.DEFAULT_SIZE,
+            52,
+            Short.MAX_VALUE)
+);
+
         javax.swing.GroupLayout SideBarLayout = new javax.swing.GroupLayout(SideBar);
         SideBar.setLayout(SideBarLayout);
         SideBarLayout.setHorizontalGroup(
@@ -285,7 +313,8 @@ public class Menu extends javax.swing.JFrame {
                             .addComponent(PanelReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE)
                             .addComponent(PanelProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE)
                             .addComponent(PanelPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE)))
-                    .addComponent(PanelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(PanelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(PanelABM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(SideBarLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(PanelMesas, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)))
@@ -307,6 +336,8 @@ public class Menu extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(PanelReportes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(62, 62, 62)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(PanelABM,javax.swing.GroupLayout.PREFERRED_SIZE,javax.swing.GroupLayout.DEFAULT_SIZE,javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(PanelConfiguraciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(145, Short.MAX_VALUE))
         );
@@ -908,14 +939,14 @@ public class Menu extends javax.swing.JFrame {
         Contenido.add(new vistas.paneles.PedidosPanel(), "PEDIDOS");
         Contenido.add(new vistas.paneles.ProductosPanel(), "PRODUCTOS");
         Contenido.add(new vistas.paneles.ReportesPanel(), "REPORTES");
-        
+        Contenido.add(new vistas.paneles.InsumosPanel(), "INSUMOS");
 
         registrarNavegacion("MENU", PanelMenu, Menu);
         registrarNavegacion("MESAS", PanelMesas, Mesas);
         registrarNavegacion("PEDIDOS", PanelPedidos, Pedidos);
         registrarNavegacion("PRODUCTOS", PanelProductos, Productos);
         registrarNavegacion("REPORTES", PanelReportes, Reportes);
-        
+        registrarNavegacion("INSUMOS", PanelABM, Insumos);
 
         mostrarPanel("MENU");
     }
@@ -956,6 +987,7 @@ public class Menu extends javax.swing.JFrame {
         PanelPedidos.setBackground("PEDIDOS".equals(tarjeta) ? fondoActivo : fondoNormal);
         PanelProductos.setBackground("PRODUCTOS".equals(tarjeta) ? fondoActivo : fondoNormal);
         PanelReportes.setBackground("REPORTES".equals(tarjeta) ? fondoActivo : fondoNormal);
+        PanelABM.setBackground("INSUMOS".equals(tarjeta) ? fondoActivo : fondoNormal);
         
 
         Menu.setForeground("MENU".equals(tarjeta) ? textoActivo : textoNormal);
@@ -963,6 +995,7 @@ public class Menu extends javax.swing.JFrame {
         Pedidos.setForeground("PEDIDOS".equals(tarjeta) ? textoActivo : textoNormal);
         Productos.setForeground("PRODUCTOS".equals(tarjeta) ? textoActivo : textoNormal);
         Reportes.setForeground("REPORTES".equals(tarjeta) ? textoActivo : textoNormal);
+        Insumos.setForeground("INSUMOS".equals(tarjeta) ? textoActivo : textoNormal);
         
     }
 
@@ -1228,5 +1261,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollProductos;
     private javax.swing.JTable jTable1;
     private javax.swing.JPanel panelProductos;
+    private javax.swing.JPanel PanelABM;
+    private javax.swing.JLabel Insumos;
     // End of variables declaration//GEN-END:variables
 }
