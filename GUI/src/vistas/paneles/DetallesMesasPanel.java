@@ -349,6 +349,31 @@ public class DetallesMesasPanel extends javax.swing.JPanel {
 
     private void btnLiberarActionPerformed() {
         if (mesaSeleccionada != null) {
+            boolean tienePedidosActivos = jTable1.getRowCount() > 0;
+            if (tienePedidosActivos) {
+                int opcion = javax.swing.JOptionPane.showConfirmDialog(
+                        this,
+                        "La mesa tiene pedidos abiertos. ¿Desea cerrar todos los pedidos abiertos y liberar la mesa?",
+                        "Confirmar Liberar Mesa",
+                        javax.swing.JOptionPane.YES_NO_OPTION,
+                        javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+                if (opcion != javax.swing.JOptionPane.YES_OPTION) {
+                    return;
+                }
+            } else {
+                int opcion = javax.swing.JOptionPane.showConfirmDialog(
+                        this,
+                        "¿Está seguro de que desea liberar la Mesa " + mesaSeleccionada.getNumero() + "?",
+                        "Confirmar Liberar Mesa",
+                        javax.swing.JOptionPane.YES_NO_OPTION,
+                        javax.swing.JOptionPane.QUESTION_MESSAGE
+                );
+                if (opcion != javax.swing.JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+
             AsyncDataLoader.execute(
                     this,
                     () -> com.restaurant.backend.service.ServicioFactory.getMesaService().liberar(mesaSeleccionada.getIdMesa()),
