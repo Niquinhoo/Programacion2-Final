@@ -98,6 +98,34 @@
                     <finalName>RestoManager-GUI</finalName>
                 </configuration>
             </plugin>
+
+            <!-- Maven Assembly Plugin para construir un JAR Único (Fat JAR) con todas las dependencias -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>vistas.Login</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptors>
+                        <descriptor>src/assembly/dep.xml</descriptor>
+                    </descriptors>
+                    <finalName>RestoManager</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

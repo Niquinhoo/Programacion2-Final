@@ -85,5 +85,24 @@ En [DetallesMesasPanel.java](file:///c:/Users/nicot/Desktop/Programacion2-Final/
 
 ---
 
-## 4. Conclusión
-Este hotfix corrige la experiencia de desarrollo local al unificar la compatibilidad del classpath manual y aporta seguridad al flujo de caja, impidiendo que los usuarios borren u omitan cuentas activas de mesa por clics accidentales.
+## 4. Configuración de JAR Único y Maven Multi-módulo
+
+Para dar por concluida la tarea de unificación del empaquetado del proyecto bajo Maven:
+1. **Descriptor de Ensamble (`dep.xml`):** Se creó un descriptor personalizado en [dep.xml](file:///c:/Users/nicot/Desktop/Programacion2-Final/GUI/src/assembly/dep.xml) para desempaquetar y fusionar en un único JAR ejecutable tanto las dependencias estándar del módulo `Backend` y de repositorios remotos (`HikariCP`, `mysql-connector-j`, `slf4j`) como las librerías locales que estaban asignadas en el módulo `GUI` con alcance `system` (`AbsoluteLayout.jar`, `LGoodDatePicker.jar`, `jfreechart.jar`).
+2. **Plugin de Maven (`maven-assembly-plugin`):** Se configuró este plugin en [GUI/pom.xml](file:///c:/Users/nicot/Desktop/Programacion2-Final/GUI/pom.xml) enlazándolo al ciclo de empaquetado (`package`) con el manifest principal apuntando a `vistas.Login`.
+
+**Comando de Compilación y Generación:**
+```bash
+mvn clean package -DskipTests
+```
+Esto compila el Backend, la GUI y produce el archivo autoejecutable unificado **`RestoManager.jar`** en `GUI/target/` (con un tamaño de ~6.9 MB, conteniendo todas las dependencias embebidas).
+
+**Comando de Ejecución:**
+```bash
+java -jar GUI/target/RestoManager.jar
+```
+
+---
+
+## 5. Conclusión
+Este hotfix corrige la experiencia de desarrollo local al unificar la compatibilidad del classpath manual, aporta seguridad al flujo de caja impidiendo que los usuarios borren cuentas activas de mesa por clics accidentales, y finaliza el empaquetado en un JAR único autoejecutable que agrupa de manera portable tanto el Backend como el Frontend Swing y sus librerías de terceros.

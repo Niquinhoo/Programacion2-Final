@@ -94,25 +94,30 @@ mvn clean install
 ```
 Esto creará el archivo compilado `Backend-1.0.jar` en la carpeta `Backend/target/` y ejecutará los tests unitarios.
 
-### 3. Compilar la GUI (Ant)
-Desde la carpeta `GUI/` ejecuta:
+### 3. Compilar y Generar el JAR Único (Maven Multi-módulo)
+Para compilar ambos módulos (Backend y GUI) y empaquetar todas las dependencias en un único JAR ejecutable, ejecuta desde la raíz del proyecto:
 ```bash
-ant compile
+mvn clean package -DskipTests
 ```
-Para generar el empaquetado `.jar` ejecutable:
-```bash
-ant jar
-```
-Este comando generará el ejecutable final en `GUI/dist/Login.jar` incluyendo y vinculando las dependencias de la carpeta `GUI/lib/`.
+Esto generará el ejecutable auto-contenido **`RestoManager.jar`** en la carpeta `GUI/target/`.
 
 ### 4. Ejecutar la Aplicación
-Puedes ejecutar el sistema directamente con el comando de Ant desde la carpeta `GUI/`:
-```bash
-ant run
-```
-O bien desde la raíz del proyecto usando `java`:
-```bash
-java -cp "GUI\target\classes;Backend\target\Backend-1.0.jar;GUI\lib\AbsoluteLayout.jar;GUI\lib\LGoodDatePicker.jar;GUI\lib\jfreechart-1.5.4.jar;C:\Users\nicot\.m2\repository\com\mysql\mysql-connector-j\9.1.0\mysql-connector-j-9.1.0.jar;C:\Users\nicot\.m2\repository\com\zaxxer\HikariCP\5.1.0\HikariCP-5.1.0.jar;C:\Users\nicot\.m2\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;C:\Users\nicot\.m2\repository\org\slf4j\slf4j-simple\2.0.13\slf4j-simple-2.0.13.jar" vistas.Login
+Puedes ejecutar el sistema de tres maneras diferentes:
+
+* **Opción A (Recomendada - Usando el JAR Único):**
+  ```bash
+  java -jar GUI/target/RestoManager.jar
+  ```
+
+* **Opción B (Desde Ant en la carpeta `GUI/`):**
+  ```bash
+  ant run
+  ```
+
+* **Opción C (Manual desde la raíz usando classpath):**
+  ```bash
+  java -cp "GUI\target\classes;Backend\target\Backend-1.0.jar;GUI\lib\AbsoluteLayout.jar;GUI\lib\LGoodDatePicker.jar;GUI\lib\jfreechart-1.5.4.jar;C:\Users\nicot\.m2\repository\com\mysql\mysql-connector-j\9.1.0\mysql-connector-j-9.1.0.jar;C:\Users\nicot\.m2\repository\com\zaxxer\HikariCP\5.1.0\HikariCP-5.1.0.jar;C:\Users\nicot\.m2\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;C:\Users\nicot\.m2\repository\org\slf4j\slf4j-simple\2.0.13\slf4j-simple-2.0.13.jar" vistas.Login
+  ```
 ```
 
 ---
