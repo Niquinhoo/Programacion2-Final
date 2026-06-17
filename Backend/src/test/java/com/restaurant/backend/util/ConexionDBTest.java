@@ -118,4 +118,69 @@ public class ConexionDBTest {
         
         System.out.println("=== INTEGRATION TEST COMPLETED SUCCESSFULLY ===");
     }
+
+    @Test
+    public void testLiberarMesaConPedidosActivos() {
+        System.out.println("=== STARTING TEST FOR LIBERAR MESA CON PEDIDOS ACTIVOS ===");
+        com.restaurant.backend.service.MesaService mesaService = com.restaurant.backend.service.ServicioFactory.getMesaService();
+        com.restaurant.backend.service.PedidoService pedidoService = com.restaurant.backend.service.ServicioFactory.getPedidoService();
+        com.restaurant.backend.service.ProductoService productoService = com.restaurant.backend.service.ServicioFactory.getProductoService();
+
+        // 1. Get mesa 1
+        com.restaurant.backend.model.Mesa mesa = mesaService.obtenerPorId(1);
+        assertNotNull(mesa);
+
+        // Ensure table is LIBRE or clean it
+        if (mesa.getEstado() != com.restaurant.backend.model.EstadoMesa.LIBRE) {
+            java.util.List<com.restaurant.backend.model.Pedido> pedidos = pedidoService.listarTodos();
+            for (com.restaurant.backend.model.Pedido p : pedidos) {
+                if (p.getMesa().getIdMesa() == 1 && (p.getEstado() == com.restaurant.backend.model.EstadoPedido.ABIERTO || p.getEstado() == com.restaurant.backend.model.EstadoPedido.EN_COCINA || p.getEstado() == com.restaurant.backend.model.EstadoPedido.LISTO)) {
+                    pedidoService.cancelarPedido(p.getIdPedido());
+                }
+            }
+            mesaService.liberar(1);
+        }
+
+        // Create a new order on mesa 1
+        com.restaurant.backend.model.Producto producto = productoService.obtenerPorId(3);
+        com.restaurant.backend.model.Usuario usuario = new com.restaurant.backend.model.Usuario();
+        usuario.setIdUsuario(2);
+
+        java.util.List<com.restaurant.backend.model.DetallePedido> detalles = new java.util.ArrayList<>();
+        com.restaurant.backend.model.DetallePedido primerDetalle = new com.restaurant.backend.model.DetallePedido();
+        primerDetalle.setProducto(producto);
+        primerDetalle.setCantidad(1);
+        primerDetalle.setPrecioUnitario(producto.getPrecio());
+        detalles.add(primerDetalle);
+
+        String resCrear = pedidoService.crearPedido(mesa, usuario, detalles);
+        assertEquals("Se cambio el estado", resCrear);
+
+        // Get the active order on mesa 1
+        java.util.List<com.restaurant.backend.model.Pedido> pedidos = pedidoService.listarTodos();
+        com.restaurant.backend.model.Pedido pedidoActivo = null;
+        for (com.restaurant.backend.model.Pedido p : pedidos) {
+            if (p.getMesa().getIdMesa() == 1 && p.getEstado() == com.restaurant.backend.model.EstadoPedido.ABIERTO) {
+                pedidoActivo = p;
+                break;
+            }
+        }
+        assertNotNull(pedidoActivo);
+        assertEquals(com.restaurant.backend.model.EstadoPedido.ABIERTO, pedidoActivo.getEstado());
+
+        // 2. Liberar mesa manually (which should close all active orders)
+        String resLiberar = mesaService.liberar(1);
+        assertTrue(resLiberar.contains("cambio") || resLiberar.contains("cambió") || resLiberar.contains("exito") || resLiberar.contains("correctamente"));
+
+        // Verify mesa is LIBRE
+        com.restaurant.backend.model.Mesa mesaPost = mesaService.obtenerPorId(1);
+        assertEquals(com.restaurant.backend.model.EstadoMesa.LIBRE, mesaPost.getEstado());
+
+        // Verify the order is CERRADO
+        com.restaurant.backend.model.Pedido pedidoPost = pedidoService.obtenerPorId(pedidoActivo.getIdPedido());
+        assertNotNull(pedidoPost);
+        assertEquals(com.restaurant.backend.model.EstadoPedido.CERRADO, pedidoPost.getEstado());
+
+        System.out.println("=== TEST FOR LIBERAR MESA CON PEDIDOS ACTIVOS COMPLETED SUCCESSFULLY ===");
+    }
 }

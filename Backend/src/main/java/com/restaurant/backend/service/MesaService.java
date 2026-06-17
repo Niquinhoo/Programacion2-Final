@@ -74,8 +74,10 @@ public class MesaService {
             return "No se encontro la mesa";
         }
 
-        if (tienePedidoActivo(mesaId)) {
-            return "No se puede liberar la mesa porque tiene un pedido activo";
+        for (Pedido pedido : pedidoDAO.getPedidosPorMesa(mesaId)) {
+            if (ESTADOS_PEDIDO_ACTIVO.contains(pedido.getEstado())) {
+                pedidoDAO.ModificarEstado(pedido.getIdPedido(), EstadoPedido.CERRADO);
+            }
         }
 
         return mesaDAO.cambiarEstado(mesaId, EstadoMesa.LIBRE);
@@ -122,15 +124,6 @@ public class MesaService {
         }
 
         return mesaDAO.cambiarEstado(mesaId, nuevoEstado);
-    }
-
-    private boolean tienePedidoActivo(int mesaId) {
-        for (Pedido pedido : pedidoDAO.getPedidosPorMesa(mesaId)) {
-            if (ESTADOS_PEDIDO_ACTIVO.contains(pedido.getEstado())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean esTransicionPermitida(EstadoMesa actual, EstadoMesa nuevo) {
