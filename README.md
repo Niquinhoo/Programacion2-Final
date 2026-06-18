@@ -22,9 +22,10 @@ La aplicación se distribuye como un archivo ejecutable portable de Java (`.jar`
    java -jar RestoManager.jar
    ```
 
-*Para ingresar en la pantalla de acceso, puedes utilizar las credenciales de prueba por defecto:*
-* **Usuario:** `nicolas`
-* **Contraseña:** `nicolas`
+*Para ingresar en la pantalla de acceso, puedes crear unas credenciales de prueba por ejemplo:*
+* **Usuario:** `admin@admin.com`
+* **Usuario:** `admin`
+* **Contraseña:** `admin`
 
 ---
 
