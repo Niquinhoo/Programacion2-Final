@@ -7,6 +7,9 @@ package vistas.paneles;
 import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import com.restaurant.backend.model.EstadoPedido;
+
 import vistas.util.AsyncDataLoader;
 import java.awt.Font;
 
@@ -25,7 +28,7 @@ public class PedidosPanel extends javax.swing.JPanel {
         
         configurarTabla();
         actualizarFechaHora();
-        listarPedidos();
+        listarPedidos(EstadoPedido.ABIERTO);
     }
 
     private void actualizarFechaHora() {
@@ -65,7 +68,7 @@ public class PedidosPanel extends javax.swing.JPanel {
 }
 
     
-    public void listarPedidos() {
+    public void listarPedidos(EstadoPedido estado) {
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) TablaPedidos.getModel();
         model.setRowCount(0);
 
@@ -73,7 +76,7 @@ public class PedidosPanel extends javax.swing.JPanel {
                 this,
                 () -> {
                     java.util.List<com.restaurant.backend.model.Pedido> pedidos =
-                        com.restaurant.backend.service.ServicioFactory.getPedidoService().listarTodos();
+                        com.restaurant.backend.service.ServicioFactory.getPedidoService().listarPorEstado(estado);
                     java.util.List<Object[]> filas = new java.util.ArrayList<>();
 
                     for (com.restaurant.backend.model.Pedido p : pedidos) {
@@ -107,6 +110,23 @@ public class PedidosPanel extends javax.swing.JPanel {
     }
     
     
+
+    private void btnCerradosActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        listarPedidos(EstadoPedido.CERRADO);
+    }
+
+    private void btnAbiertosActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        listarPedidos(EstadoPedido.ABIERTO);
+    }
+
+        private void btnEnCocinaActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        listarPedidos(EstadoPedido.EN_COCINA);
+    }
+
+        private void btnListosActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        listarPedidos(EstadoPedido.LISTO);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -338,6 +358,38 @@ public class PedidosPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(PedidosPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+
+
+
+
+
+    btnCerrados.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnCerradosActionPerformed(evt);
+        }
+    });
+
+    btnAbiertos.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnAbiertosActionPerformed(evt);
+        }
+    });
+
+    btnEnCocina.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnEnCocinaActionPerformed(evt);
+        }
+    });
+
+    btnListos.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnListosActionPerformed(evt);
+        }
+    });
+
+
+
     }// </editor-fold>//GEN-END:initComponents
 
     private void TablaPedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaPedidosMouseClicked

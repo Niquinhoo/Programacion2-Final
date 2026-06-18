@@ -6,6 +6,7 @@ package vistas;
 
 import com.restaurant.backend.controller.CategoriaController;
 import com.restaurant.backend.model.Categoria;
+import com.restaurant.backend.model.EstadoPedido;
 import com.restaurant.backend.model.Producto;
 import com.restaurant.backend.model.Usuario;
 import com.restaurant.backend.service.ServicioFactory;
@@ -1170,7 +1171,7 @@ PanelABMLayout.setVerticalGroup(
         if ("PEDIDOS".equals(tarjeta)) {
             for (java.awt.Component comp : Contenido.getComponents()) {
                 if (comp instanceof vistas.paneles.PedidosPanel) {
-                    ((vistas.paneles.PedidosPanel) comp).listarPedidos();
+                    ((vistas.paneles.PedidosPanel) comp).listarPedidos(EstadoPedido.ABIERTO);
                     break;
                 }
             }
