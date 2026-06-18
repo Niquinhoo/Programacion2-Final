@@ -119,9 +119,6 @@ public class CardProducto extends javax.swing.JPanel {
         
         
         if(listener != null){
-            
-            String nombre = lblNombre.getText();
-            double precio = Double.parseDouble(lblPrecio.getText().replace("$", ""));
             listener.onAgregar(nombre, precio);
         }
     }//GEN-LAST:event_btnAnadirActionPerformed
