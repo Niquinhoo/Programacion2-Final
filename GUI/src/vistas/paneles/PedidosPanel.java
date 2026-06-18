@@ -55,6 +55,8 @@ public class PedidosPanel extends javax.swing.JPanel {
                .setHeaderRenderer(headerRenderer);
     }
 
+    ocultarColumnaIdPedido();
+
    
 
     TablaPedidos.setForeground(Color.WHITE);
@@ -66,6 +68,14 @@ public class PedidosPanel extends javax.swing.JPanel {
     ScrollPedidos.getViewport().setBackground(
             new Color(36, 30, 26));
 }
+
+    private void ocultarColumnaIdPedido() {
+        javax.swing.table.TableColumn columnaId = TablaPedidos.getColumnModel().getColumn(0);
+        columnaId.setMinWidth(0);
+        columnaId.setMaxWidth(0);
+        columnaId.setPreferredWidth(0);
+        columnaId.setResizable(false);
+    }
 
     
     public void listarPedidos(EstadoPedido estado) {
@@ -89,6 +99,7 @@ public class PedidosPanel extends javax.swing.JPanel {
 
                         for (com.restaurant.backend.model.DetallePedido d : detalles) {
                             filas.add(new Object[]{
+                                p.getIdPedido(),
                                 mesaStr,
                                 d.getProducto() != null ? d.getProducto().getNombre() : "N/A",
                                 d.getCantidad(),
@@ -303,11 +314,11 @@ public class PedidosPanel extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Mesa", "Nombre", "Cant.", "Precio ", "Estado ", "Hora "
+                "ID", "Mesa", "Nombre", "Cant.", "Precio ", "Estado ", "Hora "
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, false, false, false
+                false, false, true, true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -393,8 +404,28 @@ public class PedidosPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void TablaPedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaPedidosMouseClicked
-        
+        int filaVista = TablaPedidos.rowAtPoint(evt.getPoint());
+        if (filaVista < 0) {
+            return;
+        }
+
+        int filaModelo = TablaPedidos.convertRowIndexToModel(filaVista);
+        Object idPedidoValue = TablaPedidos.getModel().getValueAt(filaModelo, 0);
+        int idPedido = Integer.parseInt(idPedidoValue.toString());
+
+        pedidoSeleccionado(idPedido);
     }//GEN-LAST:event_TablaPedidosMouseClicked
+
+    private void pedidoSeleccionado(int idPedido) {
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        java.awt.Frame parent = window instanceof java.awt.Frame ? (java.awt.Frame) window : null;
+
+        vistas.paneles.reportes.DetallesPedido dialog =
+                new vistas.paneles.reportes.DetallesPedido(parent, true);
+        dialog.cargarPedido(idPedido);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
