@@ -57,6 +57,7 @@ public class Menu extends javax.swing.JFrame {
         this.usuarioActual = usuario;
         initComponents();
 
+        configurarSidebarUniforme();
         configurarPanelProductos();
         actualizarFechaHora();
         configurarContenidoPrincipal();
@@ -212,6 +213,47 @@ public class Menu extends javax.swing.JFrame {
         DateTimeFormatter fmtHora = DateTimeFormatter.ofPattern("HH:mm");
         FechaMenuNum.setText(" " + fmtFecha.format(ahora));
         HoraMenuNum.setText(fmtHora.format(ahora));
+    }
+
+    private void configurarSidebarUniforme() {
+        Dimension itemSize = new Dimension(141, 50);
+        JPanel[] paneles = {
+            PanelMenu, PanelMesas, PanelPedidos, PanelProductos, PanelReportes, PanelABM
+        };
+        JLabel[] labels = {
+            Menu, Mesas, Pedidos, Productos, Reportes, Insumos
+        };
+
+        for (JPanel panel : paneles) {
+            panel.setPreferredSize(itemSize);
+            panel.setMinimumSize(itemSize);
+            panel.setMaximumSize(itemSize);
+        }
+
+        for (JLabel label : labels) {
+            label.setHorizontalAlignment(SwingConstants.LEFT);
+            label.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 8, 0, 0));
+        }
+
+        SideBar.removeAll();
+        SideBar.setLayout(new BoxLayout(SideBar, BoxLayout.Y_AXIS));
+
+        LogoSistema.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        LogoSistema.setMaximumSize(new Dimension(156, 96));
+
+        SideBar.add(javax.swing.Box.createVerticalStrut(6));
+        SideBar.add(LogoSistema);
+        SideBar.add(javax.swing.Box.createVerticalStrut(43));
+
+        for (JPanel panel : paneles) {
+            panel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+            SideBar.add(panel);
+            SideBar.add(javax.swing.Box.createVerticalStrut(6));
+        }
+
+        SideBar.add(javax.swing.Box.createVerticalGlue());
+        SideBar.revalidate();
+        SideBar.repaint();
     }
 
     /**
