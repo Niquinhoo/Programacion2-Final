@@ -126,6 +126,7 @@ public class Login extends javax.swing.JFrame {
 
         Password.setBackground(new java.awt.Color(36, 30, 26));
         Password.setBorder(null);
+        Password.setForeground(new java.awt.Color(255, 255, 255));
         bg.add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 310, 430, 30));
 
         jSeparator2.setForeground(new java.awt.Color(255, 255, 255));

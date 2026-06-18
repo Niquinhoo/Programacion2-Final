@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import vistas.util.AsyncDataLoader;
+import java.awt.Font;
 
 
 /**
@@ -128,6 +129,10 @@ public class PedidosPanel extends javax.swing.JPanel {
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
+        btnCerrados = new javax.swing.JButton();
+        btnAbiertos = new javax.swing.JButton();
+        btnListos = new javax.swing.JButton();
+        btnEnCocina = new javax.swing.JButton();
         ScrollPedidos = new javax.swing.JScrollPane();
         TablaPedidos = new javax.swing.JTable();
 
@@ -141,6 +146,27 @@ public class PedidosPanel extends javax.swing.JPanel {
         PedidosTitulo.setForeground(new java.awt.Color(242, 242, 242));
         PedidosTitulo.setText("Pedidos");
         Encabezado2.add(PedidosTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, 129, 80));
+
+        btnCerrados.setBackground(new Color(204, 51, 51));
+        btnCerrados.setText("Cerrados");
+        btnCerrados.setForeground(Color.WHITE);
+        Encabezado2.add(btnCerrados, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 90, 30));
+
+        btnAbiertos.setBackground(new Color(51, 153, 51));
+        btnAbiertos.setText("Abiertos");
+        btnAbiertos.setForeground(Color.WHITE);
+        Encabezado2.add(btnAbiertos, new org.netbeans.lib.awtextra.AbsoluteConstraints(215, 40, 90, 30));
+
+        btnListos.setBackground(new Color(249, 155, 32));
+        btnListos.setText("Listo");
+        btnListos.setForeground(Color.WHITE);
+        Encabezado2.add(btnListos, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 40, 90, 30));
+
+        btnEnCocina.setBackground(new Color(255, 204, 0));
+        btnEnCocina.setText("En Cocina");
+        btnEnCocina.setForeground(Color.WHITE);
+        Encabezado2.add(btnEnCocina, new org.netbeans.lib.awtextra.AbsoluteConstraints(405, 40, 100, 30));
+
 
         FechaHora2.setBackground(new java.awt.Color(36, 30, 26));
 
@@ -322,6 +348,10 @@ public class PedidosPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Encabezado2;
     private javax.swing.JPanel FechaHora2;
+    private javax.swing.JButton btnAbiertos;
+    private javax.swing.JButton btnCerrados;
+    private javax.swing.JButton btnEnCocina;
+    private javax.swing.JButton btnListos;
     private javax.swing.JLabel FechaNum;
     private javax.swing.JLabel FechaTxt;
     private javax.swing.JLabel HoraNum;
