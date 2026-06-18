@@ -36,8 +36,8 @@ public class CardProducto extends javax.swing.JPanel {
     public void setProducto(String nombre, double precio) {
         this.nombre = nombre;
         this.precio = precio;
-        lblNombre.setText(nombre);
-        lblPrecio.setText(String.format(java.util.Locale.US, "$%.2f", precio));
+        lblNombre.setText("<html><center>" + nombre + "</center></html>");
+        lblPrecio.setText(String.format("$%.2f", precio));
     }
 
     /**

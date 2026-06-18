@@ -986,11 +986,15 @@ PanelABMLayout.setVerticalGroup(
     }// </editor-fold>//GEN-END:initComponents
     
     
-    private void configurarPanelProductos() {
-        panelProductos.setLayout(
-            new java.awt.GridLayout(0, 3, 10, 10)
-        );
-    }
+  private void configurarPanelProductos() {
+    panelProductos.setLayout(
+        new java.awt.FlowLayout(
+            java.awt.FlowLayout.LEFT,
+            10,
+            10
+        )
+    );
+}
     
     
     
@@ -1504,7 +1508,7 @@ PanelABMLayout.setVerticalGroup(
                 },
                 productos -> {
                     panelProductos.removeAll();
-                    panelProductos.setLayout(new GridLayout(0, 3, 10, 10));
+                    panelProductos.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT,10,10));
 
                     for (Producto prod : productos) {
                         CardProducto card = new CardProducto();
@@ -1517,8 +1521,9 @@ PanelABMLayout.setVerticalGroup(
 
                     int cantidad = panelProductos.getComponentCount();
                     int filas = (int) Math.ceil(cantidad / 3.0);
-                    panelProductos.setPreferredSize(
-                            new java.awt.Dimension(panelProductos.getWidth(), filas * 140));
+
+                    panelProductos.setPreferredSize(new java.awt.Dimension(panelProductos.getWidth(), filas * 140));
+                        
                     panelProductos.revalidate();
                     panelProductos.repaint();
                     jScrollProductos.setHorizontalScrollBarPolicy(
