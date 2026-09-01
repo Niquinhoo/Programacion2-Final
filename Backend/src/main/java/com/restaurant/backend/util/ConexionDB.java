@@ -27,9 +27,9 @@ public final class ConexionDB {
         }
 
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(properties.getProperty("db.url"));
-        config.setUsername(properties.getProperty("db.user"));
-        config.setPassword(properties.getProperty("db.password"));
+        config.setJdbcUrl(configValue(properties, "db.url"));
+        config.setUsername(configValue(properties, "db.user"));
+        config.setPassword(configValue(properties, "db.password"));
 
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(2);
@@ -61,6 +61,10 @@ public final class ConexionDB {
         } catch (SQLException exception) {
             System.err.println("Advertencia: No se pudo actualizar la vista vw_ventas_por_producto en la base de datos: " + exception.getMessage());
         }
+    }
+
+    private String configValue(Properties properties, String key) {
+        return System.getProperty(key, properties.getProperty(key));
     }
 
     public static ConexionDB getInstance() {

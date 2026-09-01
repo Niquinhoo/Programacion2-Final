@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.restaurant.backend.support.DedicatedDatabaseExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Tag("integration")
 @DisplayName("ProductoDAOImpl — Tests de Integración")
-class ProductoDAOImplTest {
+@ExtendWith(DedicatedDatabaseExtension.class)
+class ProductoDAOImplIT {
 
     private ProductoDAOImpl dao;
     private Integer productoInsertadoId; // tracking para cleanup

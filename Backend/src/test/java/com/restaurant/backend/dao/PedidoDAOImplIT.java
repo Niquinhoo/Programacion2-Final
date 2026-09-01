@@ -11,6 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.restaurant.backend.support.DedicatedDatabaseExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,7 +30,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Tag("integration")
 @DisplayName("PedidoDAOImpl — Tests de Integración")
-class PedidoDAOImplTest {
+@ExtendWith(DedicatedDatabaseExtension.class)
+class PedidoDAOImplIT {
 
     private PedidoDAOImpl dao;
     private Integer pedidoInsertadoId; // tracking para cleanup

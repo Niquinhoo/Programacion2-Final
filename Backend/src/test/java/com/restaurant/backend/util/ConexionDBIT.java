@@ -1,9 +1,17 @@
 package com.restaurant.backend.util;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.restaurant.backend.support.DedicatedDatabaseExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ConexionDBTest {
+@Tag("integration")
+@DisplayName("Conexión y flujo completo — Tests de Integración")
+@ExtendWith(DedicatedDatabaseExtension.class)
+public class ConexionDBIT {
 
     @Test
     public void testDatabaseConnection() {
@@ -106,10 +114,10 @@ public class ConexionDBTest {
         com.restaurant.backend.model.Mesa mesaLiberada = mesaService.obtenerPorId(1);
         System.out.println("Mesa 1 estado despues de cerrar pedido: " + mesaLiberada.getEstado());
         
-        // Verify stock (decremented by 1 in crearPedido, agregarItem doesn't decrement)
+        // El pedido inicial descuenta 1 unidad y agregarItem descuenta otras 2.
         com.restaurant.backend.model.Producto productoPost = productoService.obtenerPorId(3);
         System.out.println("Stock post-cierre: " + productoPost.getStock());
-        assertEquals(originalStock - 1, productoPost.getStock());
+        assertEquals(originalStock - 3, productoPost.getStock());
         
         // Verify Report
         java.util.List<com.restaurant.backend.service.dto.VentaPorProductoDTO> reporteProductos = reporteService.ventasPorProducto();

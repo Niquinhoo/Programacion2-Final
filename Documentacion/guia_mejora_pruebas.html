@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Diagnóstico y plan de mejora de las pruebas JUnit 5 del Backend: defectos, cobertura, correcciones y criterios de aceptación." />
+  <title>Guía para mejorar las pruebas · Proyecto Final</title>
+  <style>
+    :root { color-scheme: light; --ink: #202c3b; --muted: #526175; --line: #d9e0e7; --blue: #174f86; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: #f3f5f7; font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    main { max-width: 1040px; margin: 32px auto; padding: 48px 56px; background: white; border: 1px solid var(--line); border-radius: 12px; }
+    header { border-bottom: 1px solid var(--line); padding-bottom: 26px; }
+    .eyebrow { margin: 0 0 10px; color: var(--blue); font-size: .8rem; font-weight: 750; letter-spacing: .09em; text-transform: uppercase; }
+    h1 { max-width: 760px; font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.14; letter-spacing: -.035em; margin: 0 0 18px; }
+    h2 { font-size: 1.45rem; line-height: 1.3; margin: 0 0 18px; letter-spacing: -.02em; }
+    h3 { font-size: 1.12rem; line-height: 1.4; margin: 0 0 12px; }
+    p { margin: 10px 0 16px; }
+    a { color: var(--blue); text-underline-offset: 3px; overflow-wrap: anywhere; }
+    a:focus-visible, summary:focus-visible { outline: 3px solid #b06917; outline-offset: 4px; }
+    .muted, .meta, figcaption { color: var(--muted); }
+    .meta, figcaption { font-size: .875rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 9px 20px; margin-top: 20px; font-size: .9rem; }
+    section { margin-top: 38px; scroll-margin-top: 20px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+    .metric { padding: 17px; border: 1px solid var(--line); border-radius: 8px; }
+    .metric strong { display: block; font-size: 1.95rem; line-height: 1.2; color: var(--blue); }
+    .metric span { display: block; margin-top: 7px; font-size: .87rem; }
+    .note { padding: 15px 19px; border-left: 4px solid var(--blue); background: #edf4fa; margin: 20px 0; }
+    .note.warning { border-color: #9e6415; background: #fff7e9; }
+    .note p { margin: 0; }
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { text-align: left; vertical-align: top; padding: 11px 12px; border-bottom: 1px solid var(--line); }
+    th { background: #f1f4f7; font-weight: 650; }
+    .total td { font-weight: 700; background: #f1f4f7; }
+    caption { text-align: left; font-size: .85rem; color: var(--muted); padding-bottom: 9px; }
+    article { border: 1px solid var(--line); border-radius: 8px; padding: 23px; margin: 20px 0; }
+    .status { display: inline-block; padding: 3px 9px; border-radius: 4px; margin-bottom: 10px; font-size: .76rem; font-weight: 700; background: #fff0ee; color: #953d32; }
+    .status.risk { background: #fff4db; color: #805411; }
+    .status.gap { background: #edf2f8; color: #345472; }
+    ul, ol { padding-left: 24px; margin: 12px 0 18px; }
+    li { margin-bottom: 8px; }
+    code { font: .86em/1.5 Consolas, "Courier New", monospace; overflow-wrap: anywhere; }
+    p code, li code, td code { background: #f0f3f6; border-radius: 3px; padding: 1px 4px; }
+    pre { overflow-x: auto; padding: 18px; border-radius: 6px; background: #182535; color: #eef4fb; line-height: 1.5; tab-size: 4; }
+    pre code { overflow-wrap: normal; }
+    figure { margin: 18px 0; }
+    figcaption { margin-bottom: 8px; }
+    details { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; }
+    summary { color: var(--blue); font-weight: 650; cursor: pointer; }
+    .checklist li::marker { color: var(--blue); font-weight: 700; }
+    footer { border-top: 1px solid var(--line); margin-top: 35px; padding-top: 20px; color: var(--muted); font-size: .85rem; }
+    @media (max-width: 700px) {
+      main { margin: 0; border: 0; border-radius: 0; padding: 28px 20px; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric { display: flex; align-items: center; gap: 18px; }
+      .metric strong { min-width: 108px; }
+      article { padding: 18px; }
+      th, td { padding: 9px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    @media print {
+      body { background: white; font-size: 10pt; }
+      main { max-width: none; margin: 0; padding: 0; border: 0; }
+      nav, .screen-only { display: none; }
+      section { margin-top: 24px; }
+      h2, h3, summary { break-after: avoid; }
+      tr, .metric, .note { break-inside: avoid; }
+      pre { white-space: pre-wrap; overflow-wrap: anywhere; color: #172433; background: #f0f3f6; }
+      a { color: inherit; }
+      details { break-inside: auto; }
+      @page { margin: 16mm; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">Programación II · Proyecto Final · Backend</p>
+    <h1>Cómo mejorar las pruebas y cerrar las brechas de cobertura</h1>
+    <p>Guía de trabajo para corregir defectos, completar escenarios con JUnit 5 y verificar los resultados con evidencia.</p>
+    <p class="meta">Base de evidencia: 1 de septiembre de 2026 · Alcance: Backend, sin GUI Swing · Estado: correcciones propuestas, todavía pendientes.</p>
+    <nav aria-label="Índice de la guía">
+      <a href="#diagnostico">1. Punto de partida</a>
+      <a href="#defectos">2. Defectos confirmados</a>
+      <a href="#transacciones">3. Persistencia</a>
+      <a href="#faltantes">4. Pruebas faltantes</a>
+      <a href="#ejecucion">5. Ejecución</a>
+      <a href="#cierre">6. Criterios de cierre</a>
+    </nav>
+  </header>
+
+  <section id="diagnostico">
+    <h2>1. Qué significa realmente “no llegar al 100 %”</h2>
+    <div class="metrics">
+      <div class="metric"><strong>83 / 83</strong><span>Pruebas aprobadas<br />44 unitarias + 39 de integración</span></div>
+      <div class="metric"><strong>77,5 %</strong><span>Cobertura de líneas<br />1.065 de 1.375 ejecutadas</span></div>
+      <div class="metric"><strong>56,6 %</strong><span>Cobertura de ramas<br />307 de 542 recorridas</span></div>
+    </div>
+    <div class="note"><p><strong>No quedaron pruebas fallando en la ejecución final registrada.</strong> Quedaron escenarios sin probar y defectos que la suite no detectó. “Pruebas aprobadas”, “cobertura” y “ausencia de errores” no son lo mismo.</p></div>
+    <p>JaCoCo indica qué líneas y alternativas de los <code>if</code> y <code>switch</code> se ejecutaron. Una línea cubierta puede contener resultados incorrectos que nadie comprobó. Los <code>catch</code> tienen líneas medibles, pero no cuentan como ramas del contador de JaCoCo. <a href="https://www.jacoco.org/jacoco/trunk/doc/counters.html">Referencia oficial de los contadores</a>.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Medición combinada de la última ejecución completa; no es una nueva ejecución.</caption>
+        <thead><tr><th scope="col">Paquete</th><th scope="col">Líneas cubiertas</th><th scope="col">Líneas sin ejecutar</th><th scope="col">Ramas cubiertas</th></tr></thead>
+        <tbody>
+          <tr><td>controller</td><td>80,0 %</td><td>10</td><td>No aplica</td></tr>
+          <tr><td>dao</td><td>78,6 %</td><td>123</td><td>54,3 %</td></tr>
+          <tr><td>model</td><td>72,5 %</td><td>78</td><td>10,0 %</td></tr>
+          <tr><td>service</td><td>83,9 %</td><td>57</td><td>64,3 %</td></tr>
+          <tr><td>service.dto</td><td>47,5 %</td><td>31</td><td>No aplica</td></tr>
+          <tr><td>util</td><td>78,4 %</td><td>11</td><td>40,0 %</td></tr>
+          <tr class="total"><td>Total</td><td>77,5 %</td><td>310</td><td>56,6 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>La suite anterior cubrió las capas del sistema, pero no todos los casos previstos. Las 310 líneas pendientes <strong>no equivalen a 310 errores</strong>: incluyen validaciones, manejo de fallos, consultas, constructores y métodos auxiliares.</p>
+    <p class="meta">Fuentes locales: <a href="../Backend/target/site/jacoco/index.html">reporte JaCoCo</a>, <a href="../Backend/target/site/jacoco/jacoco.xml">contadores XML</a> e <a href="informe_pruebas_junit5.md">informe de implementación y logs previos</a>. Los archivos de <code>target</code> son temporales y se regeneran con Maven.</p>
+  </section>
+
+  <section id="defectos">
+    <h2>2. Primero: corregir los defectos confirmados</h2>
+    <p>Los siguientes comportamientos se reprodujeron en el diagnóstico previo con objetos en memoria y mocks, sin acceder a la base. Sus salidas no son resultados de nuevos tests JUnit: debemos convertirlos en pruebas de regresión.</p>
+
+    <article>
+      <span class="status">D1 · Confirmado · Prioridad alta</span>
+      <h3>Eliminar el segundo ítem puede borrar el primero</h3>
+      <p><strong>Dónde:</strong> <a href="../Backend/src/main/java/com/restaurant/backend/model/DetallePedido.java">DetallePedido.equals()</a>, línea 111, y <a href="../Backend/src/main/java/com/restaurant/backend/model/Pedido.java">Pedido.quitarDetalle()</a>, línea 110.</p>
+      <p><strong>Causa:</strong> dos detalles nuevos tienen ID nulo. La comparación de sus identificadores devuelve igualdad y <code>List.remove()</code> elimina el primer elemento que considera igual, aunque se haya solicitado quitar el segundo.</p>
+      <figure>
+        <figcaption>Evidencia real del diagnóstico: dos ítems, uno de $200 y otro de $50; se pide eliminar el segundo.</figcaption>
+        <pre><code>DIAGNOSTICO equals sin ID: true
+DIAGNOSTICO quitar segundo: esperado=200.00, obtenido=50.00
+DIAGNOSTICO sigue el segundo: true</code></pre>
+      </figure>
+      <p><strong>Por qué escapó:</strong> <code>ModelosTest.pedidoAgregaYQuitaDetallesRecalculandoTotal()</code> solo elimina el primer elemento. Ese escenario pasa incluso con el defecto.</p>
+      <ol>
+        <li><strong>Reproducir en JUnit:</strong> agregar dos detalles sin ID, quitar el segundo y verificar la identidad del restante y el total.</li>
+        <li><strong>Corregir la identidad:</strong> la misma referencia debe ser igual a sí misma; dos instancias distintas sin ID no deben ser iguales; con IDs no nulos, comparar la identidad persistida.</li>
+        <li><strong>Revisar <code>hashCode()</code>:</strong> debe ser coherente con <code>equals()</code>. Considerar que el ID cambia al persistir; no cambiar el hash de un objeto mientras sea clave de un mapa o miembro de un conjunto hash.</li>
+        <li><strong>Ampliar los casos:</strong> eliminar primero, segundo y un detalle ajeno; comparar IDs iguales, diferentes y nulos. Revisar otros modelos con el mismo patrón sin cambiarlos a ciegas.</li>
+      </ol>
+      <p><strong>Aceptación:</strong> queda exactamente el detalle de $200, su referencia se conserva y el total es $200. El test debe fallar antes del arreglo y pasar después.</p>
+      <details open="open">
+        <summary>Prueba propuesta para agregar a ModelosTest</summary>
+        <p class="meta">Ejemplo pendiente de incorporar y ejecutar. Usa los imports de JUnit y BigDecimal ya presentes en esa clase.</p>
+        <pre><code>@Test
+void quitarSegundoDetalleSinIdConservaElPrimero() {
+    // Arrange: objetos distintos, todavía sin ID de base de datos.
+    Pedido pedido = new Pedido();
+    DetallePedido primero = new DetallePedido();
+    primero.setPrecioUnitario(new BigDecimal("200.00"));
+    DetallePedido segundo = new DetallePedido();
+    segundo.setPrecioUnitario(new BigDecimal("50.00"));
+    pedido.agregarDetalle(primero);
+    pedido.agregarDetalle(segundo);
+
+    // Act
+    pedido.quitarDetalle(segundo);
+
+    // Assert: comprobar identidad, no el mismo equals defectuoso.
+    assertEquals(1, pedido.getDetalles().size());
+    assertSame(primero, pedido.getDetalles().get(0));
+    assertEquals(0, new BigDecimal("200.00")
+            .compareTo(pedido.getTotal()));
+}</code></pre>
+      </details>
+    </article>
+
+    <article>
+      <span class="status">D2 · Confirmado · Prioridad alta</span>
+      <h3>Se libera una mesa aunque falle el cierre de un pedido</h3>
+      <p><strong>Dónde:</strong> <a href="../Backend/src/main/java/com/restaurant/backend/service/MesaService.java">MesaService.liberar()</a>, líneas 77–83.</p>
+      <p><strong>Causa:</strong> el servicio llama a <code>ModificarEstado()</code>, ignora su resultado y continúa marcando la mesa como libre. Puede informar éxito aunque un pedido siga activo.</p>
+      <figure>
+        <figcaption>Evidencia real del diagnóstico: el mock del cierre devuelve “Error al modificar estado”.</figcaption>
+        <pre><code>DIAGNOSTICO cierre pedido falla, liberar retorna: Se cambio el estado
+DIAGNOSTICO mesa LIBRE solicitada: true</code></pre>
+      </figure>
+      <p><strong>Por qué escapó:</strong> el test verifica que se llamó al DAO, pero no simula ni comprueba un fallo de cierre. Tampoco basta con verificar llamadas para demostrar que hubo persistencia correcta.</p>
+      <ol>
+        <li><strong>Crear una regresión:</strong> simular un error de cierre y exigir que no se llame a <code>cambiarEstado(..., LIBRE)</code>.</li>
+        <li><strong>Corrección mínima:</strong> comprobar el resultado del cierre y propagar el error. Ajustar también el test exitoso para que sus mocks devuelvan respuestas de éxito explícitas.</li>
+        <li><strong>Corrección completa:</strong> cerrar todos los pedidos activos y liberar la mesa dentro de una misma transacción. Si falla el segundo cierre, también debe revertirse el primero.</li>
+        <li><strong>Integración:</strong> provocar un fallo intermedio y consultar desde otra conexión que todos los estados permanecen como antes.</li>
+      </ol>
+      <p><strong>Aceptación:</strong> ante un fallo, la mesa sigue ocupada, ningún cierre parcial queda confirmado y el usuario recibe un error. En éxito, se cierran solo pedidos activos y la mesa queda libre por la acción manual.</p>
+      <details open="open">
+        <summary>Prueba propuesta para agregar a MesaServiceTest</summary>
+        <p class="meta">Usa los mocks, el servicio y los helpers <code>mesa()</code> y <code>pedido()</code> existentes. El mensaje es el contrato mínimo propuesto; la reversión completa necesita además una integración.</p>
+        <pre><code>@Test
+void noLiberaMesaSiFallaCerrarPedido() {
+    when(mesaDAO.getMesaPorId(1))
+            .thenReturn(mesa(1, 1, EstadoMesa.OCUPADA));
+    when(pedidoDAO.getPedidosPorMesa(1))
+            .thenReturn(List.of(pedido(10, EstadoPedido.ABIERTO)));
+    when(pedidoDAO.ModificarEstado(10, EstadoPedido.CERRADO))
+            .thenReturn("Error al modificar estado");
+
+    String resultado = service.liberar(1);
+
+    assertAll(
+        () -&gt; assertEquals("Error al modificar estado", resultado),
+        () -&gt; verify(mesaDAO, never())
+                .cambiarEstado(1, EstadoMesa.LIBRE)
+    );
+}</code></pre>
+      </details>
+    </article>
+  </section>
+
+  <section id="transacciones">
+    <h2>3. Después: probar los fallos de persistencia</h2>
+    <article>
+      <span class="status risk">R1 · Riesgo identificado en código · Pendiente de reproducción en base</span>
+      <h3>Detalle, total y stock pueden quedar desincronizados</h3>
+      <p>En <a href="../Backend/src/main/java/com/restaurant/backend/service/PedidoService.java">PedidoService.agregarItem()</a>, líneas 143–159, se inserta el detalle, luego se actualiza el total y finalmente se descuenta stock. Las operaciones DAO usan conexiones propias. Devolver un error en el segundo o tercer paso <strong>no deshace lo ya guardado</strong>.</p>
+      <p>La corrección anterior agregó el descuento de stock que faltaba, pero no hizo atómica toda la operación. También deben revisarse <code>crearPedido()</code> y <code>cancelarPedido()</code>: ignoran algunos resultados de actualización del inventario.</p>
+      <div class="table-wrap">
+        <table>
+          <caption>Casos de fallo a incorporar; resultados esperados, no resultados ya obtenidos.</caption>
+          <thead><tr><th scope="col">Fallo provocado</th><th scope="col">Qué debe comprobar la prueba</th></tr></thead>
+          <tbody>
+            <tr><td>No se inserta el detalle</td><td>No se cambia el total ni el stock. Conservar el test existente y verificar el estado persistido.</td></tr>
+            <tr><td>Falla la actualización del total</td><td>No queda el detalle recién insertado; total y stock conservan sus valores anteriores.</td></tr>
+            <tr><td>Falla el descuento de stock</td><td>Se revierten detalle y total; se informa error sin éxito parcial.</td></tr>
+            <tr><td>Falla una devolución al cancelar</td><td>No queda un pedido cancelado con devolución parcial del inventario.</td></tr>
+            <tr><td>Dos solicitudes compiten por el último stock</td><td>No se vende más de lo disponible ni queda stock negativo. Caso adicional de concurrencia, aún no reproducido.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Diseño propuesto:</strong> definir un límite transaccional por operación de negocio. La capa de persistencia debe reutilizar una única conexión para las escrituras relacionadas, confirmar al final y revertir ante cualquier error. No alcanza con envolver el servicio si los DAO siguen abriendo conexiones independientes. Evitar interpretar mensajes con <code>contains("correctamente")</code>: usar un resultado explícito o una excepción y traducirlo a texto en el límite con la interfaz.</p>
+      <p>Una transacción agrupa operaciones en la misma sesión y permite confirmarlas o revertirlas juntas; no revierte cambios ya confirmados fuera de ella. <a href="https://dev.mysql.com/doc/refman/8.4/en/commit.html">Referencia de COMMIT y ROLLBACK</a>.</p>
+      <p><strong>Cómo demostrarlo:</strong> cargar una fixture conocida en <code>restomanager_test</code>, provocar determinísticamente el fallo de una escritura y comparar detalle, total, stock y estados antes y después desde otra conexión. Los mocks sirven para validar la reacción del servicio, pero no prueban un rollback real. Para concurrencia, comprobar además la actualización condicional de stock o el bloqueo de filas que se decida implementar.</p>
+    </article>
+  </section>
+
+  <section id="faltantes">
+    <h2>4. Completar las pruebas que faltan</h2>
+    <p>Una vez protegida la consistencia, completar casos normales, límites, entradas inválidas y errores. Cada test debe comprobar un resultado observable, no solo ejecutar una línea.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Lista de trabajo priorizada. Los nombres de métodos de producción sí existen; las pruebas sugeridas están pendientes.</caption>
+        <thead><tr><th scope="col">Prioridad / componente</th><th scope="col">Brecha observada</th><th scope="col">Pruebas y criterio de aceptación</th></tr></thead>
+        <tbody>
+          <tr><td>Alta · MesaService</td><td>Matriz de transiciones incompleta.</td><td>Probar las 16 combinaciones entre estados; agregar ID inválido, estado nulo y mesa inexistente. Verificar llamada al DAO solo cuando corresponde.</td></tr>
+          <tr><td>Alta · PedidoService</td><td>Errores y validaciones sin recorrer.</td><td>Pedido inexistente, cerrado o cancelado; cantidad inválida; producto inexistente; stock insuficiente; fallos de total y stock. Verificar ausencia de efectos prohibidos.</td></tr>
+          <tr><td>Alta · ReporteDAOImplIT</td><td>Comprobaciones como <code>assertNotNull()</code> no validan las cuentas.</td><td>Crear datos aislados con importes conocidos y afirmar sumas, unidades y períodos exactos. Verificar las reglas de estados de cada consulta; no asumir que todos los reportes filtran igual.</td></tr>
+          <tr><td>Media · DAO</td><td><code>getUsuarios()</code> y <code>FiltrarPorCategoria()</code> sin ejecutar.</td><td>Casos con y sin resultados, categoría coincidente y no coincidente; comprobar contenido, relaciones y filtros, no solo tamaño.</td></tr>
+          <tr><td>Media · Servicios</td><td><code>PedidoService.listarPorEstado()</code> sin ejecutar; validaciones y caminos exitosos pendientes en usuarios y productos.</td><td>Estado nulo debe delegar al listado general; estado válido, al filtrado. Probar límites y respuestas del DAO en registro, actualización y stock.</td></tr>
+          <tr><td>Media · Errores SQL / conexión</td><td>Manejo de fallos y cierres parcialmente sin ejecutar.</td><td>Fallos controlados de consulta/conexión y liberación de recursos. Aislar propiedades y pool entre casos; nunca provocar fallos en una base compartida.</td></tr>
+          <tr><td>Requiere decisión · MesaDAOImpl</td><td><code>borrarMesa()</code> está sin implementar y lanza <code>UnsupportedOperationException</code>.</td><td>Definir si el requisito exige borrado, baja lógica o retirar una operación no utilizada. Si se implementa, proteger las relaciones con pedidos. Afirmar la excepción no implementa la funcionalidad.</td></tr>
+          <tr><td>Baja · Constructores / DTO / modelos</td><td>Inicialización, accesores y utilidades sin utilizar en los tests.</td><td>Verificar mapeo de reportes, valores por defecto y contratos de identidad mediante flujos reales. No agregar llamadas vacías solo para colorear el reporte.</td></tr>
+          <tr><td>Baja · ServicioFactory</td><td>Hay ramas de inicialización sincronizada sin recorrer.</td><td>Valorar un test de concurrencia con barreras y control del aislamiento. Una carrera aleatoria o repetir el test muchas veces no garantiza cubrir esas ramas.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Matriz de estados para convertir en una prueba parametrizada</h3>
+    <p>Esta tabla caracteriza la implementación actual de <code>cambiarEstado()</code>; debe contrastarse con el requisito de negocio antes de modificarlo. Probar por separado <code>liberar()</code>, que además gestiona pedidos activos.</p>
+    <div class="table-wrap">
+      <table>
+        <caption>Filas: estado actual. Columnas: estado solicitado. “Sí” indica transición admitida actualmente.</caption>
+        <thead><tr><th scope="col">Desde / hacia</th><th scope="col">LIBRE</th><th scope="col">OCUPADA</th><th scope="col">RESERVADA</th><th scope="col">FUERA_DE_SERVICIO</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">LIBRE</th><td>Sí</td><td>Sí</td><td>Sí</td><td>Sí</td></tr>
+          <tr><th scope="row">OCUPADA</th><td>Sí</td><td>Sí</td><td>No</td><td>No</td></tr>
+          <tr><th scope="row">RESERVADA</th><td>Sí</td><td>Sí</td><td>Sí</td><td>No</td></tr>
+          <tr><th scope="row">FUERA_DE_SERVICIO</th><td>Sí</td><td>No</td><td>No</td><td>Sí</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Usar <code>@ParameterizedTest</code> con <code>@CsvSource</code> o <code>@MethodSource</code> y expectativas explícitas. No calcular el resultado esperado llamando al mismo método de producción que se intenta verificar.</p>
+    <div class="note warning"><p><strong>Si se exige 100 % literal:</strong> definir primero si se habla de líneas o ramas y sobre qué alcance. Después revisar cada marca roja y amarilla de JaCoCo. Estos cambios no garantizan por sí solos 100 %. Cualquier exclusión debe justificarse y declararse; no quitar validaciones, ocultar clases o debilitar assertions para subir el número. Incluso con 100 % pueden quedar errores de lógica y combinaciones sin probar.</p></div>
+  </section>
+
+  <section id="ejecucion">
+    <h2>5. Cómo trabajar y registrar la evidencia</h2>
+    <ol class="checklist">
+      <li><strong>Elegir un caso.</strong> Anotar requisito, entradas, resultado esperado y archivos afectados. Empezar por D1, luego D2 y R1.</li>
+      <li><strong>Agregar el test antes del arreglo.</strong> Ejecutarlo y conservar el fallo. Confirmar que falla por el defecto, no por imports, mocks incompletos o falta de base.</li>
+      <li><strong>Aplicar la corrección mínima.</strong> No cambiar una expectativa correcta para acomodarla al comportamiento incorrecto.</li>
+      <li><strong>Repetir el caso.</strong> Guardar el log exitoso y revisar los efectos secundarios, no solo el mensaje devuelto.</li>
+      <li><strong>Ejecutar ambas suites.</strong> Primero unitarias sin base; después integración sobre una base local desechable preparada con los scripts del proyecto.</li>
+      <li><strong>Regenerar cobertura y actualizar el informe.</strong> Comparar mediciones equivalentes y conservar evidencia fuera de <code>target</code> antes del próximo <code>clean</code>.</li>
+    </ol>
+
+    <h3>Comandos de referencia · PowerShell</h3>
+    <p>Ejecutar desde la raíz del proyecto. Si <code>mvn</code> no está en <code>PATH</code>, invocar la instalación local con <code>&amp; "ruta\a\mvn.cmd"</code> y los mismos argumentos. Los comandos siguientes son instrucciones para la futura corrección; no se ejecutaron para crear este HTML.</p>
+    <pre><code># Una regresión, una vez agregado el método propuesto
+mvn -pl Backend "-Dtest=ModelosTest#quitarSegundoDetalleSinIdConservaElPrimero" test
+
+# Revisión focalizada de ambos componentes
+mvn -pl Backend "-Dtest=ModelosTest,MesaServiceTest" test
+
+# Todas las unitarias y cobertura: sin iniciar la base
+mvn -pl Backend clean verify
+
+# Unitarias + integración + cobertura combinada
+# Antes: preparar restomanager_test local con schema.sql y seed.sql.
+mvn -pl Backend -Pintegration-tests clean verify `
+  "-Ddb.url=jdbc:mysql://127.0.0.1:3307/restomanager_test" `
+  "-Ddb.user=root" `
+  "-Ddb.password="</code></pre>
+    <p class="meta">El puerto 3307 y el acceso local corresponden al entorno WAMP utilizado previamente, no a cualquier instalación. El esquema de prueba fue eliminado al terminar aquella verificación: debe prepararse nuevamente. Ver pasos en el <a href="informe_pruebas_junit5.md">informe original, sección 7</a>. No usar TiDB, la base operativa ni guardar credenciales reales en Git.</p>
+    <p><strong>Comparación válida:</strong> <code>clean verify</code> sin perfil produce cobertura unitaria; con <code>integration-tests</code>, cobertura combinada. No comparar el primer resultado como si fuera equivalente al 77,5 % combinado de la línea base.</p>
+
+    <h3>Qué logs ya tenemos y cuáles faltan</h3>
+    <figure>
+      <figcaption>Resúmenes históricos de la ejecución completa exitosa documentada.</figcaption>
+      <pre><code>Unitarias:
+Tests run: 44, Failures: 0, Errors: 0, Skipped: 0
+
+Integración:
+Tests run: 39, Failures: 0, Errors: 0, Skipped: 0
+BUILD SUCCESS</code></pre>
+    </figure>
+    <p>Hubo además una ejecución inicial con <strong>34 errores de integración</strong>: el comando de Windows con caracteres <code>&amp;</code> en la URL terminó usando credenciales incorrectas. Se corrigió el comando y la ejecución posterior pasó. Ese fallo de entorno ya resuelto <strong>no explica la cobertura de 77,5 %</strong>.</p>
+    <p>Para cada corrección, completar esta ficha con salidas reales. Todavía no hay logs JUnit de “antes y después” para D1, D2 y R1.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Dato a registrar</th><th scope="col">Contenido requerido</th></tr></thead>
+        <tbody>
+          <tr><td>Caso y requisito</td><td>Nombre del test y regla de negocio que protege.</td></tr>
+          <tr><td>Antes</td><td>Comando, fecha, esperado/obtenido, assertion o excepción y stack trace relevante.</td></tr>
+          <tr><td>Causa y cambio</td><td>Archivo y método corregidos; explicación de por qué resuelven la causa raíz.</td></tr>
+          <tr><td>Después</td><td>Mismo test aprobado; resumen de Surefire y Failsafe; cobertura nueva y alcance medido.</td></tr>
+          <tr><td>Pendientes</td><td>Escenarios no verificados, decisiones de negocio y limitaciones del entorno.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="cierre">
+    <h2>6. Cuándo considerar resuelto el trabajo</h2>
+    <ol class="checklist">
+      <li>D1 tiene una regresión que demuestra la eliminación correcta y protege el contrato de identidad.</li>
+      <li>D2 no permite liberar una mesa tras un cierre fallido; una integración demuestra la reversión de cambios parciales.</li>
+      <li>Detalle, total, stock y estado se mantienen consistentes ante fallos de persistencia en los flujos intervenidos.</li>
+      <li>La matriz de estados y los reportes se verifican con resultados explícitos y datos conocidos.</li>
+      <li>Todas las unitarias pasan sin base y las integraciones pasan sobre <code>restomanager_test</code>; no hay omisiones ocultas.</li>
+      <li>JaCoCo está actualizado y cada brecha restante está identificada; si se acordó 100 %, se verifica ese contador sobre el alcance declarado.</li>
+      <li>El informe conserva los fallos iniciales, las correcciones y los resultados finales. No se presenta una propuesta como si ya estuviera implementada.</li>
+    </ol>
+    <div class="note"><p><strong>Conclusión:</strong> el problema no es que el 22,5 % de los tests haya fallado. Falta cobertura y hay escenarios incorrectos que los tests existentes no distinguían. La solución es mejorar primero las pruebas y la consistencia del sistema, y luego medir cuánto código sigue sin verificar.</p></div>
+  </section>
+
+  <footer>
+    <p>Documento de orientación: no aplica cambios al código, no ejecuta comandos y no se conecta a ninguna base. Las pruebas y correcciones propuestas siguen pendientes. Los datos de cobertura provienen de los reportes locales existentes; los diagnósticos de D1 y D2, de la revisión previa.</p>
+    <p class="screen-only">Archivo HTML autónomo, sin dependencias externas. Puede abrirse sin conexión. Para imprimir o guardar como PDF, usar Ctrl+P; dejar abiertos los ejemplos que se quieran incluir. Los enlaces a fuentes externas necesitan Internet y los enlaces al código requieren conservar la estructura del proyecto.</p>
+  </footer>
+</main>
+</body>
+</html>

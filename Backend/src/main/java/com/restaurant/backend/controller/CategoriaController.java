@@ -8,7 +8,15 @@ import com.restaurant.backend.model.Categoria;
 
 public class CategoriaController {
 
-    private final CategoriaDAO categoriaDAO = new CategoriaDAOImpl();
+    private final CategoriaDAO categoriaDAO;
+
+    public CategoriaController() {
+        this(new CategoriaDAOImpl());
+    }
+
+    CategoriaController(CategoriaDAO categoriaDAO) {
+        this.categoriaDAO = categoriaDAO;
+    }
 
     public List<Categoria> listar() {
         return categoriaDAO.getCategorias();

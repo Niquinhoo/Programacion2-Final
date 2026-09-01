@@ -12,7 +12,15 @@ import com.restaurant.backend.service.ServicioFactory;
 
 public class PedidoController {
 
-    private final PedidoService pedidoService = ServicioFactory.getPedidoService();
+    private final PedidoService pedidoService;
+
+    public PedidoController() {
+        this(ServicioFactory.getPedidoService());
+    }
+
+    PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
+    }
 
     public String crear(Mesa mesa, Usuario usuario, List<DetallePedido> detalles) {
         return pedidoService.crearPedido(mesa, usuario, detalles);

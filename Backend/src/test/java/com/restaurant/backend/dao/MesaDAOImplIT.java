@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.restaurant.backend.support.DedicatedDatabaseExtension;
 
 import java.util.List;
 
@@ -21,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Tag("integration")
 @DisplayName("MesaDAOImpl — Tests de Integración")
-class MesaDAOImplTest {
+@ExtendWith(DedicatedDatabaseExtension.class)
+class MesaDAOImplIT {
 
     private MesaDAOImpl dao;
     private Integer mesaInsertadaId; // tracking para cleanup

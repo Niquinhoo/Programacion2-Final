@@ -149,7 +149,15 @@ public class PedidoService {
         BigDecimal nuevoTotal = detalles.stream()
                 .map(DetallePedido::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        pedidoDAO.actualizarTotal(pedidoId, nuevoTotal);
+        String resultadoTotal = pedidoDAO.actualizarTotal(pedidoId, nuevoTotal);
+        if (!resultadoTotal.toLowerCase().contains("correctamente")) {
+            return resultadoTotal;
+        }
+
+        String resultadoStock = productoService.descontarStock(producto.getIdProducto(), cantidad);
+        if (!resultadoStock.toLowerCase().contains("correctamente")) {
+            return resultadoStock;
+        }
 
         return "Item agregado correctamente";
     }

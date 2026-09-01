@@ -8,7 +8,15 @@ import com.restaurant.backend.service.ServicioFactory;
 
 public class ProductoController {
 
-    private final ProductoService productoService = ServicioFactory.getProductoService();
+    private final ProductoService productoService;
+
+    public ProductoController() {
+        this(ServicioFactory.getProductoService());
+    }
+
+    ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
 
     public List<Producto> listar() {
         return productoService.obtenerTodos();

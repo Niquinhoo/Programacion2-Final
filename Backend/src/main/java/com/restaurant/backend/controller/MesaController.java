@@ -9,7 +9,15 @@ import com.restaurant.backend.service.ServicioFactory;
 
 public class MesaController {
 
-    private final MesaService mesaService = ServicioFactory.getMesaService();
+    private final MesaService mesaService;
+
+    public MesaController() {
+        this(ServicioFactory.getMesaService());
+    }
+
+    MesaController(MesaService mesaService) {
+        this.mesaService = mesaService;
+    }
 
     public List<Mesa> listarMesas() {
         return mesaService.listar();
