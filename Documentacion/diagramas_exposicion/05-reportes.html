@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RestoManager · Flujo de reportes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root { --paper:#f5f5f5; --ink:#2d3142; --muted:#4f5d75; --soft:#7a8399; --rule:rgba(45,49,66,.12); --accent:#eb6c36; --link:#2e5aa8; --sans:'Geist',system-ui,sans-serif; --serif:'Instrument Serif','Noto Serif KR',serif; --mono:'Geist Mono',ui-monospace,monospace; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); padding:40px 32px 36px; }
+    .frame { max-width:1280px; margin:0 auto; }
+    .eyebrow, .code-kicker, .note-kicker { color:var(--muted); font:500 8px/1.4 var(--mono); letter-spacing:.18em; text-transform:uppercase; }
+    h1 { margin:12px 0 12px; font:400 40px/1.08 var(--serif); letter-spacing:-.02em; }
+    .subtitle { max-width:920px; margin:0 0 24px; color:var(--muted); font-size:16px; line-height:1.5; }
+    .diagram-container { overflow-x:auto; }
+    svg { width:100%; min-width:980px; display:block; }
+    .code-rail { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px; }
+    .code-card, .note-card { background:#fff; border:1px solid var(--rule); border-radius:6px; padding:20px; }
+    .code-card:first-child { border-top:2px solid var(--accent); }
+    .code-card h2, .note-card h2 { margin:12px 0 8px; font-size:20px; line-height:1.2; font-weight:600; }
+    .source { color:var(--link); font:8px/1.4 var(--mono); text-decoration:none; letter-spacing:.04em; }
+    pre { margin:16px 0 0; padding:16px; overflow:auto; border-radius:4px; background:var(--ink); color:var(--paper); font:12px/1.55 var(--mono); }
+    .note-card { margin-top:24px; background:transparent; padding:0 0 4px; border:0; border-radius:0; }
+    .note-card h2 { font-family:var(--serif); font-size:28px; font-weight:400; }
+    .note-card p { max-width:920px; margin:0; color:var(--muted); font-size:14px; line-height:1.55; }
+    footer { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:28px; padding-top:16px; border-top:1px solid rgba(45,49,66,.10); color:var(--soft); font:8px/1.5 var(--mono); letter-spacing:.06em; }
+    @media (max-width:900px) { .code-rail { grid-template-columns:1fr; } body { padding:28px 16px; } }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <p class="eyebrow">Data flow · reportes y visualización</p>
+    <h1>Los datos agregados llegan a la pantalla como DTOs</h1>
+    <p class="subtitle">El panel de reportes solicita tres lecturas, el servicio las delega al DAO y las vistas SQL condensan la información. La GUI recibe listas tipadas y recién allí construye líneas, barras y anillos con JFreeChart.</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="reportes-title reportes-desc">
+        <title id="reportes-title">Flujo de datos de los reportes</title>
+        <desc id="reportes-desc">Data flow que conecta los paneles Swing con ReporteService, ReporteDAOImpl, las vistas SQL y los gráficos JFreeChart mediante datos agregados y DTOs.</desc>
+        <defs>
+          <marker id="reportes-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="reportes-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+          <marker id="reportes-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+        </defs>
+
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+        <!-- Four role lanes. -->
+        <rect x="200" y="96" width="1016" height="88" fill="rgba(45,49,66,.018)"/>
+        <rect x="200" y="272" width="1016" height="88" fill="rgba(45,49,66,.018)"/>
+        <line x1="40" y1="96" x2="1216" y2="96" stroke="rgba(45,49,66,.14)" stroke-width="0.8"/>
+        <line x1="40" y1="184" x2="1216" y2="184" stroke="rgba(45,49,66,.14)" stroke-width="0.8"/>
+        <line x1="40" y1="272" x2="1216" y2="272" stroke="rgba(45,49,66,.14)" stroke-width="0.8"/>
+        <line x1="40" y1="360" x2="1216" y2="360" stroke="rgba(45,49,66,.14)" stroke-width="0.8"/>
+        <line x1="40" y1="448" x2="1216" y2="448" stroke="rgba(45,49,66,.14)" stroke-width="0.8"/>
+        <line x1="200" y1="96" x2="200" y2="448" stroke="rgba(45,49,66,.20)" stroke-width="1"/>
+        <text x="120" y="128" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">GUI</text>
+        <text x="120" y="144" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">REPORTES</text>
+        <text x="120" y="216" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">SERVICIOS</text>
+        <text x="120" y="232" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">SERVICE</text>
+        <text x="120" y="304" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">DATA</text>
+        <text x="120" y="320" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">ACCESS</text>
+        <text x="120" y="392" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">VISTAS</text>
+        <text x="120" y="408" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".14em">SQL</text>
+
+        <!-- Step headers. -->
+        <rect x="280" y="24" width="40" height="20" rx="8" fill="rgba(45,49,66,.12)"/>
+        <text x="300" y="40" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">01</text>
+        <text x="300" y="64" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".10em">SOLICITAR</text>
+        <rect x="480" y="24" width="40" height="20" rx="8" fill="rgba(45,49,66,.12)"/>
+        <text x="500" y="40" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">02</text>
+        <text x="500" y="64" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".10em">DELEGAR</text>
+        <rect x="680" y="24" width="40" height="20" rx="8" fill="rgba(45,49,66,.12)"/>
+        <text x="700" y="40" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">03</text>
+        <text x="700" y="64" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".10em">CONSULTAR</text>
+        <rect x="880" y="24" width="40" height="20" rx="8" fill="rgba(235,108,54,.20)"/>
+        <text x="900" y="40" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">04</text>
+        <text x="900" y="64" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".10em">AGREGAR</text>
+        <rect x="1080" y="24" width="40" height="20" rx="8" fill="rgba(45,49,66,.12)"/>
+        <text x="1100" y="40" fill="#2d3142" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">05</text>
+        <text x="1100" y="64" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".10em">GRAFICAR</text>
+
+        <!-- Orthogonal data handoffs. -->
+        <path d="M 376,140 H 492 Q 500,140 500,148 V 192" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#reportes-arrow)"/>
+        <path d="M 576,228 H 692 Q 700,228 700,236 V 280" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#reportes-arrow)"/>
+        <path d="M 776,316 H 892 Q 900,316 900,324 V 368" fill="none" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#reportes-arrow-accent)"/>
+        <path d="M 976,404 H 1092 Q 1100,404 1100,396 V 176" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#reportes-arrow-link)"/>
+
+        <!-- Focal handoff labels. -->
+        <rect x="820" y="284" width="80" height="16" rx="4" fill="#f5f5f5"/>
+        <text x="860" y="296" fill="#eb6c36" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".06em">LECTURA</text>
+        <rect x="996" y="372" width="40" height="16" rx="4" fill="#f5f5f5"/>
+        <text x="1016" y="384" fill="#2e5aa8" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".06em">DTO</text>
+
+        <!-- 01 GUI source -->
+        <rect x="224" y="104" width="152" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="224" y="104" width="152" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="236" y="116" width="32" height="20" rx="4" fill="transparent" stroke="rgba(45,49,66,.40)" stroke-width="0.8"/>
+        <text x="252" y="132" fill="#2d3142" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".08em">GUI</text>
+        <text x="300" y="148" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Solicitar datos</text>
+        <text x="300" y="168" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">VentasPanel · GeneralPanel</text>
+        <rect x="344" y="152" width="24" height="16" rx="4" fill="#6e6479"/>
+        <text x="356" y="164" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">LS</text>
+
+        <!-- 02 service -->
+        <rect x="424" y="192" width="152" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="424" y="192" width="152" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="436" y="204" width="32" height="20" rx="4" fill="transparent" stroke="rgba(45,49,66,.40)" stroke-width="0.8"/>
+        <text x="452" y="220" fill="#2d3142" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".08em">SVC</text>
+        <text x="500" y="236" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">ReporteService</text>
+        <text x="500" y="256" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">resumen + ventas</text>
+        <rect x="436" y="240" width="24" height="16" rx="4" fill="#5e7a9b"/>
+        <text x="448" y="252" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">DB</text>
+        <rect x="540" y="240" width="24" height="16" rx="4" fill="#5e7a9b"/>
+        <text x="552" y="252" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">DB</text>
+
+        <!-- 03 DAO -->
+        <rect x="624" y="280" width="152" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="624" y="280" width="152" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="636" y="292" width="32" height="20" rx="4" fill="transparent" stroke="rgba(45,49,66,.40)" stroke-width="0.8"/>
+        <text x="652" y="308" fill="#2d3142" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".08em">DAO</text>
+        <text x="700" y="324" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">ReporteDAOImpl</text>
+        <text x="700" y="344" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">SELECT · mapeo DTO</text>
+        <rect x="636" y="328" width="24" height="16" rx="4" fill="#5e7a9b"/>
+        <text x="648" y="340" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">DB</text>
+        <rect x="740" y="328" width="24" height="16" rx="4" fill="#b8915a"/>
+        <text x="752" y="340" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">TB</text>
+
+        <!-- 04 SQL focal -->
+        <rect x="824" y="368" width="152" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="824" y="368" width="152" height="72" rx="6" fill="rgba(235,108,54,.08)" stroke="#eb6c36" stroke-width="1.4"/>
+        <rect x="836" y="380" width="40" height="20" rx="4" fill="transparent" stroke="rgba(235,108,54,.50)" stroke-width="0.8"/>
+        <text x="856" y="396" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".08em">FOCUS</text>
+        <text x="900" y="412" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Ventas agregadas</text>
+        <text x="900" y="432" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">vw_ventas_por_*</text>
+        <rect x="836" y="416" width="24" height="16" rx="4" fill="#b8915a"/>
+        <text x="848" y="428" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">TB</text>
+        <rect x="940" y="416" width="24" height="16" rx="4" fill="#b8915a"/>
+        <text x="952" y="428" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">TB</text>
+
+        <!-- 05 chart sink -->
+        <rect x="1024" y="104" width="152" height="72" rx="6" fill="#f5f5f5"/>
+        <rect x="1024" y="104" width="152" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="1036" y="116" width="40" height="20" rx="4" fill="transparent" stroke="rgba(45,49,66,.40)" stroke-width="0.8"/>
+        <text x="1056" y="132" fill="#2d3142" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing=".08em">UI</text>
+        <text x="1100" y="148" fill="#2d3142" font-size="16" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">JFreeChart</text>
+        <text x="1100" y="168" fill="#4f5d75" font-size="12" font-family="'Geist Mono', monospace" text-anchor="middle">línea · barras · anillo</text>
+        <rect x="1036" y="152" width="24" height="16" rx="4" fill="#b8915a"/>
+        <text x="1048" y="164" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">TB</text>
+
+        <!-- Legend strip. -->
+        <line x1="40" y1="540" x2="1240" y2="540" stroke="rgba(45,49,66,.12)" stroke-width="0.8"/>
+        <text x="40" y="564" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing=".18em">LEGEND · PAYLOADS</text>
+        <rect x="220" y="552" width="24" height="16" rx="4" fill="#6e6479"/>
+        <text x="232" y="564" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">LS</text>
+        <text x="256" y="564" fill="#4f5d75" font-size="12" font-family="'Geist', sans-serif">evento / solicitud</text>
+        <rect x="444" y="552" width="24" height="16" rx="4" fill="#5e7a9b"/>
+        <text x="456" y="564" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">DB</text>
+        <text x="480" y="564" fill="#4f5d75" font-size="12" font-family="'Geist', sans-serif">datos de consulta</text>
+        <rect x="680" y="552" width="24" height="16" rx="4" fill="#b8915a"/>
+        <text x="692" y="564" fill="#ffffff" font-size="8" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="middle">TB</text>
+        <text x="716" y="564" fill="#4f5d75" font-size="12" font-family="'Geist', sans-serif">tabla / DTO agregado</text>
+        <line x1="936" y1="560" x2="976" y2="560" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#reportes-arrow-accent)"/>
+        <text x="988" y="564" fill="#4f5d75" font-size="12" font-family="'Geist', sans-serif">handoff focal</text>
+      </svg>
+    </div>
+
+    <section class="code-rail" aria-label="Evidencia en código">
+      <article class="code-card">
+        <p class="code-kicker">Evidencia · consumo</p>
+        <h2>El panel pide datos y luego dibuja</h2>
+        <a class="source" href="../../GUI/src/vistas/paneles/reportes/VentasPanel.java">GUI/src/vistas/paneles/reportes/VentasPanel.java · líneas 30–53</a>
+        <pre><code>AsyncDataLoader.load(this,
+    () -&gt; {
+        ResumenGeneralDTO resumen =
+            ServicioFactory.getReporteService().resumenGeneral();
+        List&lt;VentaPorMesDTO&gt; mensuales =
+            ServicioFactory.getReporteService().ventasPorMes();
+        List&lt;VentaPorProductoDTO&gt; productos =
+            ServicioFactory.getReporteService().ventasPorProducto();
+        return new Object[]{resumen, mensuales, productos};
+    },
+    data -&gt; {
+        cargarGraficoVentas((List&lt;VentaPorMesDTO&gt;) data[1]);
+        cargarGraficoTorta((List&lt;VentaPorProductoDTO&gt;) data[2]);
+    });</code></pre>
+      </article>
+      <article class="code-card">
+        <p class="code-kicker">Evidencia · vistas SQL</p>
+        <h2>Las consultas reutilizan agregaciones</h2>
+        <a class="source" href="../../Backend/src/main/java/com/restaurant/backend/dao/ReporteDAOImpl.java">Backend/.../dao/ReporteDAOImpl.java · líneas 17–55</a>
+        <pre><code>SELECT id_producto, producto, categoria,
+       unidades_vendidas, total_recaudado
+FROM vw_ventas_por_producto;
+
+SELECT anio, mes, cantidad_pedidos, total_mes
+FROM vw_ventas_por_mes;
+
+ventas.add(new VentaPorMesDTO(
+        rs.getInt("anio"), rs.getInt("mes"),
+        rs.getLong("cantidad_pedidos"),
+        rs.getBigDecimal("total_mes")));
+</code></pre>
+      </article>
+    </section>
+
+    <section class="note-card">
+      <p class="note-kicker">Qué decir</p>
+      <h2>“Cada capa devuelve una forma de dato más útil”</h2>
+      <p>La vista SQL hace la agregación, el DAO mapea filas a DTOs, el servicio conserva una API simple y la GUI transforma esos DTOs en datasets de JFreeChart. Así la pantalla no conoce tablas ni sentencias SQL.</p>
+    </section>
+
+    <footer><span>RestoManager · reportes</span><span>Fuente: VentasPanel.java, ReporteService.java, ReporteDAOImpl.java y schema.sql</span></footer>
+  </main>
+</body>
+</html>
